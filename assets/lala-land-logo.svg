@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="740" height="220" viewBox="0 0 740 220" role="img" aria-labelledby="title desc">
+<title id="title">lala land · 蓝蓝’s land</title><desc id="desc">浅蓝小岛中的双 L，连接一颗星光与 lala land 手写感字标。</desc>
+<g transform="translate(12 24)">
+<path d="M31 92C13 69 28 46 57 48C66 22 91 17 110 32C138 28 158 47 152 68C177 85 159 116 135 118C121 141 95 139 79 128C49 140 22 121 31 92Z" fill="#e0effa"/>
+<path d="M25 108C48 135 118 144 155 109M42 140C72 152 114 153 139 141" fill="none" stroke="#96bddb" stroke-width="3" stroke-linecap="round"/>
+<path d="M70 45C62 66 54 99 65 104C72 107 83 95 88 87M106 41C99 65 91 101 104 105C112 107 125 94 130 87" fill="none" stroke="#3776a8" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M143 17Q144 28 153 31Q142 33 139 44Q138 33 129 30Q140 28 143 17Z" fill="#86afd0"/>
+</g>
+<text x="195" y="126" fill="#2d6592" font-family="Georgia, 'Times New Roman', serif" font-size="103" font-style="italic" letter-spacing="-6">lala land</text>
+<path d="M206 151Q325 143 448 151T667 150" fill="none" stroke="#aacce4" stroke-width="2.4" stroke-linecap="round"/>
+<text x="207" y="184" fill="#7395af" font-family="-apple-system, 'PingFang SC', sans-serif" font-size="15" letter-spacing="5">蓝蓝’s land</text>
+</svg>

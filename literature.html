@@ -1,0 +1,319 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>文学在我 - 蓝蓝</title>
+  <meta name="description" content="蓝蓝的阅读星图、文学评论与研一阅读档案。">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    :root {
+      --cream: #fdfaf1;
+      --paper: #fffef9;
+      --ink: #202133;
+      --muted: #666b78;
+      --blue: #2b7fd8;
+      --blue-deep: #1d5caa;
+      --yellow: #f4d758;
+      --green: #3d8b68;
+      --coral: #d75b4a;
+      --line: rgba(32,33,51,.15);
+    }
+    html { scroll-behavior: smooth; background: var(--cream); }
+    body { margin: 0; overflow-x: hidden; background: var(--cream); color: var(--ink); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Noto Sans SC", sans-serif; letter-spacing: 0; }
+    a { color: inherit; text-decoration: none; }
+    button, input { color: inherit; font: inherit; }
+    button { cursor: pointer; }
+    .topbar { position: sticky; top: 0; z-index: 50; display: flex; align-items: center; justify-content: space-between; min-height: 54px; border-bottom: 1px solid var(--line); padding: 0 clamp(16px,4vw,58px); background: rgba(253,250,241,.95); backdrop-filter: blur(14px); }
+    .back { color: var(--blue-deep); font-size: 12px; font-weight: 850; }
+    .top-title { font: 850 15px Georgia, "Songti SC", serif; }
+    .top-index { color: var(--muted); font: 750 10px ui-monospace, SFMono-Regular, Menlo, monospace; }
+    .hero { position: relative; display: grid; grid-template-columns: minmax(0,1.08fr) minmax(280px,.72fr); min-height: min(710px,calc(100svh - 54px)); align-items: center; gap: clamp(34px,7vw,92px); overflow: hidden; border-bottom: 1px solid var(--line); padding: clamp(60px,8vw,104px) clamp(18px,7vw,100px); background-color: var(--cream); background-image: radial-gradient(circle,rgba(43,127,216,.16) 1px,transparent 1px); background-size: 25px 25px; }
+    .hero-copy { width: min(720px,100%); }
+    .eyebrow, .section-kicker { color: var(--blue); font: 850 11px ui-monospace, SFMono-Regular, Menlo, monospace; text-transform: uppercase; }
+    h1,h2,h3,p { margin-top: 0; }
+    h1 { margin: 17px 0 20px; font: 900 clamp(3rem,7vw,4.8rem)/.96 Georgia,"Songti SC",serif; }
+    .hero-lede { max-width: 670px; margin-bottom: 24px; color: #4d5160; font-size: clamp(1rem,1.6vw,1.2rem); line-height: 1.85; }
+    .hero-meta { display: flex; flex-wrap: wrap; gap: 7px; }
+    .hero-meta span { border: 1px solid var(--line); border-radius: 4px; padding: 7px 9px; background: rgba(255,254,249,.88); font-size: 11px; font-weight: 800; }
+    .hero-visual { position: relative; display: grid; min-height: 370px; place-items: center; }
+    .hero-avatar { position: relative; z-index: 2; display: block; width: min(240px,58vw); aspect-ratio: 1; border: 7px solid white; border-radius: 50%; object-fit: cover; box-shadow: 0 20px 45px rgba(25,65,115,.18); }
+    .book-spine { position: absolute; width: 52px; border: 1px solid rgba(32,33,51,.12); border-radius: 3px 3px 1px 1px; padding: 13px 8px; color: var(--ink); font: 800 11px/1.2 Georgia,"Songti SC",serif; writing-mode: vertical-rl; box-shadow: 0 9px 18px rgba(25,42,72,.12); }
+    .spine-a { right: 8%; top: 8%; height: 205px; background: var(--yellow); transform: rotate(5deg); }
+    .spine-b { left: 4%; bottom: 2%; height: 174px; background: #d9eadf; transform: rotate(-6deg); }
+    .spine-c { right: 16%; bottom: 0; height: 150px; background: #dceafb; transform: rotate(3deg); }
+    .stats-band { border-bottom: 1px solid var(--line); background: var(--blue); color: white; }
+    .stats { display: grid; grid-template-columns: repeat(5,1fr); width: min(1180px,100%); margin: auto; }
+    .stat { min-height: 122px; border-right: 1px solid rgba(255,255,255,.2); padding: 23px 20px; }
+    .stat:last-child { border-right: 0; }
+    .stat strong { display: block; margin-bottom: 7px; color: var(--yellow); font: 900 clamp(1.45rem,3vw,2.3rem)/1.05 Georgia,serif; }
+    .stat span { color: rgba(255,255,255,.82); font-size: 11px; }
+    .section { padding: clamp(68px,9vw,112px) clamp(18px,7vw,100px); }
+    .section-inner { width: min(1180px,100%); margin: auto; }
+    .section h2 { max-width: 820px; margin: 11px 0 17px; font: 900 clamp(2rem,4.8vw,3.45rem)/1.04 Georgia,"Songti SC",serif; }
+    .section-intro { max-width: 760px; margin-bottom: 34px; color: var(--muted); font-size: 14px; line-height: 1.85; }
+    .profile-section { background: var(--paper); }
+    .profile-grid { display: grid; grid-template-columns: .72fr 1.28fr; gap: clamp(30px,7vw,86px); align-items: start; }
+    .profile-note { border-top: 4px solid var(--yellow); padding-top: 18px; color: var(--muted); font-size: 12px; line-height: 1.8; }
+    .profile-copy { border-top: 3px solid var(--ink); }
+    .profile-line { display: grid; grid-template-columns: 100px 1fr; gap: 20px; border-bottom: 1px solid var(--line); padding: 21px 0; }
+    .profile-line b { color: var(--coral); font: 850 10px ui-monospace,monospace; text-transform: uppercase; }
+    .profile-line p { margin: 0; font: 750 clamp(1.04rem,1.8vw,1.32rem)/1.68 Georgia,"Songti SC",serif; }
+    .archive { background: #edf5fd; }
+    .archive-tabs { display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 16px; }
+    .archive-tab { border: 1px solid var(--line); border-radius: 5px; padding: 9px 13px; background: white; color: var(--muted); font-size: 12px; font-weight: 800; }
+    .archive-tab.active { border-color: var(--blue); background: var(--blue); color: white; }
+    .archive-frame { min-height: 540px; overflow: hidden; border: 1px solid var(--line); border-radius: 8px; background: var(--paper); }
+    .archive-panel { display: none; min-height: 540px; padding: clamp(24px,5vw,54px); animation: reveal .25s ease both; }
+    .archive-panel.active { display: block; }
+    @keyframes reveal { from { opacity: 0; transform: translateY(6px); } }
+    .panel-head { display: flex; justify-content: space-between; gap: 20px; border-bottom: 1px solid var(--line); padding-bottom: 18px; }
+    .panel-head h3 { margin: 0; font: 850 clamp(1.45rem,3vw,2.1rem) Georgia,"Songti SC",serif; }
+    .panel-head p { max-width: 520px; margin: 0; color: var(--muted); font-size: 12px; line-height: 1.7; }
+    .shelf-flow { display: grid; gap: 0; margin-top: 24px; }
+    .shelf-row { display: grid; grid-template-columns: 72px minmax(0,1fr) auto; gap: 18px; align-items: center; border-bottom: 1px solid var(--line); padding: 13px 0; }
+    .mini-cover { position: relative; display: grid; width: 58px; aspect-ratio: .69; align-content: space-between; overflow: hidden; border: 1px solid rgba(32,33,51,.18); border-radius: 2px 4px 4px 2px; padding: 8px 6px; background: var(--cover,#dceafb); color: var(--cover-ink,var(--ink)); box-shadow: 4px 5px 10px rgba(25,35,55,.12); font: 800 9px/1.15 Georgia,"Songti SC",serif; }
+    .mini-cover::before { content: ""; position: absolute; inset: 0 auto 0 5px; width: 1px; background: rgba(255,255,255,.55); }
+    .mini-cover small { align-self: end; font: 700 6px ui-monospace,monospace; opacity: .72; }
+    .shelf-row h4 { margin: 0 0 5px; font: 850 16px Georgia,"Songti SC",serif; }
+    .shelf-row p { margin: 0; color: var(--muted); font-size: 11px; line-height: 1.6; }
+    .shelf-status { border: 1px solid var(--line); border-radius: 4px; padding: 6px 8px; color: var(--blue-deep); font-size: 9px; font-weight: 850; white-space: nowrap; }
+    .data-grid { display: grid; grid-template-columns: repeat(5,1fr); gap: 10px; margin: 28px 0; }
+    .data-tile { min-height: 112px; border: 1px solid var(--line); border-radius: 6px; padding: 16px; background: white; }
+    .data-tile strong { display: block; margin-bottom: 8px; color: var(--blue); font: 900 25px Georgia,serif; }
+    .data-tile span { color: var(--muted); font-size: 10px; }
+    .reading-bars { display: grid; gap: 11px; max-width: 760px; }
+    .reading-bar { display: grid; grid-template-columns: 86px 1fr 42px; gap: 12px; align-items: center; color: var(--muted); font-size: 11px; }
+    .bar-track { height: 9px; overflow: hidden; border-radius: 2px; background: #e2e5e8; }
+    .bar-fill { height: 100%; width: var(--w); background: var(--c,var(--blue)); }
+    .reading-map { position: relative; min-height: 410px; margin-top: 26px; overflow: hidden; border: 1px solid var(--line); background: #f7f0df; box-shadow: inset 0 0 50px rgba(117,76,32,.08); }
+    .reading-map::before, .reading-map::after { content: ""; position: absolute; background: rgba(32,33,51,.35); }
+    .reading-map::before { left: 50%; top: 7%; bottom: 7%; width: 1px; }
+    .reading-map::after { left: 4%; right: 4%; top: 50%; height: 1px; }
+    .axis-label { position: absolute; color: rgba(32,33,51,.58); font: 800 9px ui-monospace,monospace; text-transform: uppercase; }
+    .axis-top { top: 12px; left: calc(50% + 12px); } .axis-bottom { bottom: 12px; left: calc(50% + 12px); } .axis-left { left: 12px; top: calc(50% + 10px); } .axis-right { right: 12px; top: calc(50% + 10px); }
+    .map-node { position: absolute; display: flex; align-items: center; gap: 9px; max-width: 190px; border: 1px solid rgba(32,33,51,.18); border-radius: 5px; padding: 8px; background: rgba(255,254,249,.94); box-shadow: 0 8px 20px rgba(75,58,35,.12); }
+    .map-node .mini-cover { width: 42px; flex: 0 0 auto; }
+    .map-node b { font: 800 11px/1.35 Georgia,"Songti SC",serif; }
+    .map-node:nth-of-type(1) { left: 9%; top: 16%; transform: rotate(-2deg); }
+    .map-node:nth-of-type(2) { right: 8%; top: 20%; transform: rotate(2deg); }
+    .map-node:nth-of-type(3) { left: 13%; bottom: 13%; transform: rotate(1deg); }
+    .map-node:nth-of-type(4) { right: 12%; bottom: 14%; transform: rotate(-2deg); }
+    .timeline-flow { position: relative; display: grid; gap: 0; margin-top: 24px; }
+    .timeline-flow::before { content: ""; position: absolute; left: 26px; top: 15px; bottom: 15px; width: 2px; background: #bfd7f2; }
+    .time-row { position: relative; display: grid; grid-template-columns: 54px 60px 1fr; gap: 16px; align-items: center; min-height: 104px; border-bottom: 1px solid var(--line); padding: 12px 0; }
+    .time-dot { position: relative; z-index: 2; width: 12px; height: 12px; margin-left: 21px; border: 3px solid var(--paper); border-radius: 50%; background: var(--blue); box-shadow: 0 0 0 1px var(--blue); }
+    .time-copy h4 { margin: 0 0 5px; font: 850 15px Georgia,"Songti SC",serif; }
+    .time-copy p { margin: 0; color: var(--muted); font-size: 11px; line-height: 1.65; }
+    .archive-note { display: flex; justify-content: space-between; gap: 20px; margin-top: 13px; color: var(--muted); font-size: 10px; line-height: 1.7; }
+    .writing-section { background: var(--paper); }
+    .writing-list { border-top: 3px solid var(--ink); }
+    .writing-item { display: grid; grid-template-columns: 80px minmax(0,1fr) minmax(240px,.7fr); gap: 24px; align-items: start; border-bottom: 1px solid var(--line); padding: 26px 0; }
+    .writing-kind { color: var(--blue); font: 850 10px ui-monospace,monospace; }
+    .writing-item h3 { margin: 0 0 8px; font: 850 clamp(1.2rem,2.4vw,1.75rem) Georgia,"Songti SC",serif; }
+    .writing-item p { margin: 0; color: var(--muted); font-size: 12px; line-height: 1.8; }
+    .writing-insight { border-left: 3px solid var(--yellow); padding-left: 16px; color: #404454; font: 750 14px/1.75 Georgia,"Songti SC",serif; }
+    .routes-section { background: var(--cream); }
+    .topic-filter { display: flex; flex-wrap: wrap; gap: 7px; margin: 24px 0 16px; }
+    .topic-filter button { border: 1px solid var(--line); border-radius: 5px; padding: 8px 11px; background: transparent; color: var(--muted); font-size: 11px; font-weight: 800; }
+    .topic-filter button:hover, .topic-filter button.active { border-color: var(--blue); background: #edf5fd; color: var(--blue-deep); }
+    .route-maker { display: flex; align-items: center; justify-content: space-between; gap: 18px; border-top: 3px solid var(--ink); border-bottom: 1px solid var(--line); padding: 15px 0; }
+    .route-output { color: var(--muted); font-size: 12px; line-height: 1.6; }
+    .route-output strong { color: var(--ink); }
+    .route-button { flex: 0 0 auto; border: 0; border-radius: 5px; padding: 10px 13px; background: var(--yellow); font-size: 12px; font-weight: 850; }
+    .book-grid { display: grid; grid-template-columns: 1fr; margin-top: 20px; border-top: 1px solid var(--line); }
+    .book-card { display: grid; grid-template-columns: 58px 72px minmax(160px,.56fr) minmax(220px,1fr) auto; gap: 18px; align-items: center; min-height: 126px; border-bottom: 1px solid var(--line); padding: 15px 10px; background: var(--paper); transition: background .2s ease; }
+    .book-card:hover { background: #eef6ff; }
+    .book-card.hidden { display: none; }
+    .book-no { color: var(--blue); font: 850 9px ui-monospace,monospace; }
+    .book-title h3 { margin: 0 0 5px; font: 850 18px/1.2 Georgia,"Songti SC",serif; }
+    .book-author { color: var(--coral); font-size: 10px; font-weight: 800; }
+    .book-card p { margin: 0; color: var(--muted); font-size: 11px; line-height: 1.72; }
+    .book-link { border-bottom: 1px solid currentColor; color: var(--blue-deep); font-size: 10px; font-weight: 850; white-space: nowrap; }
+    .chat-section { background: var(--blue); color: white; }
+    .chat-section .section-kicker { color: var(--yellow); }
+    .chat-section .section-intro { color: rgba(255,255,255,.78); }
+    .chat-shell { display: grid; grid-template-columns: 220px minmax(0,1fr); min-height: 520px; overflow: hidden; border: 1px solid rgba(255,255,255,.34); border-radius: 8px; background: var(--paper); color: var(--ink); }
+    .chat-aside { border-right: 1px solid var(--line); padding: 22px; background: #f2f6fb; }
+    .chat-aside b { display: block; margin-bottom: 8px; font: 850 18px Georgia,"Songti SC",serif; }
+    .chat-aside p { color: var(--muted); font-size: 11px; line-height: 1.7; }
+    .chat-avatar { display: block; width: 76px; aspect-ratio: 1; margin-bottom: 18px; border: 4px solid white; border-radius: 50%; object-fit: cover; box-shadow: 0 8px 18px rgba(20,50,90,.14); }
+    .chat-main { display: grid; grid-template-rows: auto 1fr auto; min-width: 0; }
+    .quick-questions { display: flex; flex-wrap: wrap; gap: 7px; border-bottom: 1px solid var(--line); padding: 15px 17px; }
+    .quick-question { border: 1px solid var(--line); border-radius: 5px; padding: 7px 9px; background: white; color: var(--blue-deep); font-size: 10px; font-weight: 800; }
+    .chat-log { display: flex; max-height: 340px; flex-direction: column; gap: 13px; overflow-y: auto; padding: 20px; }
+    .message { max-width: min(650px,88%); border-radius: 7px; padding: 12px 14px; font-size: 12px; line-height: 1.75; white-space: pre-wrap; }
+    .message.bot { align-self: flex-start; border: 1px solid var(--line); background: #f5f5f2; }
+    .message.user { align-self: flex-end; background: #e8f2fd; }
+    .chat-form { display: grid; grid-template-columns: 1fr auto; gap: 9px; border-top: 1px solid var(--line); padding: 14px; }
+    .chat-form input { min-width: 0; border: 1px solid var(--line); border-radius: 5px; padding: 11px 12px; background: white; outline: 0; }
+    .chat-form input:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(43,127,216,.12); }
+    .send-button { border: 0; border-radius: 5px; padding: 0 15px; background: var(--yellow); font-weight: 850; }
+    footer { border-top: 1px solid var(--line); padding: 28px 18px 90px; color: var(--muted); font-size: 10px; line-height: 1.7; text-align: center; }
+    @media (max-width:900px) {
+      .hero { grid-template-columns: 1fr; min-height: auto; }
+      .hero-visual { min-height: 290px; }
+      .hero-avatar { width: 210px; }
+      .stats { grid-template-columns: repeat(2,1fr); }
+      .stat { border-bottom: 1px solid rgba(255,255,255,.2); }
+      .stat:last-child { grid-column: 1/-1; }
+      .profile-grid, .chat-shell { grid-template-columns: 1fr; }
+      .chat-aside { display: grid; grid-template-columns: 84px 1fr; border-right: 0; border-bottom: 1px solid var(--line); }
+      .data-grid { grid-template-columns: repeat(2,1fr); }
+      .writing-item { grid-template-columns: 68px 1fr; }
+      .writing-insight { grid-column: 2; }
+      .book-card { grid-template-columns: 50px 64px minmax(0,1fr) auto; }
+      .book-card p { grid-column: 3/-1; }
+    }
+    @media (max-width:600px) {
+      .top-title { max-width: 52vw; overflow: hidden; font-size: 12px; text-overflow: ellipsis; white-space: nowrap; }
+      h1 { font-size: clamp(2.8rem,14vw,3.8rem); }
+      .section h2 { font-size: clamp(1.9rem,10vw,2.8rem); }
+      .hero { padding-top: 50px; }
+      .stats { grid-template-columns: 1fr 1fr; }
+      .stat { min-height: 105px; padding: 18px 14px; }
+      .profile-line { grid-template-columns: 1fr; gap: 7px; }
+      .archive-tabs { display: grid; grid-template-columns: 1fr 1fr; }
+      .archive-tab { padding-inline: 6px; }
+      .archive-frame, .archive-panel { min-height: 590px; }
+      .panel-head { display: block; }
+      .panel-head p { margin-top: 10px; }
+      .shelf-row { grid-template-columns: 62px 1fr; }
+      .shelf-status { grid-column: 2; justify-self: start; }
+      .data-grid { grid-template-columns: 1fr 1fr; }
+      .reading-bar { grid-template-columns: 68px 1fr 35px; }
+      .map-node { max-width: 138px; }
+      .map-node b { font-size: 9px; }
+      .map-node .mini-cover { width: 34px; }
+      .writing-item { grid-template-columns: 1fr; }
+      .writing-insight { grid-column: 1; }
+      .route-maker { align-items: flex-start; flex-direction: column; }
+      .book-card { grid-template-columns: 44px 58px minmax(0,1fr); gap: 11px; }
+      .book-card p { grid-column: 2/-1; }
+      .book-link { grid-column: 2/-1; justify-self: start; }
+      .chat-aside { display: none; }
+      .quick-questions { overflow-x: auto; flex-wrap: nowrap; }
+      .quick-question { flex: 0 0 auto; }
+    }
+    @media (prefers-reduced-motion:reduce) { html { scroll-behavior: auto; } *,*::before,*::after { animation-duration:.01ms !important; transition-duration:.01ms !important; } }
+  </style>
+  <link rel="stylesheet" href="assets/reading-stars.css">
+</head>
+<body>
+  <header class="topbar"><a class="back" href="index.html#literature" target="_top">← 蓝蓝 OS</a><span class="top-title">文学在我 / LITERATURE MAKES ME</span><span class="top-index">04 / 04</span></header>
+  <main>
+    <section class="hero">
+      <div class="hero-copy"><div class="eyebrow">lanlan's reading atlas</div><h1>文学在我</h1><p class="hero-lede">我不是按照书目单成为中文系学生的。小说先把我带进人的命运，诗让我听见语言内部的震动，理论又迫使我回头追问：我们如何欲望、如何想象他人，又如何被时代写进自己的故事。</p><p class="reading-origin">WHU 中文系 <span aria-hidden="true">→</span> NJU 现当代文学</p><a class="reading-jump" href="#stars">打开阅读星匣 <span aria-hidden="true">↗</span></a></div>
+      <div class="constellation-wrap">
+        <div class="constellation" aria-label="蓝蓝的阅读星图">
+          <svg class="constellation-lines" viewBox="0 0 440 350" preserveAspectRatio="none" aria-hidden="true"><g id="starLines"></g></svg>
+          <img class="constellation-avatar" src="assets/lanlan-avatar.png" alt="蓝蓝头像">
+          <button class="topic-star" type="button" data-star-topic="desire" style="--x:25%;--y:15%" aria-pressed="false"><span class="star-shape"></span><span>欲望与摹仿</span></button>
+          <button class="topic-star" type="button" data-star-topic="tragedy" style="--x:75%;--y:15%" aria-pressed="false"><span class="star-shape"></span><span>悲剧与认识</span></button>
+          <button class="topic-star" type="button" data-star-topic="language" style="--x:88%;--y:50%" aria-pressed="false"><span class="star-shape"></span><span>语言与翻译</span></button>
+          <button class="topic-star" type="button" data-star-topic="witness" style="--x:75%;--y:85%" aria-pressed="false"><span class="star-shape"></span><span>诗歌与见证</span></button>
+          <button class="topic-star" type="button" data-star-topic="self" style="--x:25%;--y:85%" aria-pressed="false"><span class="star-shape"></span><span>人物与伦理</span></button>
+          <button class="topic-star" type="button" data-star-topic="field" style="--x:12%;--y:50%" aria-pressed="false"><span class="star-shape"></span><span>田野与写作</span></button>
+        </div>
+        <div class="constellation-caption" aria-live="polite"><span class="section-kicker" id="constellationLabel">READING CONNECTIONS</span><p id="constellationText">从一个人物的欲望，到一种语言的可能。我的阅读在这些问题之间往返。</p><button type="button" id="clearConstellation" hidden>清除连线</button></div>
+      </div>
+    </section>
+
+    <section class="stats-band" aria-label="阅读数据"><div class="stats"><div class="stat"><strong>1888h 21m</strong><span>微信读书累计阅读时长</span></div><div class="stat"><strong>231</strong><span>微信读书已读完</span></div><div class="stat"><strong>102</strong><span>微信读书在读</span></div><div class="stat"><strong>3887</strong><span>微信读书笔记</span></div><div class="stat"><strong>50</strong><span>Apple Books 当前书库</span></div></div></section>
+
+    <section class="section profile-section"><div class="section-inner profile-grid"><aside><div class="section-kicker">reading personality</div><p class="profile-note">从诗歌评论、古希腊戏剧鉴赏和小说笔记，到研一“文学批评个案”中的悲剧论与翻译论。阅读的重心在移动，对具体语言的耐心没有变。</p></aside><div class="profile-copy"><div class="profile-line"><b>为何读</b><p>不是为了尽快得到答案，而是想知道一个答案怎样被历史、语言和他人的目光制造出来。</p></div><div class="profile-line"><b>怎样读</b><p>会从一个意象追到一个概念，再从理论折返小说现场。书与书之间的连线，比单本书的结论更让我兴奋。</p></div><div class="profile-line"><b>常追问</b><p>谁在欲望？欲望通过谁发生？知识让人看见了什么，又让人看不见什么？</p></div><div class="profile-line"><b>写下来</b><p>我更愿意保留作品内部的争辩：不替人物过早裁决，也不把阅读变成一张结论清单。</p></div></div></div></section>
+
+    <section class="section archive" id="archive"><div class="section-inner"><div class="section-kicker">shelf archive</div><h2>书架与阅读轨迹</h2><p class="section-intro">小说、诗歌、戏剧与理论，构成不断延伸的阅读坐标。</p><div class="archive-tabs" role="tablist"><button class="archive-tab active" type="button" data-panel="wereadShelf">微信读书书架</button><button class="archive-tab" type="button" data-panel="wereadStats">微信读书数据</button><button class="archive-tab" type="button" data-panel="appleLibrary">Apple Books</button><button class="archive-tab" type="button" data-panel="appleFinished">阅读轨迹</button></div><div class="archive-frame">
+      <section class="archive-panel active" id="wereadShelf"><div class="panel-head"><h3>书架中的非教材阅读</h3><p>从现有书架里挑出小说、诗歌、思想与身体研究，不展示文学史教材。</p></div><div class="shelf-flow" data-shelf="weread"></div></section>
+      <section class="archive-panel" id="wereadStats"><div class="panel-head"><h3>阅读的积累</h3><p>累计时长、读完的书与留下的笔记。数据按蓝蓝提供的阅读记录保留。</p></div><div class="data-grid" id="dataTiles"></div><p class="data-footnote">1888 小时 21 分钟之外，还有从一个句子出发的停顿、重读和追问。</p></section>
+      <section class="archive-panel" id="appleLibrary"><div class="panel-head"><h3>阅读经纬图</h3><p>横轴从小说现场走向理论抽象，纵轴从个体经验走向时代结构。封面节点来自蓝蓝的 Apple Books 书库。</p></div><div class="reading-map"><span class="axis-label axis-top">时代结构</span><span class="axis-label axis-bottom">个体经验</span><span class="axis-label axis-left">小说现场</span><span class="axis-label axis-right">理论抽象</span><div id="mapNodes"></div></div></section>
+      <section class="archive-panel" id="appleFinished"><div class="panel-head"><h3>不是打卡，是问题迁移</h3><p>以阅读阶段组织已读内容，保留从小说、诗歌到理论的移动。</p></div><div class="timeline-flow" id="timelineFlow"></div></section>
+    </div><div class="archive-note"><span>内容依据：蓝蓝本人提供的阅读截图与文稿。</span><span>已主动排除文学史教材、备考书和课程讲义。</span></div></div></section>
+
+    <section class="section writing-section" id="writing"><div class="section-inner"><div class="section-kicker">real reading notes</div><h2>四份真实文稿，四种进入文本的方式</h2><p class="section-intro">以下内容根据指定文件提炼，没有补写不存在的阅读经历。</p><div class="writing-list">
+      <article class="writing-item"><span class="writing-kind">01 / POEM</span><div><h3>“我没有能够拯救的你”——米沃什《献辞》</h3><p>评论从 1945 年华沙与起义死者进入，讨论诗歌作为见证：它无法阻止坦克，却可以拒绝官方语言、时间与遗忘对死者的再次覆盖。</p></div><div class="writing-insight">把书放在墓上，不是完成悼念，而是承认诗人仍需为未能拯救之人承担记录的责任。</div></article>
+      <article class="writing-item"><span class="writing-kind">02 / POEM</span><div><h3>出走与回归的背后——弗罗斯特《雇工之死》</h3><p>评论注意到雇工西拉斯从未直接发声，只能由沃伦与玛丽讲述；关于“家”的两种定义，也因此成为归属、尊严与被接纳的争论。</p></div><div class="writing-insight">沃伦说家是不得不接纳你的地方，玛丽说家是不必靠功劳换取的地方；西拉斯用归来与死亡结束了这场辩论。</div></article>
+      <article class="writing-item"><span class="writing-kind">03 / DRAMA</span><div><h3>《俄狄浦斯王》：解开谜语的人仍未解决“我是谁”</h3><p>古希腊戏剧鉴赏把俄狄浦斯与特瑞西阿斯放进两套知识体系的对抗：启蒙理性与神性合法性，同时也是政治权力的冲突。</p></div><div class="writing-insight">他能解决斯芬克斯之谜，却迷失在自己的理性和自我意识中；“看见”因此不等于真正认识自己。</div></article>
+      <article class="writing-item"><span class="writing-kind">04 / NOVEL</span><div><h3>《罪与罚》：从超人哲学走回人与人</h3><p>读书笔记关注多声部对话、精神分裂、索尼娅的牺牲与漫长救赎。小说的力量不在提供社会药方，而在把人性深处的矛盾如实放到读者面前。</p></div><div class="writing-insight">故事以疯狂和挣扎开篇，以复活与救赎结尾；没有人有权利任意裁定他人的生命。</div></article>
+    </div></div></section>
+
+    <section class="section course-section" id="course"><div class="section-inner"><div class="section-kicker">graduate reading / 研一</div><h2>文学批评个案：从悲剧到翻译</h2><p class="section-intro">文学为什么能让人暂时离开欲望？一种语言怎样被另一种语言改变？这两组问题，将小说、哲学与翻译论连接起来。</p><div class="course-paths"><article><span>01 / 悲剧与人生</span><h3>王国维 · 叔本华 ·《红楼梦》</h3><p>从“欲、美术、解脱”追索批评标准，再检验：哲学概念照亮了哪些人物关系，又可能遮蔽哪些生活细节？不把作品只当作理论的例证。</p><a href="#stars" data-open-reading="wang">阅读这组星星 ↗</a></article><article><span>02 / 语言与世界</span><h3>严复 · 王国维 · 钱钟书 · 本雅明</h3><p>把跨文化理解、术语精确、译本文学价值和作品的“来世”分开讨论。在共同的问题上对读，不把不同时代的文章虚构成同一场论战。</p><a href="#stars" data-open-reading="benjamin">阅读这组星星 ↗</a></article></div><p class="source-note">依据“文学批评个案”课程文件中的《红楼梦评论》细读、严复与钱钟书预习笔记、两篇翻译论对读整理。</p></div></section>
+
+    <section class="section routes-section" id="books"><div class="section-inner"><div class="section-kicker">reading routes</div><h2>沿着问题继续读</h2><p class="section-intro">从小说现场进入理论，再带着新的问题回到人物身边。</p><div class="topic-filter"><button class="active" type="button" data-topic="all">全部</button><button type="button" data-topic="desire">欲望与主体</button><button type="button" data-topic="history">历史与现代性</button><button type="button" data-topic="form">形式与叙事</button><button type="button" data-topic="body">身体经验</button><button type="button" data-topic="course">研一课程</button></div><div class="route-maker"><div class="route-output" id="routeOutput"><strong>今日路径：</strong>一个文本，一个概念，一个新的问题。</div><button class="route-button" id="makeRoute" type="button">生成阅读路径</button></div><div class="book-grid" id="bookGrid"></div></div></section>
+
+    <section class="section stars-section" id="stars"><div class="section-inner">
+      <div class="stars-heading"><div><div class="section-kicker">THE READING STAR MACHINE</div><h2>阅读星匣</h2><p class="section-intro">把读过的世界，收进一颗星。</p></div><div class="collection-meter"><span id="collectionCount">0 / 18</span><small>已收集</small><progress id="collectionProgress" value="0" max="18" aria-label="星星收集进度"></progress></div></div>
+      <div class="star-workbench">
+        <div class="machine-zone">
+          <div class="star-machine" id="starMachine">
+            <div class="machine-cap"><span>LANLAN</span><span>READING CLUB</span></div>
+            <div class="machine-glass" aria-hidden="true"><div class="capsule-stars" id="capsuleStars"></div><span class="glass-reflection"></span></div>
+            <div class="machine-base"><span class="machine-edition">VOL. 04 · LITERATURE</span><button id="drawStar" class="machine-crank" type="button" aria-label="转动扭蛋机，抽取阅读星星"><span class="crank-handle" aria-hidden="true"></span></button><span class="machine-action">转动 · 抽一颗</span><div class="machine-outlet" aria-hidden="true"><span id="outletStar" class="star-shape"></span></div></div>
+            <div class="machine-foot" aria-hidden="true"></div>
+          </div>
+          <p class="draw-status" id="drawStatus" role="status">18 颗星星，18 次与文本相遇。</p>
+        </div>
+        <article class="star-reading" id="starReading" aria-labelledby="starTitle">
+          <div class="reading-topline"><span id="starCategory"></span><span id="starNumber"></span></div>
+          <a class="reading-star-link" id="starExternal" target="_blank" rel="noopener noreferrer" aria-label="在豆瓣查看这本书"><span class="star-shape" aria-hidden="true"></span></a>
+          <h3 id="starTitle"></h3><p class="star-book" id="starBook"></p>
+          <div class="star-body" id="starBody"></div>
+          <p class="star-source" id="starSource"></p>
+          <div class="reading-actions"><button type="button" id="saveStar" aria-pressed="false">收藏这颗星</button><a id="doubanLink" target="_blank" rel="noopener noreferrer">去豆瓣找这本书 ↗</a></div>
+        </article>
+      </div>
+      <div class="star-catalogue"><div class="catalogue-heading"><h3>星星图鉴</h3><div class="catalogue-filters" role="group" aria-label="图鉴筛选"><button type="button" class="active" data-star-filter="all" aria-pressed="true">全部</button><button type="button" data-star-filter="drawn" aria-pressed="false">已抽到</button><button type="button" data-star-filter="saved" aria-pressed="false">已收藏</button></div></div><div id="starCatalogue" class="catalogue-grid"></div><p id="catalogueEmpty" hidden>这里还没有星星。</p></div>
+      <p class="source-note">星星文字分为“文稿提炼”“课程笔记整理”与“书单延伸导读”；整理文字不作为原文引语。豆瓣入口按作品名称检索。</p>
+    </div></section>
+  </main>
+  <footer>蓝蓝阅读档案 · 2026 · 页面内容不包含文学史教材</footer>
+  <script>
+    (function () {
+      var palette = ["#dceafb","#f4d758","#d9eadf","#eadcd0","#e5dced","#f1d4cf","#d9e7e9","#efe7c9"];
+      var shelfBooks = [
+        ["浪漫的谎言与小说的真实","勒内·基拉尔","欲望并非两点之间的直线。","在读"],
+        ["男人的一半是女人","张贤亮","身体、伦理与时代处境。","已读"],
+        ["启蒙辩证法","霍克海默 / 阿多诺","理性如何反转为新的支配。","在读"],
+        ["现代性的五副面孔","马泰·卡林内斯库","现代、先锋、颓废与后现代。","在读"],
+        ["流俗地","黎紫书","从城市与日常进入人的命运。","已读"],
+        ["罪与罚","陀思妥耶夫斯基","从超人哲学走回人与人。","精读"]
+      ];
+      var archiveShelf = document.querySelector('[data-shelf="weread"]');
+      function cover(title, index, author) { return '<div class="mini-cover" style="--cover:' + palette[index % palette.length] + '"><span>' + title.replace(/[《》]/g,"") + '</span><small>' + (author || "LANLAN SHELF") + '</small></div>'; }
+      shelfBooks.forEach(function (book,index) { archiveShelf.insertAdjacentHTML("beforeend",'<article class="shelf-row">'+cover(book[0],index,book[1])+'<div><h4>《'+book[0]+'》</h4><p>'+book[1]+' · '+book[2]+'</p></div><span class="shelf-status">'+book[3]+'</span></article>'); });
+      [["1888h 21m","累计阅读"],["231","已读完"],["102","在读"],["3887","笔记"],["50","Apple Books"]].forEach(function (item) { document.getElementById("dataTiles").insertAdjacentHTML("beforeend",'<div class="data-tile"><strong>'+item[0]+'</strong><span>'+item[1]+'</span></div>'); });
+      [["流俗地",6,"小说现场"],["启蒙辩证法",1,"时代结构"],["罪与罚",5,"个体与救赎"],["现代性的五副面孔",3,"现代性理论"]].forEach(function(item,index){ document.getElementById("mapNodes").insertAdjacentHTML("beforeend",'<div class="map-node">'+cover(item[0],item[1],item[2])+'<b>《'+item[0]+'》<br>'+item[2]+'</b></div>'); });
+      [["小说入口","男人的一半是女人","从身体与处境进入人的命运。"],["诗歌转向","《献辞》与《雇工之死》","从叙事转向见证、语言与归属。"],["戏剧与知识","俄狄浦斯王","追问理性的限度与“我是谁”。"],["理论折返","浪漫的谎言与小说的真实","再从摹仿欲望回到小说人物。"]].forEach(function(item,index){ document.getElementById("timelineFlow").insertAdjacentHTML("beforeend",'<article class="time-row"><span class="time-dot"></span>'+cover(item[1],index,item[0])+'<div class="time-copy"><h4>'+item[0]+' · 《'+item[1].replace(/[《》]/g,"")+'》</h4><p>'+item[2]+'</p></div></article>'); });
+      document.querySelectorAll(".archive-tab").forEach(function (button) { button.addEventListener("click",function(){ document.querySelectorAll(".archive-tab").forEach(function(item){ item.classList.toggle("active",item===button); }); document.querySelectorAll(".archive-panel").forEach(function(panel){ panel.classList.toggle("active",panel.id===button.dataset.panel); }); }); });
+
+      var books = [
+        {title:"俄狄浦斯王",author:"索福克勒斯",topic:"history form",kind:"tragedy",desc:"知识能否让人逃离命运，还是恰好完成命运？它把“看见”与主体的代价推到最残酷的位置。"},
+        {title:"麦克白",author:"莎士比亚",topic:"desire form",kind:"drama",desc:"预言、欲望与权力彼此点燃：主人公追逐的是自己的愿望，还是他人替他命名的未来？"},
+        {title:"摹仿论",author:"埃里希·奥尔巴赫",topic:"history form",kind:"representation",desc:"不同时代如何决定什么值得被表现，是理解现实再现的重要方法入口。"},
+        {title:"浪漫的谎言与小说的真实",author:"勒内·基拉尔",topic:"desire",kind:"mimetic desire",desc:"第三者如何进入、塑造并遮蔽欲望，是毕业论文最关键的概念入口。"},
+        {title:"第七天",author:"余华",topic:"history",kind:"novel",desc:"荒诞没有取消伦理，反而让被忽略的生命获得互相照亮的机会。"},
+        {title:"资本主义的起源",author:"艾伦·梅克辛斯·伍德",topic:"history",kind:"social history",desc:"把现代性从抽象观念拉回具体社会关系：一种秩序怎样被误认成自然。"},
+        {title:"理想国",author:"柏拉图",topic:"history form",kind:"philosophy",desc:"正义、教育、诗人与摹仿在这里互相纠缠，让“文学为何危险”成为必须回答的问题。"},
+        {title:"上海摩登",author:"李欧梵",topic:"history",kind:"urban modernity",desc:"城市空间、消费文化与文学形式怎样共同发明现代经验。"},
+        {title:"穆旦自选诗集",author:"穆旦",topic:"form body",kind:"poetry",desc:"现代主体的分裂、身体与时代压力被压进诗句内部，提醒理论阅读不要失去语言触感。"},
+        {title:"鲁迅全集",author:"鲁迅",topic:"history form",kind:"complete works",desc:"在动态历史语境中观察鲁迅形象如何被不断建构、解构与重塑。"},
+        {title:"布莱希特论戏剧",author:"贝托尔特·布莱希特",topic:"form history",kind:"theatre",desc:"形式如何打断习惯性的共情，让观看重新变成思考。"},
+        {title:"被压抑的现代性",author:"王德威",topic:"history",kind:"modernity",desc:"重新进入晚清小说的多样世界，追问哪些文学可能性在单一的现代性叙述中被遮蔽。"},
+        {title:"朝闻道",author:"刘慈欣",topic:"desire form",kind:"science fiction",desc:"真理是否值得以生命交换？科幻把知识欲望推到极端。"},
+        {title:"身体革命",author:"",topic:"body",kind:"body",desc:"本人补充书目。具体版本与阅读笔记待补充。"},
+        {title:"愤怒的葡萄",author:"约翰·斯坦贝克",topic:"history body",kind:"novel",desc:"迁徙、贫困与共同体并置，让个体苦难显露出社会结构的重量。"},
+        {title:"罪与罚",author:"陀思妥耶夫斯基",topic:"desire form",kind:"novel",desc:"从超人哲学、多声部争辩与精神分裂，走向漫长的复活与救赎。"}
+      ];
+      var bookGrid = document.getElementById("bookGrid");
+      books.forEach(function(book,index){ bookGrid.insertAdjacentHTML("beforeend",'<article class="book-card" data-topics="'+book.topic+'"><span class="book-no">'+String(index+1).padStart(2,"0")+' / '+book.kind+'</span>'+cover(book.title,index,book.author)+'<div class="book-title"><h3>《'+book.title+'》</h3><span class="book-author">'+book.author+'</span></div><p>'+book.desc+'</p><a class="book-link" href="https://search.douban.com/book/subject_search?search_text='+encodeURIComponent(book.title)+'&cat=1001" target="_blank" rel="noopener">豆瓣搜索 ↗</a></article>'); });
+      var activeTopic = "all";
+      document.querySelectorAll("[data-topic]").forEach(function(button){ button.addEventListener("click",function(){ activeTopic=button.dataset.topic; document.querySelectorAll("[data-topic]").forEach(function(item){ item.classList.toggle("active",item===button); }); document.querySelectorAll(".book-card").forEach(function(card){ card.classList.toggle("hidden",activeTopic!=="all"&&card.dataset.topics.split(" ").indexOf(activeTopic)<0); }); }); });
+      function makeRoute(){ var candidates=Array.from(document.querySelectorAll(".book-card:not(.hidden)")); var route=[]; while(candidates.length&&route.length<3) route.push(candidates.splice(Math.floor(Math.random()*candidates.length),1)[0]); var titles=route.map(function(card){ return card.querySelector("h3").textContent; }); document.getElementById("routeOutput").innerHTML="<strong>今日路径：</strong>"+titles.join(" → ")+"。从一个文本出发，经过一个概念，再回到新的问题。"; route.forEach(function(card){ card.animate([{background:"#fff5bd"},{background:"#fffef9"}],{duration:900}); }); return titles; }
+      document.getElementById("makeRoute").addEventListener("click",makeRoute);
+
+    })();
+  </script>
+  <script src="assets/reading-stars-data.js"></script>
+  <script src="assets/reading-stars.js"></script>
+</body>
+</html>

@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>《遇见东方》写作档案 - 蓝蓝</title>
+  <meta name="description" content="从现场观察、人物采访到文学表达：李亭熠《茶路贯古今，“新火”试“新茶”》写作档案。">
+  <style>
+    * { box-sizing: border-box; }
+    :root { --blue:#2b7fd8; --ink:#252b35; --muted:#67727c; --yellow:#efcf55; --green:#407c69; --line:#d9e0e4; }
+    html { scroll-behavior:smooth; background:#fcfcf8; }
+    body { margin:0; color:var(--ink); font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Segoe UI",sans-serif; letter-spacing:0; }
+    a { color:inherit; text-decoration:none; }
+    button { font:inherit; cursor:pointer; }
+    a:focus-visible,button:focus-visible,summary:focus-visible { outline:3px solid var(--blue); outline-offset:5px; }
+    h1,h2,h3,p,figure { margin:0; }
+    .topbar { position:sticky; top:0; z-index:10; min-height:54px; display:flex; align-items:center; justify-content:space-between; gap:20px; padding:14px 5%; background:#fcfcf8f2; border-bottom:1px solid var(--line); }
+    .topbar a { color:#2465a7; font-size:12px; font-weight:700; }
+    .topbar strong { font-size:13px; }
+    .topbar span { font:10px ui-monospace,monospace; color:var(--muted); }
+    .inner { width:min(1080px,calc(100% - 64px)); margin:auto; }
+    .eyebrow { color:#276daf; font:700 10px ui-monospace,monospace; }
+    .archive-intro { padding:54px 0 40px; border-bottom:1px solid var(--line); }
+    .intro-layout { display:grid; grid-template-columns:minmax(0,1fr) 190px; gap:64px; align-items:center; }
+    h1 { margin:14px 0 8px; font:750 34px/1.4 Georgia,"Songti SC",serif; }
+    .subtitle { font:700 22px/1.5 Georgia,"Songti SC",serif; color:#2e78b7; }
+    .lede { max-width:690px; font-size:15px; line-height:1.95; margin:22px 0; color:#56616b; }
+    .meta { display:flex; flex-wrap:wrap; gap:10px 24px; font-size:11px; color:var(--muted); }
+    .book-cover img { display:block; width:174px; max-width:100%; height:228px; object-fit:contain; filter:drop-shadow(5px 8px 6px #1c4d5833); }
+    .book-cover figcaption { color:var(--muted); font-size:10px; line-height:1.7; margin-top:12px; }
+    .archive-nav { display:flex; flex-wrap:wrap; gap:24px; margin-top:30px; }
+    .archive-nav a { border-bottom:1px solid #abc8df; padding-bottom:5px; color:#266aa6; font-size:12px; }
+    section { scroll-margin-top:76px; }
+    .section { padding:48px 0; border-bottom:1px solid var(--line); }
+    h2 { font:750 25px/1.5 Georgia,"Songti SC",serif; margin:10px 0 16px; }
+    .section-intro { max-width:780px; color:var(--muted); font-size:14px; line-height:1.9; }
+    .chapter-line { display:grid; grid-template-columns:repeat(5,1fr); margin-top:30px; gap:20px; }
+    .chapter-line article { border-top:2px solid #acc9dc; padding-top:14px; }
+    .chapter-line span { color:var(--green); font:10px ui-monospace,monospace; }
+    .chapter-line h3 { font-size:15px; margin:10px 0; }
+    .chapter-line p { color:var(--muted); font-size:12px; line-height:1.8; }
+    .samples-section { background:#eef5fa; }
+    .sample-tabs { display:flex; gap:24px; margin:27px 0 0; border-bottom:1px solid #c9dbe8; }
+    .sample-tabs button { border:0; border-bottom:3px solid transparent; padding:12px 0; background:none; color:#647987; font-size:13px; }
+    .sample-tabs button[aria-selected="true"] { border-color:#2c78b7; color:#24659a; font-weight:700; }
+    .sample-panel { padding-top:28px; }
+    .sample-panel[hidden] { display:none; }
+    .sample-grid { display:grid; grid-template-columns:minmax(0,1.35fr) minmax(220px,.65fr); gap:42px; }
+    .sample-label { display:block; color:#60839a; font-size:10px; margin-bottom:14px; }
+    blockquote { margin:0; padding:0 0 0 20px; border-left:3px solid var(--yellow); font:400 17px/2 Georgia,"Songti SC",serif; color:#344754; }
+    mark { background:#f8eac0; color:inherit; padding:1px 2px; }
+    .sample-credit { font-size:10px; line-height:1.8; color:#788c9b; margin-top:14px; }
+    .craft-note { border-top:2px solid #4d907b; padding-top:15px; }
+    .craft-note h3 { font-size:16px; line-height:1.6; margin-bottom:12px; }
+    .craft-note p { color:#586d7a; font-size:13px; line-height:1.9; margin-bottom:14px; }
+    .photo-strip { display:grid; grid-template-columns:repeat(3,1fr); gap:22px; margin-top:34px; }
+    .photo-strip img { display:block; width:100%; aspect-ratio:4/3; object-fit:cover; border-radius:4px; }
+    .photo-strip figcaption { font-size:11px; color:#6b7f8d; line-height:1.7; margin-top:10px; }
+    .abilities { display:grid; grid-template-columns:1fr 1fr; column-gap:42px; margin-top:24px; }
+    .ability { padding:24px 0; border-top:1px solid var(--line); }
+    .ability .number { font:10px ui-monospace,monospace; color:var(--blue); }
+    .ability h3 { font-size:17px; margin:10px 0 12px; }
+    .ability p { font-size:13px; color:var(--muted); line-height:1.9; }
+    .production { background:#f0f5f1; }
+    .production-grid { display:grid; grid-template-columns:.65fr 1.35fr; gap:64px; }
+    .production-list { margin:0; padding:0; list-style:none; border-top:2px solid var(--green); }
+    .production-list li { display:grid; grid-template-columns:85px 1fr; gap:15px; border-bottom:1px solid #d2dfd6; padding:20px 0; }
+    .production-list b { font-size:12px; color:var(--green); }
+    .production-list p { font-size:13px; line-height:1.8; color:#56675c; }
+    .closing { padding:40px 0; }
+    .closing p { font:20px/1.9 Georgia,"Songti SC",serif; color:#2e668e; }
+    .closing small { display:block; margin-top:14px; color:#76828b; font-size:10px; }
+    footer { padding:24px 32px 60px; border-top:1px solid var(--line); color:#7a858c; font-size:10px; line-height:1.9; text-align:center; }
+    @media(max-width:760px) {
+      .inner { width:calc(100% - 40px); }
+      .intro-layout { grid-template-columns:1fr 115px; gap:20px; align-items:start; }
+      .book-cover img { width:115px; height:155px; }
+      h1 { font-size:28px; } .subtitle { font-size:19px; }
+      .lede { font-size:14px; }
+      .chapter-line { grid-template-columns:repeat(2,1fr); }
+      .sample-grid,.production-grid { grid-template-columns:1fr; gap:28px; }
+      .photo-strip { gap:14px; grid-template-columns:1fr; }
+      .photo-strip figure { display:grid; grid-template-columns:135px 1fr; gap:15px; align-items:center; }
+      .photo-strip figcaption { margin:0; }
+      .abilities { grid-template-columns:1fr; }
+      .sample-tabs { gap:22px; }
+      .topbar strong { font-size:11px; } .topbar span { display:none; }
+      .section { padding:36px 0; } h2 { font-size:23px; }
+    }
+    @media(max-width:440px) {
+      .intro-layout { grid-template-columns:1fr; }
+      .book-cover { display:flex; align-items:center; gap:22px; }
+      .book-cover img { width:85px; height:115px; }
+      .book-cover figcaption { max-width:170px; }
+      .archive-intro { padding-top:32px; }
+      .sample-tabs { gap:18px; } .sample-tabs button { font-size:12px; }
+      blockquote { font-size:16px; }
+    }
+    @media(prefers-reduced-motion:reduce) { html { scroll-behavior:auto; } }
+  </style>
+<link rel="stylesheet" href="../assets/tea-pdf.css">
+</head>
+<body>
+  <header class="topbar"><a href="../index.html#works" target="_top">← 作品集</a><strong>《遇见东方》写作档案</strong><span>WRITING / 02</span></header>
+  <main>
+    <section class="archive-intro"><div class="inner">
+      <div class="intro-layout">
+        <div><div class="eyebrow">LITERARY NONFICTION · FIELD WRITING</div><h1>茶路贯古今</h1><p class="subtitle">“新火”试“新茶”</p><p class="lede">我希望写下的不只是茶道的历史，而是历史怎样留在人的动作、物的痕迹和今天的生活里。以天然塔为起点，走入老厂与新车间，再回到茶山与江岸：让采访材料成为有场景、有声音、有节奏的纪行文字。</p><div class="meta"><span>署名：李亭熠</span><span>体裁：考察纪行 / 非虚构写作</span><span>参与：采访、编辑与写作</span></div></div>
+        <figure class="book-cover"><img src="../assets/tea-road-book.png" alt="《遇见东方》中英图文版书封"><figcaption>文章收录于《遇见东方：中外青年万里茶道考察纪行》<br>华中科技大学出版社</figcaption></figure>
+      </div>
+      <nav class="archive-nav" aria-label="写作档案章节"><a href="#structure">叙事结构</a><a href="#book-pdf">原版书页 PDF</a><a href="#samples">原文与细读</a><a href="#abilities">文字能力</a><a href="#production">从材料到成稿</a></nav>
+    </div></section>
+
+    <section class="section" id="structure"><div class="inner"><div class="eyebrow">01 / NARRATIVE STRUCTURE</div><h2>一条空间路线，也是一次叙事回环</h2><p class="section-intro">原稿的五个部分从“塔”出发，最后回到“塔”。中间不是景点罗列，而是由守护传统的人、回应当下的工艺、进入生活的茶，共同回答“传统如何继续发生”。</p>
+      <div class="chapter-line">
+        <article><span>01 / 引入</span><h3>一座塔与一条茶路</h3><p>从冬晨的雾与江风进入，给历史一个可感的空间坐标。</p></article>
+        <article><span>02 / 人物</span><h3>老厂记忆</h3><p>以王贤明与旧机器的日常相处，把“守正”落在动作中。</p></article>
+        <article><span>03 / 转折</span><h3>“新火”试“新茶”</h3><p>由工艺差异写向品牌远行，让变化拥有具体的发生过程。</p></article>
+        <article><span>04 / 展开</span><h3>茶回日常</h3><p>从商品转向节令、劳作与感官，恢复茶与人的亲近关系。</p></article>
+        <article><span>05 / 回声</span><h3>塔守江畔，茶行其路</h3><p>回到江岸，用长短句的变化收束时间、空间与主题。</p></article>
+      </div>
+    </div></section>
+
+    <section class="section samples-section" id="samples"><div class="inner">
+      <div class="eyebrow">02 / THE WRITING ITSELF</div><h2>让文字本身说明</h2><p class="section-intro">三处原稿节选，分别看见人物、声音与结构。片段中的现场细节，构成这篇文章的文学表达基础。</p>
+      <section class="pdf-archive" id="book-pdf" aria-label="我的署名文章 PDF 阅读器">
+        <div class="pdf-archive-head"><div><h3>翻开书，读到我的这一篇。</h3><p>《茶路贯古今，“新火”试“新茶”》 · 李亭熠<br>书内第 135–147 页 · 中英图文 · 保留付印稿原版书页</p></div><a class="pdf-download" href="../assets/tea-pdf/tea-road-bilingual.pdf" download>下载中英全文 PDF ↓</a></div>
+        <div class="pdf-options" aria-label="选择阅读版本"><button type="button" data-pdf-group="all" aria-pressed="true">中英全文 · 13 页</button><button type="button" data-pdf-group="zh" aria-pressed="false">中文部分 · 6 页</button><button type="button" data-pdf-group="en" aria-pressed="false">英文部分 · 8 页</button></div>
+        <div class="pdf-view"><aside class="pdf-preview-aside"><small>IN THE BOOK</small><h4>茶路贯古今<br>“新火”<br>试“新茶”</h4><p>从天然塔到老茶厂，<br>从一杯茶到流动的文明。<br><br>原书排版 · 署名可见<br>中文写作 · 英文呈现</p><a href="../assets/tea-pdf/tea-road-bilingual.pdf" target="_blank" rel="noopener" data-pdf-open>在新窗口阅读 PDF ↗</a></aside><div class="pdf-page-wrap" tabindex="0" aria-label="书页预览，可滚动阅读，左右方向键翻页"><img src="../assets/tea-pdf/page-135.jpg" alt="《遇见东方》李亭熠署名文章，原书第 135 页" loading="lazy"></div></div>
+        <div class="pdf-controls"><button type="button" data-pdf-prev disabled>← 上一页</button><label>原书第 <select aria-label="选择原书页码"><option>135</option></select> 页</label><button type="button" data-pdf-next>下一页 →</button><span data-pdf-status aria-live="polite" style="position:absolute;width:1px;height:1px;overflow:hidden">原书第 135 页</span></div>
+        <p class="pdf-source">摘自《万里茶道 2026 年 6 月 3 日付印稿》，原 PDF 第 145–157 页。第 140 页为中英文交接页，中文和英文摘录均保留此页的完整排版。</p>
+      </section>
+      <div class="sample-tabs" role="tablist" aria-label="原文片段"><button type="button" role="tab" id="tab-person" aria-selected="true" aria-controls="sample-person">人物的动作</button><button type="button" role="tab" id="tab-sound" aria-selected="false" aria-controls="sample-sound" tabindex="-1">现场的声音</button><button type="button" role="tab" id="tab-ending" aria-selected="false" aria-controls="sample-ending" tabindex="-1">结尾的回声</button></div>
+      <div class="sample-panel" id="sample-person" role="tabpanel" aria-labelledby="tab-person">
+        <div class="sample-grid"><div><span class="sample-label">原稿节选 · 第二节《老厂记忆》</span><blockquote>下午四点的阳光斜斜地照进厂房，给老机器镀上一层温暖的光边。王贤明结束了一天的巡查，锁上车间大门。<mark>钥匙转动时发出清脆的响声，在这空旷的厂房里传出很远。</mark>他站在门外停留片刻，目光掠过斑驳的墙面，像是在聆听这座老建筑无声地诉说。然后转身离开，背影融入门外的光线里。这一天很平常，没有什么惊天动地的大事发生，只是又一个守护着传统、又默默为它铺设未来道路的日子。</blockquote><p class="sample-credit">李亭熠《茶路贯古今，“新火”试“新茶”》中文修改稿</p></div><aside class="craft-note"><h3>不用形容词替人物完成一生</h3><p>巡查、锁门、停留、离开，构成一个小而完整的场景。人物的责任感先通过行动被读者感到，而不是先被作者概括成“坚守”。</p><p>钥匙声让空旷可被听见；光线与停顿放慢叙述速度。历史不再只在年份里，也在平常的一天里。</p></aside></div>
+      </div>
+      <div class="sample-panel" id="sample-sound" role="tabpanel" aria-labelledby="tab-sound" hidden>
+        <div class="sample-grid"><div><span class="sample-label">原稿节选 · 第四节《茶回日常》</span><blockquote>初春将至，万物复苏，茶芽尚含睡意，茶农们沿着林峦蜿蜒的山径而上，聚集在山腰与峰岭之间。开园节上，伴随着鼓声轻响，众人深吸这一季山野清润的气息，然后用最原始的声音呼唤山岳：“茶发芽啰！”——<mark>“喊山”的悠长呼号率先划破山谷的寂静，随后，茶歌与土家族南曲的旋律交织升起，将几代人的劳作与热望传递给每一片新叶。</mark></blockquote><p class="sample-credit">李亭熠《茶路贯古今，“新火”试“新茶”》中文修改稿</p></div><aside class="craft-note"><h3>让文化从名词变成经验</h3><p>山径、气息、鼓声与呼号依次出现，叙述从视觉转向身体与听觉。节庆因此不只是一条知识说明，而成为有人参与的现场。</p><p>“几代人的劳作”把眼前声音与更长的时间连接。感官细节承担文化解释，而不是被解释挤到一旁。</p></aside></div>
+      </div>
+      <div class="sample-panel" id="sample-ending" role="tabpanel" aria-labelledby="tab-ending" hidden>
+        <div class="sample-grid"><div><span class="sample-label">原稿节选 · 结语《塔守江畔，茶行其路》</span><blockquote>所谓“新火”，并不是对旧手艺的否定；所谓“新茶”，也不是对传统的背离。其“新”意，是在恒常之中寻找变化，在变化之中确认自身。<br><br><mark>塔，还在那里。<br>路，从未消失。<br>茶，仍在流动，去往世界的每一个角落。</mark></blockquote><p class="sample-credit">李亭熠《茶路贯古今，“新火”试“新茶”》中文修改稿</p></div><aside class="craft-note"><h3>让主题落地，而不是再喊一次</h3><p>“塔、路、茶”重新召回全文的空间与物象。由议论长句转为短句，文字从解释进入停顿，让结尾保留余韵。</p><p>开篇的塔是航标，结尾的塔成为变化中的参照。前后的照应，把多个采访地点组织成一篇有内在方向的文章。</p></aside></div>
+      </div>
+      <div class="photo-strip"><figure><img src="../assets/tea-field/image1.jpeg" loading="lazy" alt="宜都红茶厂内保存的木制制茶设备"><figcaption>原稿图 1 · 老厂内保留的制茶工具</figcaption></figure><figure><img src="../assets/tea-field/image2.jpeg" loading="lazy" alt="宜茶集团茶品创新介绍现场"><figcaption>原稿图 2 · 茶品创新的讲述现场</figcaption></figure><figure><img src="../assets/tea-field/image3.jpeg" loading="lazy" alt="原稿中的 Yivana 茶叶产品样品"><figcaption>原稿图 3 · 新品牌的产品样品</figcaption></figure></div>
+    </div></section>
+
+    <section class="section" id="abilities"><div class="inner"><div class="eyebrow">03 / WRITING PRACTICE</div><h2>从文学训练到文字生产</h2><p class="section-intro">这篇文章承接了我在文本细读中形成的习惯：注意细节如何产生意义，声音怎样进入叙述，以及一篇文章如何在材料之间建立关系。</p><div class="abilities">
+      <article class="ability"><span class="number">01 / 观察与造境</span><h3>把抽象主题写成具体场景</h3><p>不是直接说“历史厚重”，而是写机器的磨损、发亮的扶手、傍晚的钥匙声。选取能够同时指向时间与人物的细节，让读者先进入情境，再形成理解。</p></article>
+      <article class="ability"><span class="number">02 / 人物与声音</span><h3>在报道信息里保留人的位置</h3><p>采访话语提供事实与立场，人物动作提供性格与节奏。两种材料相互穿插，使受访者不只是负责解释行业的“信息来源”，也是在特定生活里行动的人。</p></article>
+      <article class="ability"><span class="number">03 / 结构与转场</span><h3>把多个现场组织成一条主线</h3><p>老厂的守护、新工艺的调整、品牌的远行与茶山的日常，并非各自孤立的段落。“守正与出新”的问题贯穿其间，天然塔则在首尾建立空间和时间的呼应。</p></article>
+      <article class="ability"><span class="number">04 / 语言与判断</span><h3>让抒情有依据，让议论有余地</h3><p>文字的感染力来自现场，而不是把事物无限拔高。结尾没有把传统与现代处理成二选一，而是从具体实践中提出判断：变化可以成为传统确认自身的方式。</p></article>
+    </div></div></section>
+
+    <section class="section production" id="production"><div class="inner production-grid"><div><div class="eyebrow">04 / FROM MATERIAL TO TEXT</div><h2>从材料到成稿</h2><p class="section-intro">文章写作不是把资料按顺序贴在一起，而是持续判断：留下什么，谁来讲述，在哪里转折，又在何处停下来。</p></div><ol class="production-list"><li><b>材料分层</b><p>将地方历史、人物采访、现场观察与产业信息分开整理，避免事实陈述与个人感受混为一谈。</p></li><li><b>叙事选择</b><p>以塔、机器、茶作为反复出现的线索；把有表现力的动作留给人物，把背景知识放在读者需要的位置。</p></li><li><b>段落组织</b><p>在场景、引语与解释之间转换节奏，让信息密度较高的段落也具有可跟随的叙事方向。</p></li><li><b>文字交付</b><p>形成署名文章、分节结构、图注及配图材料。这里展示的文学表达对应个人文章，不将合集的全部创作归为个人成果。</p></li></ol></div></section>
+    <section class="closing"><div class="inner"><p>“水有水的道，茶有茶的路。”</p><small>李亭熠《茶路贯古今，“新火”试“新茶”》</small></div></section>
+  </main>
+  <footer>原文与现场图片依据本人提供的中文修改稿整理。写作拆解为作品集导读；文章中的采访话语归原受访者。<br>《遇见东方》为多人参与的合集，本页展示李亭熠的署名文章与相关工作。</footer>
+  <script>
+    (function () {
+      var tabs = Array.from(document.querySelectorAll('[role="tab"]'));
+      function select(tab, focus) {
+        tabs.forEach(function (item) {
+          var active = item === tab;
+          item.setAttribute("aria-selected", String(active));
+          item.tabIndex = active ? 0 : -1;
+          document.getElementById(item.getAttribute("aria-controls")).hidden = !active;
+        });
+        if (focus) tab.focus();
+      }
+      tabs.forEach(function (tab, index) {
+        tab.addEventListener("click", function () { select(tab, false); });
+        tab.addEventListener("keydown", function (event) {
+          var next;
+          if (event.key === "ArrowRight") next = (index + 1) % tabs.length;
+          if (event.key === "ArrowLeft") next = (index + tabs.length - 1) % tabs.length;
+          if (event.key === "Home") next = 0;
+          if (event.key === "End") next = tabs.length - 1;
+          if (next !== undefined) { event.preventDefault(); select(tabs[next], true); }
+        });
+      });
+    })();
+  </script>
+<script src="../assets/tea-pdf.js"></script>
+</body>
+</html>
+

@@ -1,0 +1,1157 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>蓝蓝的思想原野</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    :root {
+      --cream: #fdfaf1;
+      --paper: #fffef9;
+      --ink: #202133;
+      --muted: #6e7180;
+      --line: rgba(32, 33, 51, 0.13);
+      --blue: #2b7fd8;
+      --blue-deep: #1e5ba8;
+      --yellow: #f4d758;
+      --red: #e84a5f;
+      --green: #48a877;
+      --shadow: 0 12px 30px rgba(38, 48, 72, 0.12);
+    }
+    html, body { width: 100%; height: 100%; overflow: hidden; }
+    body {
+      margin: 0;
+      background: var(--cream);
+      color: var(--ink);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Noto Sans SC", sans-serif;
+      letter-spacing: 0;
+    }
+    button, input, textarea { color: inherit; font: inherit; }
+    button { cursor: pointer; }
+    button:focus-visible, input:focus-visible, textarea:focus-visible { outline: 3px solid rgba(43,127,216,.25); outline-offset: 2px; }
+
+    .workspace-shell { position: relative; width: 100%; height: 100%; overflow: hidden; }
+    .topbar {
+      position: fixed;
+      inset: 0 0 auto 0;
+      z-index: 80;
+      display: grid;
+      grid-template-columns: 260px 1fr auto;
+      align-items: center;
+      min-height: 56px;
+      border-bottom: 1px solid var(--line);
+      background: rgba(253,250,241,.94);
+      backdrop-filter: blur(14px);
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+      padding: 0 16px;
+      font-weight: 850;
+    }
+    .brand-mark {
+      display: grid;
+      width: 30px;
+      height: 30px;
+      place-items: center;
+      border-radius: 50%;
+      background: var(--blue);
+      color: white;
+      font-family: Georgia, serif;
+      font-size: 17px;
+    }
+    .brand small { display: block; color: var(--muted); font-size: 10px; font-weight: 650; }
+    .modebar { display: flex; justify-content: center; gap: 4px; }
+    .mode-button, .icon-button {
+      min-height: 34px;
+      border: 1px solid transparent;
+      border-radius: 6px;
+      background: transparent;
+    }
+    .mode-button { padding: 0 12px; color: var(--muted); font-size: 12px; font-weight: 750; }
+    .mode-button:hover, .mode-button.active { border-color: var(--line); background: white; color: var(--blue-deep); }
+    .icon-button {
+      display: inline-grid;
+      width: 34px;
+      place-items: center;
+      color: var(--muted);
+      font-size: 18px;
+    }
+    .icon-button:hover { background: white; color: var(--blue-deep); }
+    .top-actions { display: flex; align-items: center; gap: 4px; padding: 0 14px; }
+    .zoom-readout { min-width: 46px; color: var(--muted); font: 700 11px ui-monospace, SFMono-Regular, Menlo, monospace; text-align: center; }
+
+    .sidebar {
+      position: fixed;
+      left: 0;
+      top: 56px;
+      bottom: 0;
+      z-index: 60;
+      display: flex;
+      width: 260px;
+      flex-direction: column;
+      border-right: 1px solid var(--line);
+      background: rgba(255,254,249,.96);
+      transition: transform .25s ease;
+    }
+    .sidebar-head { display: flex; align-items: center; justify-content: space-between; padding: 17px 16px 10px; }
+    .sidebar-head h2 { margin: 0; font-size: 13px; }
+    .sidebar-section { min-height: 0; padding: 0 10px; }
+    .board-list { display: grid; max-height: calc(100vh - 350px); gap: 6px; overflow: auto; padding-right: 3px; }
+    .layer-group { border-bottom: 1px solid rgba(32,33,51,.08); padding-bottom: 5px; }
+    .layer-board-row, .layer-note-row {
+      display: grid;
+      align-items: center;
+      width: 100%;
+      border-radius: 6px;
+    }
+    .layer-board-row { grid-template-columns: 1fr 30px; }
+    .layer-note-row { grid-template-columns: 1fr 28px; padding-left: 14px; }
+    .layer-focus, .layer-eye {
+      min-width: 0;
+      border: 0;
+      background: transparent;
+      text-align: left;
+    }
+    .layer-focus { display: grid; grid-template-columns: 10px minmax(0,1fr) auto; align-items: center; gap: 8px; min-height: 34px; border-radius: 5px; padding: 0 8px; }
+    .layer-note-row .layer-focus { grid-template-columns: 8px minmax(0,1fr); min-height: 29px; color: var(--muted); font-size: 11px; }
+    .layer-focus:hover, .layer-focus.active { background: #edf5fd; color: var(--blue-deep); }
+    .layer-eye { display: grid; width: 28px; height: 28px; place-items: center; border-radius: 5px; color: var(--muted); font-size: 12px; text-align: center; }
+    .layer-eye:hover { background: #f1f2f4; color: var(--ink); }
+    .layer-note-row.is-hidden { opacity: .42; }
+    .layer-note-mark { width: 6px; height: 6px; border: 1px solid var(--dot, var(--blue)); border-radius: 50%; background: color-mix(in srgb, var(--dot) 18%, white); }
+    .board-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--dot, var(--blue)); }
+    .board-name { overflow: hidden; font-size: 12px; font-weight: 720; text-overflow: ellipsis; white-space: nowrap; }
+    .board-count { color: var(--muted); font: 700 10px ui-monospace, monospace; }
+    .sidebar-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; margin-top: 9px; }
+    .add-board, .add-note {
+      width: 100%;
+      border: 1px dashed rgba(43,127,216,.35);
+      border-radius: 6px;
+      padding: 9px 10px;
+      background: #f8fbff;
+      color: var(--blue-deep);
+      font-size: 12px;
+      font-weight: 800;
+    }
+    .add-note { border-style: solid; border-color: var(--blue); background: var(--blue); color: white; }
+    .searchbox { position: relative; margin: 18px 10px 10px; }
+    .searchbox input {
+      width: 100%;
+      height: 36px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: 0 11px;
+      background: white;
+      font-size: 12px;
+    }
+    .sidebar-hint { margin: 2px 10px 136px; color: var(--muted); font-size: 10px; line-height: 1.55; }
+
+    .stage {
+      position: fixed;
+      left: 260px;
+      right: 0;
+      top: 56px;
+      bottom: 0;
+      overflow: hidden;
+      cursor: grab;
+      touch-action: none;
+      background-color: var(--cream);
+      background-image: radial-gradient(circle, rgba(43,127,216,.24) 1.15px, transparent 1.2px);
+      background-size: 24px 24px;
+    }
+    .stage.panning { cursor: grabbing; }
+    .plane {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 2500px;
+      height: 1700px;
+      transform-origin: 0 0;
+      will-change: transform;
+    }
+    .links { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; }
+    .links path { fill: none; stroke: rgba(43,127,216,.44); stroke-width: 2; stroke-linecap: round; }
+    .links path.pending { stroke: var(--red); stroke-dasharray: 7 6; }
+
+    .board {
+      position: absolute;
+      width: 680px;
+      min-height: 500px;
+      border: 1px dashed color-mix(in srgb, var(--board-color) 46%, transparent);
+      border-radius: 8px;
+      background: color-mix(in srgb, var(--board-color) 5%, rgba(255,254,249,.75));
+      box-shadow: 0 6px 18px rgba(38,48,72,.05);
+    }
+    .board.dimmed { opacity: .16; filter: grayscale(.25); }
+    .board-head {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      height: 52px;
+      padding: 0 14px;
+      border-bottom: 1px solid color-mix(in srgb, var(--board-color) 25%, transparent);
+      cursor: move;
+    }
+    .board-index { color: var(--board-color); font: 850 10px ui-monospace, SFMono-Regular, Menlo, monospace; }
+    .board-title { margin: 0; font: 850 17px Georgia, "Songti SC", serif; }
+    .board-description { margin-left: auto; color: var(--muted); font-size: 10px; }
+    .board-add {
+      display: grid;
+      width: 28px;
+      height: 28px;
+      place-items: center;
+      border: 1px solid var(--line);
+      border-radius: 5px;
+      background: white;
+      color: var(--blue-deep);
+      font-size: 18px;
+    }
+
+    .note {
+      position: absolute;
+      width: 250px;
+      min-height: 128px;
+      border: 1px solid rgba(32,33,51,.12);
+      border-top: 4px solid var(--note-color, var(--blue));
+      border-radius: 7px;
+      padding: 14px;
+      background: rgba(255,255,255,.96);
+      box-shadow: 0 8px 18px rgba(38,48,72,.09);
+      cursor: move;
+      user-select: none;
+    }
+    .note:hover { box-shadow: var(--shadow); }
+    .note.selected { border-color: var(--note-color, var(--blue)); box-shadow: 0 0 0 3px color-mix(in srgb, var(--note-color) 18%, transparent), var(--shadow); }
+    .note.connect-source { box-shadow: 0 0 0 4px rgba(232,74,95,.2), var(--shadow); }
+    .note[data-type="quote"] { background: #fff8d8; }
+    .note[data-type="sticky"] { width: 232px; min-height: 150px; border-top: 0; border-color: #e6bd28; background: #ffe36f; transform: rotate(-.35deg); }
+    .note[data-type="dark"] { border-top-color: #0e315f; background: #234f88; color: white; }
+    .note[data-type="dark"] .note-kicker, .note[data-type="dark"] p { color: rgba(255,255,255,.76); }
+    .note[data-type="link"] { border-style: dashed; background: #f5f9ff; }
+    .note[data-type="image"] { width: 300px; padding: 8px 8px 13px; }
+    .note[data-type="identity"] { width: 306px; }
+    .note img { display: block; width: 100%; height: 155px; border-radius: 5px; object-fit: cover; pointer-events: none; }
+    .note[data-type="identity"] img { height: 186px; object-position: center 20%; }
+    .note-kicker { margin-bottom: 7px; color: var(--note-color, var(--blue)); font: 850 10px ui-monospace, SFMono-Regular, Menlo, monospace; text-transform: uppercase; }
+    .note h3 { margin: 0 0 7px; font: 850 18px/1.15 Georgia, "Songti SC", serif; }
+    .note p { margin: 0; color: #555968; font-size: 12px; line-height: 1.65; }
+    .note [contenteditable="true"] { cursor: text; user-select: text; }
+    .note [contenteditable="true"]:focus { outline: 2px solid rgba(43,127,216,.22); border-radius: 3px; }
+    .note.layer-hidden { opacity: .1; pointer-events: none; }
+    .note.search-hidden { display: none; }
+    .note-link { display: inline-flex; max-width: 100%; margin-top: 10px; overflow: hidden; border-bottom: 1px solid currentColor; color: var(--blue-deep); font-size: 10px; font-weight: 800; text-overflow: ellipsis; white-space: nowrap; }
+    .tagrow { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 10px; }
+    .tag { border-radius: 3px; padding: 4px 6px; background: rgba(43,127,216,.09); color: var(--blue-deep); font-size: 10px; font-weight: 800; }
+    .note-tools {
+      position: absolute;
+      right: 7px;
+      top: 6px;
+      display: none;
+      gap: 3px;
+    }
+    .note.selected .note-tools { display: flex; }
+    .note-tools button { width: 25px; height: 25px; border: 1px solid var(--line); border-radius: 4px; background: white; color: var(--muted); }
+    .thesis-chat-launch { margin-top: 11px; border: 0; border-radius: 5px; padding: 7px 9px; background: var(--red); color: white; font-size: 10px; font-weight: 850; }
+
+    .right-dock {
+      position: fixed;
+      right: 14px;
+      top: 72px;
+      z-index: 70;
+      display: grid;
+      gap: 7px;
+      width: 46px;
+      padding: 5px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(255,254,249,.96);
+      box-shadow: 0 8px 24px rgba(38,48,72,.1);
+    }
+    .dock-button {
+      display: grid;
+      width: 36px;
+      height: 36px;
+      place-items: center;
+      border: 0;
+      border-radius: 5px;
+      background: transparent;
+      color: var(--muted);
+      font-size: 17px;
+    }
+    .dock-button:hover, .dock-button.active { background: #edf5fd; color: var(--blue-deep); }
+    .drawer {
+      position: fixed;
+      right: 68px;
+      top: 72px;
+      z-index: 69;
+      display: none;
+      width: min(340px, calc(100vw - 90px));
+      max-height: calc(100vh - 94px);
+      overflow: auto;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 16px;
+      background: rgba(255,254,249,.98);
+      box-shadow: var(--shadow);
+    }
+    .drawer.open { display: block; animation: drawerIn .2s ease both; }
+    @keyframes drawerIn { from { opacity: 0; transform: translateX(8px); } }
+    .drawer h2 { margin: 0 0 4px; font: 850 20px Georgia, "Songti SC", serif; }
+    .drawer-lede { margin: 0 0 14px; color: var(--muted); font-size: 11px; line-height: 1.6; }
+    .task-list, .window-list { display: grid; gap: 7px; }
+    .task {
+      display: grid;
+      grid-template-columns: 19px 1fr;
+      gap: 9px;
+      align-items: start;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: 10px;
+      background: white;
+      font-size: 12px;
+      line-height: 1.45;
+    }
+    .task input { margin: 2px 0 0; accent-color: var(--blue); }
+    .task:has(input:checked) span { color: var(--muted); text-decoration: line-through; }
+    .window-item {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: 11px;
+      background: white;
+      text-align: left;
+    }
+    .window-item strong { display: block; margin-bottom: 3px; font-size: 12px; }
+    .window-item span { color: var(--muted); font-size: 10px; }
+
+    .minimap {
+      position: absolute;
+      left: 12px;
+      right: 12px;
+      bottom: 12px;
+      z-index: 65;
+      height: 116px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      background: rgba(255,254,249,.94);
+      box-shadow: 0 8px 20px rgba(38,48,72,.1);
+    }
+    .mini-board { position: absolute; border-radius: 2px; opacity: .35; }
+    .mini-viewport { position: absolute; border: 2px solid var(--blue); border-radius: 2px; pointer-events: none; }
+
+    .selection-hint {
+      position: fixed;
+      left: 50%;
+      bottom: 19px;
+      z-index: 66;
+      display: none;
+      border-radius: 6px;
+      padding: 9px 12px;
+      background: var(--ink);
+      color: white;
+      font-size: 11px;
+      transform: translateX(-50%);
+    }
+    .selection-hint.show { display: block; }
+
+    .zoom-dock {
+      position: fixed;
+      right: 14px;
+      bottom: 18px;
+      z-index: 72;
+      display: flex;
+      align-items: center;
+      gap: 2px;
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      padding: 4px;
+      background: rgba(255,254,249,.96);
+      box-shadow: 0 8px 20px rgba(38,48,72,.1);
+    }
+
+    dialog {
+      width: min(460px, calc(100vw - 32px));
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 0;
+      background: var(--paper);
+      box-shadow: 0 24px 70px rgba(32,33,51,.25);
+    }
+    dialog::backdrop { background: rgba(27,32,49,.36); backdrop-filter: blur(3px); }
+    .dialog-body { padding: 22px; }
+    .dialog-body h2 { margin: 0 0 5px; font: 850 25px Georgia, "Songti SC", serif; }
+    .dialog-body > p { margin: 0 0 17px; color: var(--muted); font-size: 12px; }
+    .form-grid { display: grid; gap: 12px; }
+    label { display: grid; gap: 6px; color: var(--muted); font-size: 11px; font-weight: 750; }
+    label input, label textarea, label select {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: 10px;
+      background: white;
+      font: inherit;
+    }
+    label textarea { min-height: 88px; resize: vertical; }
+    .type-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 7px; }
+    .type-button { min-height: 70px; border: 1px dashed rgba(43,127,216,.34); border-radius: 6px; padding: 9px 5px; background: white; font-size: 11px; font-weight: 750; }
+    .type-button span { display: block; margin-bottom: 6px; font-size: 20px; }
+    .type-button.active { border-color: var(--blue); background: #edf5fd; color: var(--blue-deep); }
+    .dialog-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 17px; }
+    .action-button { border: 1px solid var(--line); border-radius: 6px; padding: 9px 14px; background: white; font-size: 12px; font-weight: 800; }
+    .action-button.primary { border-color: var(--blue); background: var(--blue); color: white; }
+    #noteDialog { position: fixed; inset: 74px 72px auto auto; width: min(440px, calc(100vw - 32px)); max-height: calc(100vh - 94px); margin: 0; overflow: auto; }
+    #noteDialog::backdrop { background: transparent; backdrop-filter: none; }
+    #noteDialog .dialog-body { padding: 17px; }
+    #noteDialog .dialog-body h2 { font-size: 20px; }
+    .conditional-field[hidden] { display: none; }
+
+    @media (max-width: 820px) {
+      .topbar { grid-template-columns: 1fr auto; }
+      .brand { padding-left: 11px; }
+      .brand small { display: none; }
+      .modebar { position: absolute; left: 50%; top: calc(100vh - 128px); bottom: auto; z-index: 91; padding: 5px; border: 1px solid var(--line); border-radius: 8px; background: rgba(255,254,249,.96); box-shadow: var(--shadow); transform: translateX(-50%); }
+      .mode-button { min-width: 40px; padding: 0 8px; font-size: 0; }
+      .mode-button::first-letter { font-size: 16px; }
+      .top-actions { padding-right: 6px; }
+      .zoom-readout { display: none; }
+      .sidebar { transform: translateX(-100%); }
+      .sidebar.open { transform: translateX(0); box-shadow: var(--shadow); }
+      .stage { left: 0; }
+      .right-dock { top: 68px; right: 8px; }
+      .drawer { top: 68px; right: 60px; }
+      .minimap { display: none; }
+      .zoom-dock { right: 8px; bottom: 76px; }
+      #noteDialog { inset: 64px 8px auto auto; width: min(380px, calc(100vw - 16px)); max-height: calc(100vh - 150px); }
+      .selection-hint { bottom: 122px; }
+      .board-description { display: none; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; transition-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="workspace-shell">
+    <header class="topbar">
+      <div class="brand">
+        <span class="brand-mark">蓝</span>
+        <span>思想原野<small>Lanlan Infinite Notes</small></span>
+      </div>
+      <nav class="modebar" aria-label="画布工具">
+        <button class="mode-button active" type="button" data-mode="select" title="选择与拖拽">↖ 选择</button>
+        <button class="mode-button" type="button" data-mode="connect" title="依次点击两个卡片建立连线">⌁ 连线</button>
+        <button class="mode-button" type="button" data-mode="focus" title="聚焦选择的板块">◎ 聚焦</button>
+      </nav>
+      <div class="top-actions">
+        <button class="icon-button" id="sidebarToggle" type="button" title="图层列表">☰</button>
+        <button class="icon-button" id="autoArrange" type="button" title="自动整理全部卡片">▦</button>
+        <button class="icon-button" id="undoAction" type="button" title="撤销上一步">↶</button>
+        <button class="icon-button" id="resetLayout" type="button" title="恢复整洁布局">⌂</button>
+      </div>
+    </header>
+
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-head"><h2>图层 / LAYERS</h2><span id="boardTotal">4</span></div>
+      <div class="sidebar-section">
+        <div class="board-list" id="boardList"></div>
+        <div class="sidebar-actions">
+          <button class="add-note" id="openNoteDialog" type="button">＋ 新建卡片</button>
+          <button class="add-board" id="openBoardDialog" type="button">＋ 新建板块</button>
+        </div>
+      </div>
+      <div class="searchbox"><input id="searchNotes" type="search" placeholder="搜索卡片、概念或项目"></div>
+      <div class="sidebar-hint">空白处拖动画布；滚轮缩放；双击卡片文字可编辑。图层右侧按钮控制显隐。</div>
+      <div class="minimap" id="minimap" aria-hidden="true"><div class="mini-viewport" id="miniViewport"></div></div>
+    </aside>
+
+    <main class="stage" id="stage" aria-label="蓝蓝的无限知识画布">
+      <section class="plane" id="plane">
+        <svg class="links" id="links" viewBox="0 0 2500 1700" aria-hidden="true"></svg>
+
+        <section class="board" data-board="self" data-title="自我坐标" data-color="#2b7fd8" style="--board-color:#2b7fd8;left:120px;top:140px;height:560px;">
+          <header class="board-head"><span class="board-index">01</span><h2 class="board-title">自我坐标</h2><span class="board-description">身份不是标签，是正在发生的关系</span><button class="board-add" type="button" title="在此板块新建卡片">＋</button></header>
+          <article class="note" data-id="avatar" data-type="identity" style="--note-color:#2b7fd8;left:22px;top:76px;">
+            <div class="note-tools"><button type="button" data-action="link" title="连线">⌁</button><button type="button" data-action="delete" title="删除">×</button></div>
+            <img src="assets/lanlan-avatar.png" alt="蓝蓝头像">
+            <div class="note-kicker">center / enfp</div><h3 contenteditable="true">蓝蓝，22 岁</h3>
+            <p contenteditable="true">WHU 中文系 → NJU 现当代文学。养成系内容创作者，也是把文学、旅行与 AI 产品放在同一张桌上的人。</p>
+            <div class="tagrow"><span class="tag">ENFP</span><span class="tag">啦啦蓝</span><span class="tag">1 Person + AI</span></div>
+          </article>
+          <article class="note" data-id="northstar" data-type="quote" style="--note-color:#f4b43d;left:358px;top:90px;width:282px;">
+            <div class="note-tools"><button type="button" data-action="link" title="连线">⌁</button><button type="button" data-action="delete" title="删除">×</button></div>
+            <div class="note-kicker">north star</div><h3 contenteditable="true">在广阔天地寻找自己</h3>
+            <p contenteditable="true">认真记录、热烈出发、允许变化。每个项目都应该让生活更具体一点。</p>
+          </article>
+          <article class="note" data-id="xhs" data-type="text" style="--note-color:#e84a5f;left:358px;top:286px;width:282px;">
+            <div class="note-tools"><button type="button" data-action="link" title="连线">⌁</button><button type="button" data-action="delete" title="删除">×</button></div>
+            <div class="note-kicker">public self</div><h3 contenteditable="true">@啦啦蓝</h3>
+            <p contenteditable="true">校园、旅行、vlog 与成长记录。内容阅读量 100w+，把“养成系”当作长期而诚实的表达方式。</p>
+          </article>
+        </section>
+
+        <section class="board" data-board="literature" data-title="文学研究" data-color="#e84a5f" style="--board-color:#e84a5f;left:860px;top:80px;height:650px;">
+          <header class="board-head"><span class="board-index">02</span><h2 class="board-title">文学研究</h2><span class="board-description">欲望、摹仿、现代性与女性想象</span><button class="board-add" type="button" title="在此板块新建卡片">＋</button></header>
+          <article class="note" data-id="thesis" data-type="text" style="--note-color:#e84a5f;left:24px;top:82px;width:300px;">
+            <div class="note-tools"><button type="button" data-action="link" title="连线">⌁</button><button type="button" data-action="delete" title="删除">×</button></div>
+            <div class="note-kicker">2026 / thesis</div><h3 contenteditable="true">摹仿，神话与未竟的欲望</h3>
+            <p contenteditable="true">新文学小说中的女性想象及他者化困境（1919-1933）。从爱情神话、摹仿欲望与现代主体进入文本。</p>
+            <div class="tagrow"><span class="tag">René Girard</span><span class="tag">女性想象</span></div>
+            <button class="thesis-chat-launch" type="button" data-action="ask">打开论文 Chat →</button>
+          </article>
+          <article class="note" data-id="mimesis" data-type="quote" style="--note-color:#f4b43d;left:356px;top:82px;width:286px;">
+            <div class="note-tools"><button type="button" data-action="link" title="连线">⌁</button><button type="button" data-action="delete" title="删除">×</button></div>
+            <div class="note-kicker">concept cluster</div><h3 contenteditable="true">Mimesis / 摹仿</h3>
+            <p contenteditable="true">Auerbach 的现实再现，Girard 的三角欲望，以及“谁在替谁想象”这一持续追问。</p>
+          </article>
+          <article class="note" data-id="reading" data-type="text" style="--note-color:#2b7fd8;left:24px;top:326px;width:300px;">
+            <div class="note-tools"><button type="button" data-action="link" title="连线">⌁</button><button type="button" data-action="delete" title="删除">×</button></div>
+            <div class="note-kicker">reading data</div><h3 contenteditable="true">1888 小时 21 分</h3>
+            <p contenteditable="true">微信读书 231 本读完、102 本在读、3887 条笔记；从小说走向诗歌，再进入理论与思想史。</p>
+          </article>
+          <article class="note" data-id="questions" data-type="text" style="--note-color:#48a877;left:356px;top:326px;width:286px;">
+            <div class="note-tools"><button type="button" data-action="link" title="连线">⌁</button><button type="button" data-action="delete" title="删除">×</button></div>
+            <div class="note-kicker">open questions</div><h3 contenteditable="true">仍在追问</h3>
+            <p contenteditable="true">欲望如何借他人之眼发生？现代女性何时成为主体，何时又被写成寓言？文学如何保存矛盾而不急于裁决？</p>
+          </article>
+        </section>
+
+        <section class="board" data-board="spark" data-title="项目火花" data-color="#f0b92d" style="--board-color:#f0b92d;left:1560px;top:180px;height:860px;">
+          <header class="board-head"><span class="board-index">03</span><h2 class="board-title">项目火花</h2><span class="board-description">AI-Lover、Travel Skill 与用户研究</span><button class="board-add" type="button" title="在此板块新建卡片">＋</button></header>
+          <article class="note" data-id="ailover" data-type="image" style="--note-color:#e84a5f;left:24px;top:78px;">
+            <div class="note-tools"><button type="button" data-action="link" title="连线">⌁</button><button type="button" data-action="delete" title="删除">×</button></div>
+            <img src="assets/ai-lover/image3.png" alt="AI-Lover 主控界面：数字人、实时语音、摄像头与设备交互">
+            <div class="note-kicker">featured product</div><h3 contenteditable="true">AI-Lover 陪伴智能体</h3>
+            <p contenteditable="true">语音、Live2D、仿生头与灵巧手连在一起。比心、双人写字和烟花都是可以参与的回应。2026 数字经济大会首发。</p>
+            <a class="note-link" href="works/ai-lover.html">打开产品案例 →</a>
+          </article>
+          <article class="note" data-id="agent" data-type="image" style="--note-color:#2b7fd8;left:348px;top:78px;">
+            <div class="note-tools"><button type="button" data-action="link" title="连线">⌁</button><button type="button" data-action="delete" title="删除">×</button></div>
+            <img src="assets/travel-agent-ui.png" alt="Travel Skill 旅行决策界面">
+            <div class="note-kicker">travel skill</div><h3 contenteditable="true">Travel Skill：把攻略做成旅程</h3>
+            <p contenteditable="true">北京四日工作台把天气、闭馆日、预约、预算、出片和 Todo 收进同一套可执行页面。</p>
+            <a class="note-link" href="works/travel-agent.html">查看真实成果 →</a>
+          </article>
+          <article class="note" data-id="travel" data-type="image" style="--note-color:#f0b92d;left:24px;top:470px;">
+            <div class="note-tools"><button type="button" data-action="link" title="连线">⌁</button><button type="button" data-action="delete" title="删除">×</button></div>
+            <img src="assets/kyoto-story-map.png" alt="京都旅行故事地图">
+            <div class="note-kicker">story map</div><h3 contenteditable="true">可执行旅行故事地图</h3>
+            <p contenteditable="true">京都故事地图把路线、机位和叙事放在同一张可以打开的地图上。</p>
+            <a class="note-link" href="works/kyoto-map.html">打开故事地图 →</a>
+          </article>
+          <article class="note" data-id="writingcourse" data-type="text" style="--note-color:#48a877;left:348px;top:470px;width:300px;min-height:220px;">
+            <div class="note-tools"><button type="button" data-action="link" title="连线">⌁</button><button type="button" data-action="delete" title="删除">×</button></div>
+            <div class="note-kicker">research → product</div><h3 contenteditable="true">线上写作课研究</h3>
+            <p contenteditable="true">391 份有效问卷、6 个平台样本，整理出 12 门代表课程和 30 份评价，把供给端做成可比较的产品结构。</p>
+          </article>
+        </section>
+
+        <section class="board" data-board="life" data-title="生活与写作" data-color="#48a877" style="--board-color:#48a877;left:470px;top:850px;height:610px;">
+          <header class="board-head"><span class="board-index">04</span><h2 class="board-title">生活与写作</h2><span class="board-description">旅行、采访、书写与正在长大的证据</span><button class="board-add" type="button" title="在此板块新建卡片">＋</button></header>
+          <article class="note" data-id="tearoad" data-type="image" style="--note-color:#e84a5f;left:24px;top:80px;">
+            <div class="note-tools"><button type="button" data-action="link" title="连线">⌁</button><button type="button" data-action="delete" title="删除">×</button></div>
+            <img src="assets/tea-road-book.png" alt="遇见东方书封">
+            <div class="note-kicker">published writing</div><h3 contenteditable="true">《遇见东方》</h3>
+            <p contenteditable="true">参与编辑、采访与写作，文章《茶路贯古今，“新火”试“新茶”》从宜昌茶路现场观察传统如何更新。</p>
+          </article>
+          <article class="note" data-id="field" data-type="quote" style="--note-color:#f0b92d;left:354px;top:92px;width:286px;">
+            <div class="note-tools"><button type="button" data-action="link" title="连线">⌁</button><button type="button" data-action="delete" title="删除">×</button></div>
+            <div class="note-kicker">field note</div><h3 contenteditable="true">恒常之中寻找变化</h3>
+            <p contenteditable="true">所谓“新火”不是对旧手艺的否定；所谓“新茶”也不是对传统的背离。</p>
+          </article>
+          <article class="note" data-id="next" data-type="text" style="--note-color:#2b7fd8;left:354px;top:310px;width:286px;">
+            <div class="note-tools"><button type="button" data-action="link" title="连线">⌁</button><button type="button" data-action="delete" title="删除">×</button></div>
+            <div class="note-kicker">now / next</div><h3 contenteditable="true">下一块板，留给现场</h3>
+            <p contenteditable="true">继续做旅行工具，继续读理论，也继续把真实生活写成可以回看的坐标。</p>
+          </article>
+        </section>
+      </section>
+    </main>
+
+    <div class="zoom-dock" aria-label="画布缩放">
+      <button class="icon-button" id="zoomOut" type="button" title="缩小">−</button>
+      <span class="zoom-readout" id="zoomReadout">70%</span>
+      <button class="icon-button" id="zoomIn" type="button" title="放大">＋</button>
+      <button class="icon-button" id="resetView" type="button" title="查看全部">⌂</button>
+    </div>
+
+    <nav class="right-dock" aria-label="工作台窗口">
+      <button class="dock-button" type="button" data-drawer="tasks" title="本周任务">✓</button>
+      <button class="dock-button" type="button" data-drawer="windows" title="快速窗口">▣</button>
+      <button class="dock-button" type="button" data-drawer="help" title="玩法说明">?</button>
+    </nav>
+
+    <aside class="drawer" id="drawer-tasks">
+      <h2>本周任务</h2><p class="drawer-lede">勾选状态会留在这台设备上。</p>
+      <div class="task-list">
+        <label class="task"><input type="checkbox" data-task="book"><span>补充《遇见东方》的现场照片与出版信息</span></label>
+        <label class="task"><input type="checkbox" data-task="thesis"><span>把论文概念图继续拆成可连接的卡片</span></label>
+        <label class="task"><input type="checkbox" data-task="travel"><span>为 Travel Skill 增加一份真实目的地测试</span></label>
+        <label class="task"><input type="checkbox" data-task="reading"><span>从最新阅读中整理 3 条自己的问题</span></label>
+      </div>
+    </aside>
+    <aside class="drawer" id="drawer-windows">
+      <h2>快速窗口</h2><p class="drawer-lede">点击即可聚焦对应知识簇。</p>
+      <div class="window-list">
+        <button class="window-item" data-focus="literature" type="button"><strong>毕业论文控制台</strong><span>理论、问题与阅读数据</span></button>
+        <button class="window-item" data-focus="spark" type="button"><strong>项目火花</strong><span>AI-Lover、Travel Skill 与写作课研究</span></button>
+        <button class="window-item" data-focus="life" type="button"><strong>写作档案袋</strong><span>出版写作与田野记录</span></button>
+      </div>
+    </aside>
+    <aside class="drawer" id="drawer-help">
+      <h2>怎么玩</h2>
+      <p class="drawer-lede">拖动画布探索，拖卡片重排；双击文字直接改。点击板块右上角“＋”添加便签，连线模式依次点击两张卡片。所有新内容、位置和任务状态都会保存在本地。</p>
+    </aside>
+
+    <div class="selection-hint" id="selectionHint">请选择第二张卡片完成连线</div>
+
+    <dialog id="boardDialog">
+      <form method="dialog" class="dialog-body" id="boardForm">
+        <h2>新建板块</h2><p>给新的问题、计划或兴趣留出一块完整区域。</p>
+        <div class="form-grid">
+          <label>板块名称<input id="boardTitleInput" required maxlength="20" placeholder="例如：南京生活实验"></label>
+          <label>一句说明<input id="boardDescInput" maxlength="42" placeholder="这块区域想装下什么？"></label>
+          <label>主题色<select id="boardColorInput"><option value="#2b7fd8">蓝 · 思考</option><option value="#e84a5f">红 · 表达</option><option value="#f0b92d">黄 · 火花</option><option value="#48a877">绿 · 生长</option></select></label>
+        </div>
+        <div class="dialog-actions"><button class="action-button" value="cancel">取消</button><button class="action-button primary" id="createBoard" value="default">建立板块</button></div>
+      </form>
+    </dialog>
+
+    <dialog id="noteDialog">
+      <form method="dialog" class="dialog-body" id="noteForm">
+        <h2>新建卡片</h2><p id="noteBoardLabel">写下一条想法，它之后还可以继续长。</p>
+        <div class="type-grid" id="typeGrid">
+          <button class="type-button active" type="button" data-type="text"><span>✎</span>文字卡</button>
+          <button class="type-button" type="button" data-type="quote"><span>···</span>引用卡</button>
+          <button class="type-button" type="button" data-type="image"><span>▧</span>图片卡</button>
+          <button class="type-button" type="button" data-type="sticky"><span>◆</span>便利贴</button>
+          <button class="type-button" type="button" data-type="dark"><span>☾</span>深色卡</button>
+          <button class="type-button" type="button" data-type="link"><span>⌁</span>链接卡</button>
+        </div>
+        <div class="form-grid" style="margin-top:12px;">
+          <label>标题<input id="noteTitleInput" required maxlength="34" placeholder="这张卡片谈什么？"></label>
+          <label>内容<textarea id="noteContentInput" maxlength="240" placeholder="可以先写得很短，之后在画布里双击继续编辑。"></textarea></label>
+          <label class="conditional-field" id="noteImageField" hidden>图片地址<input id="noteImageInput" type="url" placeholder="https://... 或 assets/..."></label>
+          <label class="conditional-field" id="noteUrlField" hidden>链接地址<input id="noteUrlInput" type="url" placeholder="https://..."></label>
+        </div>
+        <div class="dialog-actions"><button class="action-button" value="cancel">取消</button><button class="action-button primary" id="createNote" value="default">放进画布</button></div>
+      </form>
+    </dialog>
+  </div>
+
+  <script>
+    (function () {
+      var stage = document.getElementById("stage");
+      var plane = document.getElementById("plane");
+      var linksLayer = document.getElementById("links");
+      var sidebar = document.getElementById("sidebar");
+      var boardList = document.getElementById("boardList");
+      var boardDialog = document.getElementById("boardDialog");
+      var noteDialog = document.getElementById("noteDialog");
+      var selectionHint = document.getElementById("selectionHint");
+      var state = { x: 32, y: 40, scale: .7, mode: "select", pan: null, drag: null, connectFrom: null, activeBoard: null, noteBoard: "self", noteType: "text", history: [], restoring: false };
+      var STORE = "lanlan-infinite-notes-v5";
+      var TASK_STORE = "lanlan-infinite-tasks-v1";
+      var connections = [["avatar","northstar"],["avatar","thesis"],["thesis","mimesis"],["thesis","questions"],["reading","thesis"],["northstar","ailover"],["ailover","agent"],["agent","travel"],["agent","writingcourse"],["travel","tearoad"],["tearoad","field"]];
+
+      function boards() { return Array.from(plane.querySelectorAll(".board")); }
+      function notes() { return Array.from(plane.querySelectorAll(".note")); }
+      function clamp(value, min, max) { return Math.max(min, Math.min(max, value)); }
+      function mobile() { return window.matchMedia("(max-width: 820px)").matches; }
+      function applyView() {
+        plane.style.transform = "translate(" + state.x + "px," + state.y + "px) scale(" + state.scale + ")";
+        document.getElementById("zoomReadout").textContent = Math.round(state.scale * 100) + "%";
+        renderMinimap();
+      }
+      function viewTo(scale, x, y) {
+        state.scale = clamp(scale, .34, 1.45); state.x = x; state.y = y; applyView();
+      }
+      function resetView() {
+        var visibleBoards = boards().filter(function (board) { return !board.classList.contains("dimmed"); });
+        if (!visibleBoards.length) visibleBoards = boards();
+        var minX = Math.min.apply(null, visibleBoards.map(function (board) { return board.offsetLeft; }));
+        var minY = Math.min.apply(null, visibleBoards.map(function (board) { return board.offsetTop; }));
+        var maxX = Math.max.apply(null, visibleBoards.map(function (board) { return board.offsetLeft + board.offsetWidth; }));
+        var maxY = Math.max.apply(null, visibleBoards.map(function (board) { return board.offsetTop + board.offsetHeight; }));
+        var padding = mobile() ? 28 : 70;
+        var scale = Math.min(mobile() ? .72 : .9, (stage.clientWidth - padding * 2) / Math.max(1, maxX - minX), (stage.clientHeight - padding * 2) / Math.max(1, maxY - minY));
+        scale = clamp(scale, .34, 1.15);
+        viewTo(scale, (stage.clientWidth - (maxX - minX) * scale) / 2 - minX * scale, (stage.clientHeight - (maxY - minY) * scale) / 2 - minY * scale);
+      }
+      function focusBoard(id) {
+        var board = plane.querySelector('[data-board="' + id + '"]');
+        if (!board) return;
+        state.activeBoard = id;
+        var scale = mobile() ? .66 : Math.min(1, (stage.clientWidth - 110) / board.offsetWidth, (stage.clientHeight - 110) / board.offsetHeight);
+        viewTo(scale, (stage.clientWidth - board.offsetWidth * scale) / 2 - board.offsetLeft * scale, (stage.clientHeight - board.offsetHeight * scale) / 2 - board.offsetTop * scale);
+        boards().forEach(function (item) { item.classList.toggle("dimmed", item.dataset.board !== id); });
+        renderBoardList();
+        sidebar.classList.remove("open");
+      }
+      function clearFocus() { state.activeBoard = null; boards().forEach(function (item) { item.classList.remove("dimmed"); }); renderBoardList(); }
+
+      function focusNote(note) {
+        var board = note.closest(".board");
+        state.activeBoard = board.dataset.board;
+        selectNote(note);
+        boards().forEach(function (item) { item.classList.toggle("dimmed", item !== board); });
+        var scale = mobile() ? .78 : .92;
+        var centerX = board.offsetLeft + note.offsetLeft + note.offsetWidth / 2;
+        var centerY = board.offsetTop + note.offsetTop + note.offsetHeight / 2;
+        viewTo(scale, stage.clientWidth / 2 - centerX * scale, stage.clientHeight / 2 - centerY * scale);
+        renderBoardList();
+        if (mobile()) sidebar.classList.remove("open");
+      }
+
+      function renderBoardList() {
+        boardList.innerHTML = "";
+        boards().forEach(function (board) {
+          var group = document.createElement("section");
+          group.className = "layer-group";
+          var boardRow = document.createElement("div");
+          boardRow.className = "layer-board-row";
+          var boardButton = document.createElement("button");
+          boardButton.type = "button";
+          boardButton.className = "layer-focus" + (state.activeBoard === board.dataset.board ? " active" : "");
+          boardButton.innerHTML = '<span class="board-dot" style="--dot:' + board.dataset.color + '"></span><span class="board-name"></span><span class="board-count">' + board.querySelectorAll(".note").length + '</span>';
+          boardButton.querySelector(".board-name").textContent = board.dataset.title;
+          boardButton.addEventListener("click", function () { focusBoard(board.dataset.board); });
+          var arrangeButton = document.createElement("button");
+          arrangeButton.type = "button"; arrangeButton.className = "layer-eye"; arrangeButton.title = "整理此板块"; arrangeButton.textContent = "▦";
+          arrangeButton.addEventListener("click", function () { pushHistory(); autoLayoutBoard(board); drawConnections(); renderMinimap(); saveState(); });
+          boardRow.appendChild(boardButton); boardRow.appendChild(arrangeButton); group.appendChild(boardRow);
+          Array.from(board.querySelectorAll(".note")).forEach(function (note) {
+            var row = document.createElement("div");
+            var hidden = note.dataset.hidden === "true";
+            row.className = "layer-note-row" + (hidden ? " is-hidden" : "");
+            var focus = document.createElement("button");
+            focus.type = "button"; focus.className = "layer-focus" + (note.classList.contains("selected") ? " active" : "");
+            focus.innerHTML = '<span class="layer-note-mark" style="--dot:' + board.dataset.color + '"></span><span class="board-name"></span>';
+            focus.querySelector(".board-name").textContent = note.querySelector("h3") ? note.querySelector("h3").textContent : "未命名卡片";
+            focus.addEventListener("click", function () { focusNote(note); });
+            var eye = document.createElement("button");
+            eye.type = "button"; eye.className = "layer-eye"; eye.title = hidden ? "显示卡片" : "隐藏卡片"; eye.textContent = hidden ? "○" : "●";
+            eye.addEventListener("click", function () {
+              pushHistory();
+              note.dataset.hidden = hidden ? "false" : "true";
+              note.classList.toggle("layer-hidden", !hidden);
+              renderBoardList(); drawConnections(); saveState();
+            });
+            row.appendChild(focus); row.appendChild(eye); group.appendChild(row);
+          });
+          boardList.appendChild(group);
+        });
+        document.getElementById("boardTotal").textContent = boards().length;
+      }
+
+      function noteCenter(note) {
+        var board = note.closest(".board");
+        return { x: board.offsetLeft + note.offsetLeft + note.offsetWidth / 2, y: board.offsetTop + note.offsetTop + note.offsetHeight / 2 };
+      }
+      function drawConnections() {
+        linksLayer.innerHTML = "";
+        connections.forEach(function (pair) {
+          var a = plane.querySelector('[data-id="' + pair[0] + '"]');
+          var b = plane.querySelector('[data-id="' + pair[1] + '"]');
+          if (!a || !b || a.dataset.hidden === "true" || b.dataset.hidden === "true") return;
+          var p1 = noteCenter(a), p2 = noteCenter(b);
+          var curve = Math.max(60, Math.abs(p2.x - p1.x) * .34);
+          var path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+          path.setAttribute("d", "M" + p1.x + "," + p1.y + " C" + (p1.x + curve) + "," + p1.y + " " + (p2.x - curve) + "," + p2.y + " " + p2.x + "," + p2.y);
+          linksLayer.appendChild(path);
+        });
+      }
+
+      function renderMinimap() {
+        var map = document.getElementById("minimap");
+        var mapWidth = map.clientWidth || 232, mapHeight = map.clientHeight || 116;
+        var planeWidth = plane.offsetWidth || 2500, planeHeight = plane.offsetHeight || 1700;
+        Array.from(map.querySelectorAll(".mini-board")).forEach(function (item) { item.remove(); });
+        boards().forEach(function (board) {
+          var item = document.createElement("span");
+          item.className = "mini-board";
+          item.style.left = board.offsetLeft / planeWidth * mapWidth + "px";
+          item.style.top = board.offsetTop / planeHeight * mapHeight + "px";
+          item.style.width = board.offsetWidth / planeWidth * mapWidth + "px";
+          item.style.height = board.offsetHeight / planeHeight * mapHeight + "px";
+          item.style.background = board.dataset.color;
+          map.appendChild(item);
+        });
+        var viewport = document.getElementById("miniViewport");
+        viewport.style.left = clamp((-state.x / state.scale) / planeWidth * mapWidth, 0, mapWidth - 4) + "px";
+        viewport.style.top = clamp((-state.y / state.scale) / planeHeight * mapHeight, 0, mapHeight - 4) + "px";
+        viewport.style.width = clamp((stage.clientWidth / state.scale) / planeWidth * mapWidth, 8, mapWidth) + "px";
+        viewport.style.height = clamp((stage.clientHeight / state.scale) / planeHeight * mapHeight, 8, mapHeight) + "px";
+      }
+
+      function layoutSnapshot() {
+        return {
+          boards: boards().map(function (board) { return { id: board.dataset.board, left: board.offsetLeft, top: board.offsetTop, height: board.offsetHeight }; }),
+          notes: notes().map(function (note) { return { id: note.dataset.id, left: note.offsetLeft, top: note.offsetTop, hidden: note.dataset.hidden === "true" }; })
+        };
+      }
+      function pushHistory() {
+        state.history.push(layoutSnapshot());
+        if (state.history.length > 30) state.history.shift();
+      }
+      function restoreLayout(snapshot) {
+        if (!snapshot) return;
+        (snapshot.boards || []).forEach(function (data) {
+          var board = plane.querySelector('[data-board="' + data.id + '"]');
+          if (!board) return;
+          board.style.left = data.left + "px"; board.style.top = data.top + "px"; board.style.height = data.height + "px";
+        });
+        (snapshot.notes || []).forEach(function (data) {
+          var note = plane.querySelector('[data-id="' + data.id + '"]');
+          if (!note) return;
+          note.style.left = data.left + "px"; note.style.top = data.top + "px";
+          note.dataset.hidden = data.hidden ? "true" : "false";
+          note.classList.toggle("layer-hidden", data.hidden);
+        });
+        ensurePlaneSize(); renderBoardList(); drawConnections(); renderMinimap(); saveState();
+      }
+      function boardHasOverlap(board) {
+        var items = Array.from(board.querySelectorAll(".note"));
+        for (var i = 0; i < items.length; i += 1) {
+          for (var j = i + 1; j < items.length; j += 1) {
+            var a = items[i], b = items[j], gap = 10;
+            if (a.offsetLeft < b.offsetLeft + b.offsetWidth + gap && a.offsetLeft + a.offsetWidth + gap > b.offsetLeft && a.offsetTop < b.offsetTop + b.offsetHeight + gap && a.offsetTop + a.offsetHeight + gap > b.offsetTop) return true;
+          }
+        }
+        return false;
+      }
+      function autoLayoutBoard(board) {
+        var items = Array.from(board.querySelectorAll(".note"));
+        var pad = 24, gap = 24;
+        var columnWidth = (board.clientWidth - pad * 2 - gap) / 2;
+        var columnY = [76, 76];
+        items.forEach(function (note) {
+          var declaredWidth = parseFloat(note.style.width || "0");
+          var isWide = declaredWidth > columnWidth + 12 || note.offsetWidth > columnWidth + 12;
+          if (isWide) {
+            var wideTop = Math.max(columnY[0], columnY[1]);
+            note.style.left = pad + "px"; note.style.top = wideTop + "px";
+            columnY[0] = columnY[1] = wideTop + note.offsetHeight + gap;
+          } else {
+            var column = columnY[0] <= columnY[1] ? 0 : 1;
+            note.style.left = pad + column * (columnWidth + gap) + "px";
+            note.style.top = columnY[column] + "px";
+            columnY[column] += note.offsetHeight + gap;
+          }
+        });
+        board.style.height = Math.max(500, Math.max(columnY[0], columnY[1]) + 4) + "px";
+        ensurePlaneSize();
+      }
+      function autoArrangeBoards() {
+        var columnY = [82, 82];
+        boards().forEach(function (board, index) {
+          autoLayoutBoard(board);
+          var column = index % 2;
+          board.style.left = (110 + column * 760) + "px";
+          board.style.top = columnY[column] + "px";
+          columnY[column] += board.offsetHeight + 86;
+        });
+        ensurePlaneSize(); renderBoardList(); drawConnections(); renderMinimap();
+      }
+      function fixOverlaps() {
+        var fixed = false;
+        boards().forEach(function (board) {
+          if (boardHasOverlap(board)) { autoLayoutBoard(board); fixed = true; }
+        });
+        if (fixed) { drawConnections(); renderMinimap(); saveState(); }
+      }
+      function ensurePlaneSize() {
+        var width = 2500, height = 1700;
+        boards().forEach(function (board) {
+          width = Math.max(width, board.offsetLeft + board.offsetWidth + 160);
+          height = Math.max(height, board.offsetTop + board.offsetHeight + 160);
+        });
+        plane.style.width = width + "px"; plane.style.height = height + "px";
+        linksLayer.setAttribute("viewBox", "0 0 " + width + " " + height);
+      }
+
+      function selectNote(note) { notes().forEach(function (item) { item.classList.toggle("selected", item === note); }); }
+      function startConnection(note) {
+        if (!state.connectFrom) {
+          state.connectFrom = note.dataset.id;
+          note.classList.add("connect-source");
+          selectionHint.classList.add("show");
+          return;
+        }
+        if (state.connectFrom !== note.dataset.id) {
+          var duplicate = connections.some(function (pair) { return (pair[0] === state.connectFrom && pair[1] === note.dataset.id) || (pair[1] === state.connectFrom && pair[0] === note.dataset.id); });
+          if (!duplicate) connections.push([state.connectFrom, note.dataset.id]);
+        }
+        notes().forEach(function (item) { item.classList.remove("connect-source"); });
+        state.connectFrom = null;
+        selectionHint.classList.remove("show");
+        drawConnections(); saveState();
+      }
+
+      function makeNoteInteractive(note) {
+        note.addEventListener("pointerdown", function (event) {
+          if (event.target.closest("button, a") || event.target.closest('[contenteditable="true"]') && event.detail > 1) return;
+          event.stopPropagation();
+          if (state.mode === "connect") { startConnection(note); return; }
+          selectNote(note);
+          var board = note.closest(".board");
+          pushHistory();
+          state.drag = { type: "note", node: note, board: board, sx: event.clientX, sy: event.clientY, left: note.offsetLeft, top: note.offsetTop, moved: false };
+          note.setPointerCapture(event.pointerId);
+        });
+        note.addEventListener("pointermove", function (event) {
+          if (!state.drag || state.drag.node !== note) return;
+          var dx = (event.clientX - state.drag.sx) / state.scale, dy = (event.clientY - state.drag.sy) / state.scale;
+          if (Math.abs(dx) + Math.abs(dy) > 3) state.drag.moved = true;
+          note.style.left = clamp(state.drag.left + dx, 8, state.drag.board.offsetWidth - note.offsetWidth - 8) + "px";
+          note.style.top = Math.max(60, state.drag.top + dy) + "px";
+          drawConnections();
+        });
+        note.addEventListener("pointerup", function (event) {
+          if (note.hasPointerCapture(event.pointerId)) note.releasePointerCapture(event.pointerId);
+          if (state.drag && state.drag.node === note) {
+            var board = state.drag.board;
+            var moved = state.drag.moved;
+            state.drag = null;
+            if (moved && boardHasOverlap(board)) autoLayoutBoard(board);
+            drawConnections(); renderMinimap(); saveState();
+          }
+        });
+        note.querySelectorAll('[contenteditable="true"]').forEach(function (field) {
+          field.addEventListener("input", function () { renderBoardList(); saveState(); });
+        });
+        var linkButton = note.querySelector('[data-action="link"]');
+        if (linkButton) linkButton.addEventListener("click", function (event) { event.stopPropagation(); startConnection(note); });
+        var deleteButton = note.querySelector('[data-action="delete"]');
+        if (deleteButton) deleteButton.addEventListener("click", function (event) {
+          event.stopPropagation();
+          if (note.dataset.seed === "true" && !window.confirm("删除这张原始卡片？")) return;
+          pushHistory();
+          connections = connections.filter(function (pair) { return pair.indexOf(note.dataset.id) < 0; });
+          note.remove(); drawConnections(); renderBoardList(); saveState();
+        });
+        var askButton = note.querySelector('[data-action="ask"]');
+        if (askButton) askButton.addEventListener("click", function (event) {
+          event.stopPropagation();
+          window.parent.postMessage({ type: "open-thesis-chat", question: "这篇论文讲的是什么？" }, "*");
+        });
+      }
+
+      function makeBoardInteractive(board) {
+        board.querySelector(".board-head").addEventListener("pointerdown", function (event) {
+          if (event.target.closest("button")) return;
+          event.stopPropagation();
+          pushHistory();
+          state.drag = { type: "board", node: board, sx: event.clientX, sy: event.clientY, left: board.offsetLeft, top: board.offsetTop };
+          board.setPointerCapture(event.pointerId);
+        });
+        board.addEventListener("pointermove", function (event) {
+          if (!state.drag || state.drag.node !== board || state.drag.type !== "board") return;
+          board.style.left = Math.max(0, state.drag.left + (event.clientX - state.drag.sx) / state.scale) + "px";
+          board.style.top = Math.max(0, state.drag.top + (event.clientY - state.drag.sy) / state.scale) + "px";
+          drawConnections(); renderMinimap();
+        });
+        board.addEventListener("pointerup", function (event) {
+          if (board.hasPointerCapture(event.pointerId)) board.releasePointerCapture(event.pointerId);
+          if (state.drag && state.drag.node === board) { state.drag = null; saveState(); }
+        });
+        board.querySelector(".board-add").addEventListener("click", function () { openNoteDialog(board); });
+      }
+
+      function openNoteDialog(board) {
+        if (!board) board = plane.querySelector('[data-board="' + (state.activeBoard || state.noteBoard || "self") + '"]') || boards()[0];
+        state.noteBoard = board.dataset.board;
+        document.getElementById("noteBoardLabel").textContent = "放进「" + board.dataset.title + "」，之后仍可拖动和编辑。";
+        document.getElementById("noteTitleInput").value = "";
+        document.getElementById("noteContentInput").value = "";
+        document.getElementById("noteImageInput").value = "";
+        document.getElementById("noteUrlInput").value = "";
+        if (!noteDialog.open) noteDialog.show();
+      }
+      function addNote(board, data) {
+        var note = document.createElement("article");
+        var id = data.id || "note-" + Date.now();
+        note.className = "note";
+        note.dataset.id = id; note.dataset.type = data.type || "text";
+        note.dataset.hidden = data.hidden ? "true" : "false";
+        if (data.hidden) note.classList.add("layer-hidden");
+        if (data.image) note.dataset.image = data.image;
+        if (data.url) note.dataset.url = data.url;
+        note.style.cssText = "--note-color:" + board.dataset.color + ";left:" + (data.left != null ? data.left : 28) + "px;top:" + (data.top != null ? data.top : 82) + "px;";
+        if (data.width) note.style.width = data.width + "px";
+        var kicker = { text: "new thought", quote: "quotation", image: "visual note", sticky: "quick spark", dark: "night thought", link: "reference" }[note.dataset.type] || "new thought";
+        note.innerHTML = '<div class="note-tools"><button type="button" data-action="link" title="连线">⌁</button><button type="button" data-action="delete" title="删除">×</button></div><div class="note-kicker"></div><h3 contenteditable="true"></h3><p contenteditable="true"></p>';
+        note.querySelector(".note-kicker").textContent = kicker;
+        if (note.dataset.type === "image") {
+          var image = document.createElement("img");
+          image.src = data.image || "assets/lanlan-avatar.png"; image.alt = data.title || "卡片图片";
+          note.insertBefore(image, note.querySelector(".note-kicker"));
+          note.dataset.image = image.getAttribute("src");
+        }
+        note.querySelector("h3").textContent = data.title || "未命名卡片";
+        note.querySelector("p").textContent = data.content || "双击这里，继续写下去。";
+        if (note.dataset.type === "link" && data.url) {
+          var anchor = document.createElement("a");
+          anchor.className = "note-link"; anchor.href = data.url; anchor.target = "_blank"; anchor.rel = "noopener"; anchor.textContent = data.url;
+          note.appendChild(anchor);
+        }
+        board.appendChild(note); makeNoteInteractive(note); renderBoardList(); drawConnections();
+        if (!state.restoring) saveState();
+        return note;
+      }
+
+      function serialize() {
+        return {
+          version: 5,
+          boards: boards().map(function (board) { return { id: board.dataset.board, title: board.dataset.title, desc: board.querySelector(".board-description").textContent, color: board.dataset.color, left: board.offsetLeft, top: board.offsetTop, height: board.offsetHeight, custom: board.dataset.custom === "true" }; }),
+          notes: notes().map(function (note) { return { id: note.dataset.id, board: note.closest(".board").dataset.board, type: note.dataset.type, left: note.offsetLeft, top: note.offsetTop, width: parseFloat(note.style.width || "0") || null, title: note.querySelector("h3") ? note.querySelector("h3").textContent : "", content: note.querySelector("p") ? note.querySelector("p").textContent : "", image: note.dataset.image || (note.querySelector("img") ? note.querySelector("img").getAttribute("src") : ""), url: note.dataset.url || "", hidden: note.dataset.hidden === "true", custom: note.dataset.custom === "true" }; }),
+          connections: connections
+        };
+      }
+      function publishDesktopSync(data) {
+        try { localStorage.setItem("lanlan-canvas-sync-v1", JSON.stringify(data)); } catch (error) {}
+        if (window.parent) window.parent.postMessage({ type: "lanlan-canvas-sync", payload: data }, "*");
+      }
+      function saveState() {
+        if (state.restoring) return;
+        var data = serialize();
+        try { localStorage.setItem(STORE, JSON.stringify(data)); } catch (error) {}
+        publishDesktopSync(data);
+      }
+      function restoreState() {
+        var saved;
+        try { saved = JSON.parse(localStorage.getItem(STORE)); } catch (error) { return; }
+        if (!saved || saved.version !== 5) return;
+        state.restoring = true;
+        (saved.boards || []).forEach(function (data) {
+          var board = plane.querySelector('[data-board="' + data.id + '"]');
+          if (!board && data.custom) board = createBoardElement(data);
+          if (!board) return;
+          board.style.left = data.left + "px"; board.style.top = data.top + "px"; board.style.height = data.height + "px";
+        });
+        (saved.notes || []).forEach(function (data) {
+          var note = plane.querySelector('[data-id="' + data.id + '"]');
+          var board = plane.querySelector('[data-board="' + data.board + '"]');
+          if (!note && data.custom && board) { note = addNote(board, data); note.dataset.custom = "true"; }
+          if (!note) return;
+          note.style.left = data.left + "px"; note.style.top = data.top + "px";
+          if (data.width) note.style.width = data.width + "px";
+          note.dataset.hidden = data.hidden ? "true" : "false";
+          note.classList.toggle("layer-hidden", !!data.hidden);
+          if (data.image) note.dataset.image = data.image;
+          if (data.url) note.dataset.url = data.url;
+          if (note.querySelector("h3")) note.querySelector("h3").textContent = data.title;
+          if (note.querySelector("p")) note.querySelector("p").textContent = data.content;
+        });
+        if (Array.isArray(saved.connections)) connections = saved.connections;
+        state.restoring = false;
+      }
+      function createBoardElement(data) {
+        var board = document.createElement("section");
+        board.className = "board"; board.dataset.board = data.id; board.dataset.title = data.title; board.dataset.color = data.color; board.dataset.custom = "true";
+        board.style.cssText = "--board-color:" + data.color + ";left:" + data.left + "px;top:" + data.top + "px;height:" + (data.height || 520) + "px;";
+        board.innerHTML = '<header class="board-head"><span class="board-index">' + String(boards().length + 1).padStart(2, "0") + '</span><h2 class="board-title"></h2><span class="board-description"></span><button class="board-add" type="button" title="在此板块新建卡片">＋</button></header>';
+        board.querySelector(".board-title").textContent = data.title;
+        board.querySelector(".board-description").textContent = data.desc || "新的问题正在展开";
+        plane.appendChild(board); makeBoardInteractive(board); return board;
+      }
+
+      stage.addEventListener("pointerdown", function (event) {
+        if (event.target !== stage && event.target !== plane && event.target !== linksLayer) return;
+        clearFocus(); selectNote(null);
+        state.pan = { sx: event.clientX, sy: event.clientY, x: state.x, y: state.y };
+        stage.classList.add("panning"); stage.setPointerCapture(event.pointerId);
+      });
+      stage.addEventListener("pointermove", function (event) {
+        if (!state.pan) return;
+        state.x = state.pan.x + event.clientX - state.pan.sx; state.y = state.pan.y + event.clientY - state.pan.sy; applyView();
+      });
+      stage.addEventListener("pointerup", function (event) { state.pan = null; stage.classList.remove("panning"); if (stage.hasPointerCapture(event.pointerId)) stage.releasePointerCapture(event.pointerId); });
+      stage.addEventListener("wheel", function (event) {
+        event.preventDefault();
+        var old = state.scale, next = clamp(old * (event.deltaY > 0 ? .91 : 1.1), .34, 1.45);
+        var wx = (event.clientX - stage.getBoundingClientRect().left - state.x) / old;
+        var wy = (event.clientY - stage.getBoundingClientRect().top - state.y) / old;
+        state.scale = next; state.x = event.clientX - stage.getBoundingClientRect().left - wx * next; state.y = event.clientY - stage.getBoundingClientRect().top - wy * next; applyView();
+      }, { passive: false });
+
+      document.querySelectorAll(".mode-button").forEach(function (button) {
+        button.addEventListener("click", function () {
+          document.querySelectorAll(".mode-button").forEach(function (item) { item.classList.remove("active"); });
+          button.classList.add("active"); state.mode = button.dataset.mode;
+          if (state.mode === "focus") {
+            var selected = plane.querySelector(".note.selected");
+            if (selected) focusBoard(selected.closest(".board").dataset.board); else clearFocus();
+            state.mode = "select"; button.classList.remove("active"); document.querySelector('[data-mode="select"]').classList.add("active");
+          }
+        });
+      });
+      document.getElementById("zoomIn").addEventListener("click", function () { state.scale = clamp(state.scale + .1, .34, 1.45); applyView(); });
+      document.getElementById("zoomOut").addEventListener("click", function () { state.scale = clamp(state.scale - .1, .34, 1.45); applyView(); });
+      document.getElementById("resetView").addEventListener("click", function () { clearFocus(); resetView(); });
+      document.getElementById("sidebarToggle").addEventListener("click", function () { sidebar.classList.toggle("open"); });
+      document.getElementById("autoArrange").addEventListener("click", function () { pushHistory(); autoArrangeBoards(); saveState(); resetView(); });
+      document.getElementById("resetLayout").addEventListener("click", function () { pushHistory(); clearFocus(); autoArrangeBoards(); saveState(); resetView(); });
+      document.getElementById("undoAction").addEventListener("click", function () { restoreLayout(state.history.pop()); });
+      document.getElementById("openBoardDialog").addEventListener("click", function () { boardDialog.showModal(); });
+      document.getElementById("openNoteDialog").addEventListener("click", function () { openNoteDialog(); });
+      document.getElementById("createBoard").addEventListener("click", function (event) {
+        var title = document.getElementById("boardTitleInput").value.trim(); if (!title) { event.preventDefault(); return; }
+        pushHistory();
+        var id = "board-" + Date.now();
+        var data = { id: id, title: title, desc: document.getElementById("boardDescInput").value.trim(), color: document.getElementById("boardColorInput").value, left: 110, top: 980, height: 520 };
+        var board = createBoardElement(data); board.dataset.custom = "true"; autoArrangeBoards(); renderBoardList(); saveState(); setTimeout(function () { focusBoard(id); }, 30);
+      });
+      document.querySelectorAll(".type-button").forEach(function (button) { button.addEventListener("click", function () {
+        document.querySelectorAll(".type-button").forEach(function (item) { item.classList.remove("active"); });
+        button.classList.add("active"); state.noteType = button.dataset.type;
+        document.getElementById("noteImageField").hidden = state.noteType !== "image";
+        document.getElementById("noteUrlField").hidden = state.noteType !== "link";
+      }); });
+      document.getElementById("createNote").addEventListener("click", function (event) {
+        var title = document.getElementById("noteTitleInput").value.trim(); if (!title) { event.preventDefault(); return; }
+        var board = plane.querySelector('[data-board="' + state.noteBoard + '"]');
+        pushHistory();
+        var note = addNote(board, { type: state.noteType, title: title, content: document.getElementById("noteContentInput").value.trim(), image: document.getElementById("noteImageInput").value.trim(), url: document.getElementById("noteUrlInput").value.trim(), left: 26, top: 80 });
+        note.dataset.custom = "true"; autoLayoutBoard(board); drawConnections(); renderBoardList(); saveState();
+      });
+
+      document.getElementById("searchNotes").addEventListener("input", function (event) {
+        var query = event.target.value.trim().toLowerCase();
+        notes().forEach(function (note) { note.classList.toggle("search-hidden", !!query && note.textContent.toLowerCase().indexOf(query) < 0); });
+      });
+      document.getElementById("minimap").addEventListener("pointerdown", function (event) {
+        var rect = event.currentTarget.getBoundingClientRect();
+        var worldX = (event.clientX - rect.left) / rect.width * plane.offsetWidth;
+        var worldY = (event.clientY - rect.top) / rect.height * plane.offsetHeight;
+        state.x = stage.clientWidth / 2 - worldX * state.scale; state.y = stage.clientHeight / 2 - worldY * state.scale; applyView();
+      });
+      document.querySelectorAll(".dock-button").forEach(function (button) {
+        button.addEventListener("click", function () {
+          var target = document.getElementById("drawer-" + button.dataset.drawer);
+          var willOpen = !target.classList.contains("open");
+          document.querySelectorAll(".drawer").forEach(function (drawer) { drawer.classList.remove("open"); });
+          document.querySelectorAll(".dock-button").forEach(function (item) { item.classList.remove("active"); });
+          target.classList.toggle("open", willOpen); button.classList.toggle("active", willOpen);
+        });
+      });
+      document.querySelectorAll("[data-focus]").forEach(function (button) { button.addEventListener("click", function () { focusBoard(button.dataset.focus); document.querySelectorAll(".drawer,.dock-button").forEach(function (item) { item.classList.remove("open", "active"); }); }); });
+
+      document.querySelectorAll(".task input").forEach(function (input) {
+        try { input.checked = JSON.parse(localStorage.getItem(TASK_STORE) || "{}")[input.dataset.task] || false; } catch (error) {}
+        input.addEventListener("change", function () { var data = {}; try { data = JSON.parse(localStorage.getItem(TASK_STORE) || "{}"); } catch (error) {} data[input.dataset.task] = input.checked; localStorage.setItem(TASK_STORE, JSON.stringify(data)); });
+      });
+      boards().forEach(function (board) { board.dataset.seed = "true"; makeBoardInteractive(board); });
+      notes().forEach(function (note) { note.dataset.seed = "true"; makeNoteInteractive(note); });
+      restoreState(); ensurePlaneSize(); fixOverlaps(); renderBoardList(); drawConnections(); resetView(); publishDesktopSync(serialize());
+      window.addEventListener("load", function () { fixOverlaps(); resetView(); });
+      window.addEventListener("resize", applyView);
+      window.addEventListener("beforeunload", saveState);
+    })();
+  </script>
+</body>
+</html>

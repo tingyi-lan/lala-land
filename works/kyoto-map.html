@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>旅行故事地图 - 蓝蓝</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: #fefcf6;
+      color: #1a1a2e;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", sans-serif;
+      letter-spacing: 0;
+    }
+    .cover {
+      min-height: 440px;
+      display: grid;
+      align-content: end;
+      padding: 42px;
+      color: white;
+      background:
+        linear-gradient(90deg, rgba(20, 14, 16, 0.58), rgba(20, 14, 16, 0.1)),
+        url("../assets/kyoto-osaka-poster.png") center / cover;
+    }
+    h1 {
+      max-width: 880px;
+      margin: 0;
+      font-size: clamp(2.4rem, 8vw, 5.6rem);
+      line-height: 0.98;
+      letter-spacing: 0;
+    }
+    .sub {
+      margin-top: 18px;
+      color: rgba(255,255,255,0.86);
+      font-size: 1.12rem;
+    }
+    main { padding: 34px 42px 56px; }
+    .preview {
+      width: 100%;
+      border: 1px solid rgba(26,26,46,0.08);
+      border-radius: 22px;
+      box-shadow: 0 12px 32px rgba(26,26,46,0.1);
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 22px;
+      align-items: start;
+      margin-top: 24px;
+    }
+    .panel {
+      border-radius: 20px;
+      padding: 22px;
+      background: white;
+      box-shadow: 0 10px 24px rgba(26,26,46,0.06);
+    }
+    h2 { margin: 0 0 12px; }
+    p, li { color: #4f5364; line-height: 1.75; }
+    ul { padding-left: 18px; }
+    @media (max-width: 820px) {
+      .cover, main { padding: 28px 20px; }
+      .grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <section class="cover">
+    <h1>出发总是美丽的</h1>
+    <div class="sub">京都与大阪 10 日一人自由行故事地图</div>
+  </section>
+  <main>
+    <img class="preview" src="../assets/kyoto-story-map.png" alt="京都旅行故事地图截图">
+    <section class="grid">
+      <article class="panel">
+        <h2>它解决什么</h2>
+        <p>把攻略从“景点列表”变成可以直接发给同行人、也可以自己按图执行的旅行故事页。每天都有路线、关键字、机位、朋友圈文案和节奏建议。</p>
+      </article>
+      <article class="panel">
+        <h2>蓝蓝式旅行关键词</h2>
+        <ul>
+          <li>一个人重新出发。</li>
+          <li>清晨、人少、光线和慢慢走。</li>
+          <li>路线要可执行，照片要有情绪。</li>
+        </ul>
+      </article>
+    </section>
+  </main>
+</body>
+</html>

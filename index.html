@@ -1,0 +1,1566 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>啦啦LAND · 蓝蓝’s land</title>
+  <meta name="description" content="lala land · 蓝蓝的互动小岛 · AI-Lover 陪伴智能体 / 写作出版 / 用户研究 / AI 协作">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --cream: #fefcf6;
+      --cream-dark: #faf6eb;
+      --ink: #1a1a2e;
+      --ink-light: #4f5364;
+      --ink-faint: #8a8fa3;
+      --blue: #2b7fd8;
+      --blue-deep: #1e5ba8;
+      --yellow: #f4d758;
+      --red: #e84a5f;
+      --green: #4ade80;
+      --card: rgba(255, 255, 255, 0.88);
+      --shadow: 0 18px 50px rgba(20, 34, 68, 0.22);
+      --ease: cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    html { overflow: hidden; background: var(--cream); }
+    html.scroll-unlocked { overflow: auto; overflow-x: hidden; }
+    body {
+      min-height: 100vh;
+      background: var(--cream);
+      color: var(--ink);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Noto Sans SC", sans-serif;
+      -webkit-font-smoothing: antialiased;
+      letter-spacing: 0;
+    }
+    a { color: inherit; text-decoration: none; }
+    button { font: inherit; color: inherit; }
+
+    .tab-page { display: none; min-height: 100vh; }
+    .tab-page.active { display: block; }
+
+    .pill-nav {
+      position: fixed;
+      left: 50%;
+      bottom: 5%;
+      z-index: 1000;
+      display: flex;
+      gap: 4px;
+      width: min(61vw, 860px);
+      justify-content: space-between;
+      padding: 5px 10px;
+      border: 1px solid rgba(255, 255, 255, 0.65);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.22);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.85), inset 0 -1px 0 rgba(255,255,255,.18), 0 10px 28px rgba(40,60,90,.08);
+      -webkit-backdrop-filter: blur(22px) saturate(1.65);
+      backdrop-filter: blur(22px) saturate(1.65);
+      transform: translateX(-50%);
+      transition: opacity 0.4s ease, transform 0.4s var(--ease);
+    }
+    .pill-nav.hidden-during-intro {
+      opacity: 0;
+      pointer-events: none;
+      transform: translateX(-50%) translateY(16px);
+    }
+    .pill-nav button {
+      flex: 1;
+      border: 0;
+      border-radius: 999px;
+      background: transparent;
+      padding: 10px 12px;
+      color: #46597a;
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: 1px;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .pill-nav button.active {
+      color: #2c4468;
+      background: rgba(255, 255, 255, 0.42);
+      box-shadow: inset 0 1px 1px rgba(255,255,255,.8);
+    }
+    .pill-num {
+      margin-right: 8px;
+      opacity: 0.8;
+      font: inherit;
+    }
+
+    .hero-section {
+      position: relative;
+      z-index: 10;
+      display: flex;
+      min-height: 100vh;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      background: var(--cream);
+    }
+    .macbook-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      will-change: transform, opacity;
+    }
+    .macbook-wrapper.zoom-transition {
+      transition: transform 1.5s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
+    }
+    .macbook-screen-bezel {
+      position: relative;
+      width: 708px;
+      max-width: 88vw;
+      padding: 0 14px 14px;
+      border-radius: 14px 14px 0 0;
+      background: #2a2a30;
+      cursor: pointer;
+    }
+    .macbook-notch {
+      width: 130px;
+      height: 14px;
+      margin: 0 auto;
+      border-radius: 0 0 10px 10px;
+      background: #2a2a30;
+    }
+    .macbook-screen {
+      position: relative;
+      width: min(680px, calc(88vw - 28px));
+      height: min(440px, 57vw);
+      min-height: 290px;
+      overflow: hidden;
+      border-radius: 4px;
+      background: var(--blue);
+    }
+    .macbook-screen::after,
+    .exit-screen::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: 2;
+      pointer-events: none;
+      background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255,255,255,0.04) 2px, rgba(255,255,255,0.04) 3px);
+    }
+    .macbook-hinge {
+      width: min(720px, 90vw);
+      height: 3px;
+      border-radius: 0 0 2px 2px;
+      background: linear-gradient(180deg, #8a8a8e, #6e6e72);
+    }
+    .macbook-base {
+      width: min(760px, 94vw);
+      height: 14px;
+      border-radius: 0 0 10px 10px;
+      background: linear-gradient(180deg, #c8c8cc 0%, #a8a8ac 30%, #b8b8bc 70%, #9a9a9e 100%);
+    }
+    .macbook-shadow {
+      width: min(700px, 86vw);
+      height: 40px;
+      margin-top: 4px;
+      background: radial-gradient(ellipse at center, rgba(0,0,0,0.25), transparent 70%);
+    }
+
+    .terminal {
+      position: relative;
+      height: 100%;
+      overflow: hidden;
+      padding: 16px 20px;
+      color: white;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 13px;
+      line-height: 1.7;
+    }
+    .terminal.scale-through {
+      opacity: 0;
+      filter: blur(2px);
+      transform: scale(1.15);
+      transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1), filter 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .terminal-titlebar {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      margin-bottom: 14px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid rgba(255,255,255,0.15);
+    }
+    .terminal-dot { width: 10px; height: 10px; border-radius: 50%; }
+    .terminal-dot.red { background: #ff5f57; }
+    .terminal-dot.yellow { background: #ffbd2e; }
+    .terminal-dot.green { background: #28ca41; }
+    .terminal-title {
+      margin: 0 auto;
+      color: rgba(255,255,255,0.55);
+      font-family: sans-serif;
+      font-size: 11px;
+    }
+    .term-line {
+      opacity: 0;
+      transform: translateY(6px);
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+    .term-line.visible { animation: lineReveal 0.35s ease forwards; }
+    @keyframes lineReveal { to { opacity: 1; transform: translateY(0); } }
+    .term-prompt { color: var(--yellow); font-weight: 800; }
+    .term-cmd { color: #fff; font-weight: 600; }
+    .term-output { color: rgba(255,255,255,0.88); }
+    .term-gold {
+      display: inline-block;
+      border-radius: 3px;
+      padding: 2px 8px;
+      background: var(--yellow);
+      color: var(--blue-deep);
+      font-weight: 800;
+    }
+    .cursor {
+      display: inline-block;
+      width: 9px;
+      height: 17px;
+      margin-left: 2px;
+      vertical-align: middle;
+      background: white;
+      animation: blink 1s step-end infinite;
+    }
+    @keyframes blink { 50% { opacity: 0; } }
+
+    .hero-cta {
+      margin-top: 36px;
+      text-align: center;
+      opacity: 0;
+      cursor: pointer;
+      transition: opacity 0.6s ease;
+    }
+    .hero-cta.visible { opacity: 1; }
+    .hero-cta.hidden { opacity: 0; pointer-events: none; }
+    .cta-text {
+      color: var(--ink-faint);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 13px;
+      letter-spacing: 1px;
+    }
+    .cta-arrow {
+      margin-top: 8px;
+      color: var(--ink-faint);
+      font-size: 18px;
+      animation: bounce 1.6s ease infinite;
+    }
+    @keyframes bounce { 50% { transform: translateY(6px); } }
+    .transition-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 2000;
+      opacity: 0;
+      pointer-events: none;
+      background: var(--blue);
+      transition: opacity 0.22s ease;
+    }
+    .transition-overlay.active { opacity: 1; pointer-events: auto; }
+
+    .desktop { position: relative; min-height: 100vh; background: var(--blue); }
+    .desktop-menubar {
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      height: 30px;
+      padding: 0 18px;
+      color: rgba(255,255,255,0.78);
+      background: rgba(30, 91, 168, 0.22);
+      backdrop-filter: blur(10px);
+      font-size: 12px;
+    }
+    .mb-logo {
+      color: var(--yellow);
+      font-family: "Comic Sans MS", "Bradley Hand", cursive;
+      font-weight: 800;
+    }
+    .mb-clock { margin-left: auto; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+    .desktop-surface {
+      position: relative;
+      height: calc(100vh - 30px);
+      overflow: hidden;
+      background: var(--blue);
+    }
+    .wp-star {
+      position: absolute;
+      z-index: 0;
+      color: var(--yellow);
+      font-size: var(--size, 14px);
+      opacity: var(--op, 0.7);
+      pointer-events: none;
+      --push: translate(0, 0) scale(1);
+      transform: var(--push);
+      animation: wpTwinkle var(--dur, 3s) ease-in-out infinite, wpWobble var(--wdur, 4s) ease-in-out infinite;
+      animation-delay: var(--delay, 0s);
+      transition: transform 0.2s ease;
+    }
+    .wp-star.disturbed { animation-play-state: paused; opacity: 1 !important; }
+    @keyframes wpTwinkle { 50% { opacity: calc(var(--op, 0.7) * 0.25); } }
+    @keyframes wpWobble {
+      0%, 100% { transform: var(--push) rotate(0deg) translateX(0); }
+      25% { transform: var(--push) rotate(10deg) translateX(2px); }
+      75% { transform: var(--push) rotate(-10deg) translateX(-2px); }
+    }
+    .click-star {
+      position: fixed;
+      z-index: 9999;
+      pointer-events: none;
+      color: var(--yellow);
+      animation: starPop 0.75s ease-out forwards;
+    }
+    @keyframes starPop {
+      0% { opacity: 0.9; transform: scale(0) rotate(0deg); }
+      30% { opacity: 0.85; transform: scale(1.2) rotate(10deg); }
+      100% { opacity: 0; transform: scale(0.8); }
+    }
+    .desktop-sticker {
+      position: absolute;
+      left: 15%;
+      bottom: 20%;
+      z-index: 4;
+      width: min(300px, 34vw);
+      min-width: 180px;
+      cursor: grab;
+      user-select: none;
+      touch-action: none;
+      transition: filter 0.2s ease, transform 0.2s ease;
+    }
+    .desktop-sticker:hover { filter: drop-shadow(0 8px 18px rgba(0,0,0,0.22)); transform: rotate(-1deg); }
+    .desktop-sticker.dragging { cursor: grabbing; filter: drop-shadow(0 12px 24px rgba(0,0,0,.24)); transform: none; }
+    .desktop-sticker img {
+      display: block;
+      width: 100%;
+      border: 5px solid rgba(255,255,255,0.88);
+      border-radius: 50%;
+      box-shadow: 0 12px 30px rgba(0,0,0,0.18);
+      pointer-events: none;
+    }
+
+    .desktop-icons {
+      position: absolute;
+      inset: 0;
+      z-index: 5;
+    }
+    .dicon {
+      position: absolute;
+      display: flex;
+      width: 82px;
+      flex-direction: column;
+      align-items: center;
+      gap: 7px;
+      padding: 10px 4px;
+      border-radius: 10px;
+      cursor: grab;
+      user-select: none;
+      touch-action: none;
+      transition: background 0.15s, box-shadow 0.15s;
+    }
+    .dicon:hover { background: rgba(255,255,255,0.12); }
+    .dicon.selected { background: rgba(255,255,255,0.16); box-shadow: inset 0 0 0 1px rgba(255,255,255,.22); }
+    .dicon.dragging { z-index: 30; cursor: grabbing; background: rgba(255,255,255,0.2); }
+    .dicon-art {
+      position: relative;
+      width: 48px;
+      height: 48px;
+      overflow: hidden;
+      border-radius: 10px;
+      background: white;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.18);
+    }
+    .dicon-art.folder { background: linear-gradient(180deg, #f8e07a, var(--yellow)); }
+    .dicon-art.folder::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 5px;
+      width: 20px;
+      height: 8px;
+      border-radius: 4px 4px 0 0;
+      background: rgba(255,255,255,0.46);
+    }
+    .dicon-art.file { border: 1.5px solid rgba(43,127,216,0.3); }
+    .dicon-art.file img { width: 100%; height: 100%; object-fit: cover; pointer-events: none; }
+    .dicon-art.file::after {
+      content: attr(data-ext);
+      position: absolute;
+      left: 50%;
+      bottom: 4px;
+      transform: translateX(-50%);
+      border-radius: 3px;
+      padding: 1px 5px;
+      background: var(--blue-deep);
+      color: #fff8e1;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 8px;
+      font-weight: 800;
+    }
+    .dicon-art.app-blue {
+      display: grid;
+      place-items: center;
+      background: #fff8f0;
+      border: 1.5px solid rgba(43,127,216,0.32);
+    }
+    .dicon-art.app-blue img {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+    .dicon-label {
+      color: rgba(255,255,255,0.93);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 11px;
+      line-height: 1.25;
+      text-align: center;
+      text-shadow: 0 1px 3px rgba(0,0,0,0.32);
+      word-break: break-word;
+    }
+    .sync-folder-count { color: rgba(255,255,255,.72); font-size: 9px; }
+    .sync-note-list { display: grid; gap: 8px; }
+    .sync-note-item { border: 1px solid rgba(26,26,46,.1); border-radius: 6px; padding: 11px 12px; background: white; }
+    .sync-note-item h3 { margin: 0 0 5px; font: 800 15px Georgia, "Songti SC", serif; }
+    .sync-note-item p { margin: 0; color: var(--ink-light); font-size: 11px; line-height: 1.65; }
+
+    .os-window {
+      position: absolute;
+      z-index: 100;
+      width: min(540px, 88vw);
+      overflow: hidden;
+      border: 1px solid rgba(0,0,0,0.12);
+      border-radius: 10px;
+      background: var(--cream);
+      box-shadow: var(--shadow), 0 0 0 0.5px rgba(0,0,0,0.06);
+      animation: winPop 0.25s var(--ease);
+    }
+    @keyframes winPop { from { opacity: 0; transform: scale(0.92) translateY(8px); } }
+    .os-dragbar {
+      position: absolute;
+      inset: 0 0 auto;
+      z-index: 10;
+      height: 36px;
+      cursor: grab;
+      user-select: none;
+      touch-action: none;
+    }
+    .os-traffic {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      z-index: 11;
+      display: flex;
+      gap: 7px;
+    }
+    .os-traffic span {
+      display: block;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+    }
+    .tl-close { background: #ff5f56; cursor: pointer; }
+    .tl-min { background: #ffbd2e; }
+    .tl-max { background: #27c93f; }
+    .os-external {
+      position: absolute;
+      top: 9px;
+      right: 12px;
+      z-index: 11;
+      display: grid;
+      place-items: center;
+      width: 22px;
+      height: 22px;
+      color: rgba(0,0,0,0.44);
+      cursor: pointer;
+    }
+    .os-body {
+      max-height: min(58vh, 520px);
+      overflow: auto;
+      padding: 38px 26px 24px;
+    }
+    .os-body-iframe { height: calc(100% - 36px); max-height: none; padding: 36px 0 0; overflow: hidden; }
+    .os-resize {
+      position: absolute;
+      right: 0;
+      bottom: 0;
+      z-index: 15;
+      width: 16px;
+      height: 16px;
+      cursor: nwse-resize;
+      touch-action: none;
+    }
+    .os-resize::after {
+      content: "";
+      position: absolute;
+      right: 4px;
+      bottom: 4px;
+      width: 8px;
+      height: 8px;
+      border-right: 2px solid rgba(0,0,0,0.16);
+      border-bottom: 2px solid rgba(0,0,0,0.16);
+    }
+    .win-folder {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+      text-align: center;
+    }
+    .folder-icon {
+      display: grid;
+      justify-items: center;
+      gap: 8px;
+      padding: 10px 4px;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+    .folder-icon:hover { background: rgba(43,127,216,0.08); }
+    .folder-icon-art {
+      width: 48px;
+      height: 48px;
+      border-radius: 10px;
+      background: white;
+      box-shadow: 0 2px 7px rgba(0,0,0,0.14);
+    }
+    .folder-icon-art.file {
+      position: relative;
+      border: 1px solid rgba(43,127,216,0.24);
+    }
+    .folder-icon-art.file::after {
+      content: attr(data-ext);
+      position: absolute;
+      left: 50%;
+      bottom: 4px;
+      transform: translateX(-50%);
+      border-radius: 3px;
+      padding: 1px 5px;
+      background: var(--blue);
+      color: white;
+      font-size: 8px;
+      font-weight: 800;
+    }
+    .folder-icon-label {
+      color: var(--ink-light);
+      font-size: 12px;
+      line-height: 1.25;
+    }
+
+    .sayhi-heading {
+      color: var(--ink);
+      font-family: "Comic Sans MS", "Bradley Hand", cursive;
+      font-size: 34px;
+      font-weight: 800;
+      line-height: 1.1;
+    }
+    .sayhi-sub {
+      margin: 6px 0 22px;
+      color: var(--ink-faint);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 10px;
+      text-transform: uppercase;
+    }
+    .services-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 22px;
+    }
+    .service-card {
+      border: 1px solid rgba(43,127,216,0.18);
+      border-radius: 14px;
+      padding: 14px;
+      background: white;
+    }
+    .service-title { margin-bottom: 6px; color: var(--blue-deep); font-size: 15px; font-weight: 800; }
+    .service-desc { color: var(--ink-light); font-size: 13px; line-height: 1.6; }
+    .sayhi-links {
+      display: grid;
+      gap: 8px;
+      color: var(--ink-light);
+      font-size: 13px;
+    }
+    .sayhi-links a { color: var(--blue); font-weight: 700; }
+
+    .profile-card {
+      display: grid;
+      grid-template-columns: 108px 1fr;
+      gap: 18px;
+      align-items: start;
+    }
+    .profile-card img {
+      width: 108px;
+      height: 108px;
+      border: 4px solid var(--blue);
+      border-radius: 50%;
+      object-fit: cover;
+    }
+    .profile-card h2 {
+      margin-bottom: 8px;
+      color: var(--ink);
+      font-size: 28px;
+    }
+    .profile-card p {
+      margin-bottom: 10px;
+      color: var(--ink-light);
+      font-size: 14px;
+      line-height: 1.7;
+    }
+    .profile-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 12px;
+    }
+    .profile-meta span {
+      border-radius: 999px;
+      padding: 5px 10px;
+      background: rgba(43,127,216,0.1);
+      color: var(--blue-deep);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .blue-chat-window { width: min(720px, 92vw); height: min(560px, 78vh); }
+    .blue-chat {
+      display: flex;
+      height: 100%;
+      overflow: hidden;
+      background: #f9f8f5;
+    }
+    .blue-sidebar {
+      display: flex;
+      width: 58px;
+      flex-shrink: 0;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      border-right: 1px solid #e5e3df;
+      background: #f9f8f5;
+    }
+    .blue-sidebar img,
+    .bot-avatar img {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+    .blue-main { display: flex; min-width: 0; flex: 1; flex-direction: column; }
+    .blue-chat-window .os-dragbar { right: auto; width: 66px; }
+    .blue-topbar {
+      display: flex;
+      flex-shrink: 0;
+      align-items: center;
+      gap: 18px;
+      height: 38px;
+      padding: 0 16px;
+      border-bottom: 1px solid #eae8e4;
+      background: #fafaf9;
+    }
+    .blue-tab {
+      border: 0;
+      padding: 10px 0;
+      border-bottom: 2px solid transparent;
+      background: transparent;
+      color: #999;
+      font-size: 12px;
+      cursor: pointer;
+    }
+    .blue-tab.active { color: #111; border-bottom-color: #111; font-weight: 700; }
+    .blue-search {
+      display: flex;
+      flex-shrink: 0;
+      align-items: center;
+      height: 30px;
+      margin: 8px 14px;
+      border-radius: 15px;
+      padding: 0 12px;
+      background: #efede9;
+      color: #aaa;
+      font-size: 12px;
+    }
+    .blue-search input { width: 100%; border: 0; outline: 0; background: transparent; color: #333; font: inherit; }
+    .agent-pane { display: none; min-height: 0; flex: 1; flex-direction: column; overflow: hidden; }
+    .agent-pane.active { display: flex; }
+    .chat-log {
+      display: flex;
+      flex: 1;
+      flex-direction: column;
+      gap: 14px;
+      overflow-y: auto;
+      padding: 16px 18px;
+    }
+    .msg-user { align-self: flex-end; max-width: 72%; }
+    .msg-user .bubble {
+      border-radius: 10px;
+      padding: 9px 14px;
+      background: #e8e6e1;
+      color: #111;
+      font-size: 13px;
+      line-height: 1.6;
+    }
+    .msg-bot { display: flex; max-width: 86%; gap: 8px; align-items: flex-start; }
+    .bot-avatar img { width: 22px; height: 22px; }
+    .bot-content { color: #111; font-size: 13px; line-height: 1.7; }
+    .bot-mutter { margin-bottom: 3px; color: #999; font-size: 12px; }
+    .blue-input-bar { flex-shrink: 0; padding: 10px 12px; background: #f9f8f5; }
+    .blue-input {
+      position: relative;
+      display: flex;
+      min-height: 68px;
+      align-items: flex-start;
+      gap: 10px;
+      border: 1px solid #e0dfdb;
+      border-radius: 12px;
+      padding: 10px 12px 32px;
+      background: #fafaf8;
+      color: #aaa;
+      font-size: 13px;
+    }
+    .blue-input textarea { width: 100%; min-height: 30px; max-height: 76px; resize: none; border: 0; outline: 0; background: transparent; color: #222; font: inherit; line-height: 1.5; }
+    .agent-send { position: absolute; right: 12px; bottom: 7px; border: 0; border-radius: 5px; padding: 4px 8px; background: var(--blue); color: white; font-size: 11px; font-weight: 800; }
+    .blue-input-footer {
+      position: absolute;
+      left: 14px;
+      right: 62px;
+      bottom: 8px;
+      display: flex;
+      justify-content: flex-start;
+      color: #333;
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .quick-questions { display: flex; flex-wrap: wrap; gap: 6px; margin: 3px 0 4px 30px; }
+    .quick-question { border: 1px solid rgba(43,127,216,.25); border-radius: 5px; padding: 7px 9px; background: #f2f7fd; color: var(--blue-deep); font-size: 11px; font-weight: 750; }
+    .quick-question:hover { border-color: var(--blue); background: #e7f2fd; }
+    .typing-dots { display: inline-flex; gap: 3px; padding: 4px 0; }
+    .typing-dots i { width: 5px; height: 5px; border-radius: 50%; background: #aaa; animation: agentDot .9s infinite alternate; }
+    .typing-dots i:nth-child(2) { animation-delay: .15s; }
+    .typing-dots i:nth-child(3) { animation-delay: .3s; }
+    @keyframes agentDot { to { transform: translateY(-4px); background: var(--blue); } }
+    .agent-panel-scroll { flex: 1; overflow-y: auto; padding: 14px 16px 18px; }
+    .agent-panel-head { display: flex; align-items: end; justify-content: space-between; gap: 14px; border-bottom: 2px solid #202133; padding-bottom: 10px; }
+    .agent-panel-head h3 { margin: 0; font: 850 21px Georgia, "Songti SC", serif; }
+    .agent-panel-head span { color: #999; font-size: 10px; }
+    .agent-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-top: 12px; }
+    .agent-item { position: relative; border: 1px solid #e2e0dc; border-radius: 6px; padding: 12px; background: white; }
+    .agent-item small { color: var(--blue); font: 800 9px ui-monospace, monospace; }
+    .agent-item h4 { margin: 10px 0 6px; font-size: 13px; }
+    .agent-item p { margin: 0; color: #777; font-size: 10px; line-height: 1.55; }
+    .agent-item a { display: inline-block; margin-top: 10px; color: var(--blue-deep); font-size: 10px; font-weight: 800; }
+    .spark-button, .agent-add-button { border: 0; border-radius: 5px; padding: 8px 10px; background: var(--yellow); color: var(--ink); font-size: 10px; font-weight: 850; }
+    .spark-output { margin-top: 12px; border-left: 4px solid var(--yellow); padding: 16px; background: white; font: 750 15px/1.7 Georgia, "Songti SC", serif; }
+    .agent-task-list { display: grid; gap: 7px; margin-top: 12px; }
+    .agent-task { display: grid; grid-template-columns: 20px 1fr auto; gap: 8px; align-items: center; border-bottom: 1px solid #e7e5e0; padding: 10px 2px; font-size: 11px; }
+    .agent-task input { accent-color: var(--blue); }
+    .agent-task:has(input:checked) span { color: #999; text-decoration: line-through; }
+    .agent-task time { color: #aaa; font: 700 9px ui-monospace, monospace; }
+    .agent-add-row { display: grid; grid-template-columns: 1fr 110px auto; gap: 7px; margin-top: 14px; }
+    .agent-add-row input { min-width: 0; height: 34px; border: 1px solid #ddd; border-radius: 5px; padding: 0 8px; background: white; font-size: 10px; }
+    .favorite-toggle { position: absolute; right: 9px; top: 9px; border: 0; background: transparent; color: #bbb; font-size: 17px; }
+    .favorite-toggle.saved { color: var(--red); }
+
+    .exit-section {
+      position: relative;
+      height: 220vh;
+      background: var(--cream);
+    }
+    .exit-sticky {
+      position: sticky;
+      top: 0;
+      display: grid;
+      min-height: 100vh;
+      place-items: center;
+      overflow: hidden;
+    }
+    .exit-macbook-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      transform-origin: center;
+    }
+    .exit-bezel {
+      width: 708px;
+      max-width: 88vw;
+      padding: 0 14px 14px;
+      border-radius: 14px 14px 0 0;
+      background: #2a2a30;
+    }
+    .exit-notch {
+      width: 130px;
+      height: 14px;
+      margin: 0 auto;
+      border-radius: 0 0 10px 10px;
+      background: #2a2a30;
+    }
+    .exit-screen {
+      position: relative;
+      width: min(680px, calc(88vw - 28px));
+      height: min(440px, 57vw);
+      min-height: 290px;
+      overflow: hidden;
+      border-radius: 4px;
+      background: var(--blue);
+    }
+    .goodbye-screen {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      opacity: 0;
+      color: white;
+      background: var(--blue);
+    }
+    .goodbye-screen.visible { opacity: 1; }
+    .goodbye-titlebar {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      padding: 14px 18px 12px;
+      border-bottom: 1px solid rgba(255,255,255,0.16);
+    }
+    .goodbye-title-text {
+      margin: 0 auto;
+      color: rgba(255,255,255,0.55);
+      font-size: 11px;
+    }
+    .goodbye-body {
+      flex: 1;
+      padding: 18px 22px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 13px;
+      line-height: 1.8;
+    }
+    .gt-prompt { color: var(--yellow); font-weight: 800; }
+    .gt-output { color: rgba(255,255,255,0.86); }
+    .gt-output a { color: white; text-decoration: underline; }
+    .gt-dim { color: rgba(255,255,255,0.6); }
+    .gt-gold { display: inline-block; border-radius: 3px; padding: 1px 6px; background: var(--yellow); color: var(--blue-deep); font-weight: 800; }
+    .goodbye-footer {
+      padding: 0 20px 16px;
+      color: rgba(255,255,255,0.5);
+      font-size: 11px;
+      text-align: center;
+    }
+    .exit-hinge { width: min(720px, 90vw); height: 3px; background: linear-gradient(180deg, #8a8a8e, #6e6e72); }
+    .exit-base { width: min(760px, 94vw); height: 14px; border-radius: 0 0 10px 10px; background: linear-gradient(180deg, #c8c8cc 0%, #a8a8ac 30%, #b8b8bc 70%, #9a9a9e 100%); }
+    .exit-shadow { width: min(700px, 86vw); height: 40px; margin-top: 4px; background: radial-gradient(ellipse at center, rgba(0,0,0,0.24), transparent 70%); }
+    .back-to-top {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 12vh;
+      text-align: center;
+    }
+    .back-to-top a {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border-radius: 999px;
+      padding: 11px 18px;
+      background: white;
+      box-shadow: 0 10px 30px rgba(20, 34, 68, 0.12);
+      color: var(--blue-deep);
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .works-page { min-height: 100vh; padding-bottom: 110px; background: var(--cream); }
+    .works-hero {
+      position: relative;
+      display: flex;
+      min-height: min(820px, 86vh);
+      flex-direction: column;
+      justify-content: center;
+      overflow: hidden;
+      border-bottom: 1px solid rgba(26,26,46,.12);
+      padding: clamp(62px, 8vw, 108px) min(7vw, 96px) 54px;
+      background: var(--cream);
+    }
+    .works-hero-avatar {
+      position: absolute;
+      right: 7vw;
+      top: 9%;
+      width: min(27vw, 350px);
+      aspect-ratio: 1;
+      border: 7px solid white;
+      border-radius: 50%;
+      object-fit: cover;
+      opacity: .82;
+      box-shadow: 0 18px 46px rgba(43,127,216,.15);
+    }
+    .works-hero-copy { position: relative; z-index: 2; width: min(820px, 72%); }
+    .works-kicker { color: var(--blue); font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 11px; font-weight: 850; text-transform: uppercase; }
+    .workflow-headline { margin: 15px 0 12px; font: 900 clamp(2.8rem, 6vw, 4.8rem)/.96 Georgia, "Songti SC", serif; }
+    .workflow-headline em { color: var(--red); font-style: normal; }
+    .workflow-subtitle { max-width: 650px; color: var(--ink-light); font-size: clamp(.96rem, 1.6vw, 1.2rem); line-height: 1.75; }
+    .workflow-columns { position: relative; z-index: 2; display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(18px, 4vw, 56px); width: min(1180px, 100%); margin-top: clamp(38px, 6vw, 72px); }
+    .workflow-col { border-top: 3px solid var(--ink); padding-top: 15px; }
+    .workflow-col:nth-child(2) { border-color: var(--blue); }
+    .workflow-col:nth-child(3) { border-color: var(--red); }
+    .workflow-col-title { margin-bottom: 10px; color: var(--blue); font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 10px; font-weight: 850; }
+    .workflow-item { display: grid; grid-template-columns: 72px 1fr; gap: 8px; padding: 8px 0; border-top: 1px solid rgba(26,26,46,.1); font-size: 11px; line-height: 1.55; }
+    .workflow-item-label { font-weight: 850; }
+    .workflow-item-desc { color: var(--ink-light); }
+    .portfolio { width: min(1180px, calc(100% - 36px)); margin: 0 auto; padding-top: clamp(70px, 10vw, 120px); }
+    .section-label { color: var(--blue); font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 11px; font-weight: 850; }
+    .section-heading { margin: 10px 0 42px; font: 900 clamp(2rem, 4.6vw, 3.45rem)/1.04 Georgia, "Songti SC", serif; }
+    .portfolio-row { display: grid; grid-template-columns: 1.08fr .92fr; gap: clamp(30px, 7vw, 90px); align-items: center; border-top: 1px solid rgba(26,26,46,.14); padding: clamp(46px, 7vw, 86px) 0; }
+    .portfolio-row:nth-child(even) .portfolio-media { order: 2; }
+    .portfolio-media { position: relative; min-width: 0; }
+    .portfolio-media > img { display: block; width: 100%; max-height: 550px; border-radius: 8px; object-fit: cover; object-position: top; background: #eaf2fb; }
+    .portfolio-media.book { display: grid; place-items: center; min-height: 540px; background: var(--blue); }
+    .portfolio-media.book > img { width: min(68%, 390px); max-height: 480px; border: 7px solid white; object-fit: contain; box-shadow: 0 24px 54px rgba(20,42,80,.3); transform: rotate(-2deg); }
+    .travel-collage { position: relative; min-height: 550px; overflow: hidden; border-radius: 8px; background: var(--yellow); }
+    .travel-collage iframe { position: absolute; width: 58%; height: 70%; border: 6px solid white; border-radius: 7px; background: white; box-shadow: 0 18px 38px rgba(33,42,62,.18); pointer-events: none; }
+    .travel-collage iframe:first-child { left: 5%; top: 7%; transform: rotate(-3deg); }
+    .travel-collage iframe:nth-child(2) { right: 4%; bottom: 6%; transform: rotate(3deg); }
+    .portfolio-copy .dim-num { color: var(--red); font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 10px; font-weight: 850; }
+    .portfolio-copy h3 { margin: 11px 0 15px; font: 900 clamp(1.7rem, 3vw, 2.55rem)/1.08 Georgia, "Songti SC", serif; }
+    .dim-desc { color: var(--ink-light); font-size: 14px; line-height: 1.85; }
+    .project-facts { display: grid; gap: 0; margin-top: 22px; border-top: 1px solid rgba(26,26,46,.14); }
+    .project-fact { display: grid; grid-template-columns: 85px 1fr; gap: 14px; border-bottom: 1px solid rgba(26,26,46,.1); padding: 11px 0; color: var(--ink-light); font-size: 11px; line-height: 1.55; }
+    .project-fact b { color: var(--ink); }
+    .project-link { display: inline-flex; align-items: center; gap: 8px; margin-top: 24px; border-radius: 5px; padding: 10px 13px; background: var(--blue); color: white; font-size: 12px; font-weight: 850; }
+    .project-link.yellow { background: var(--yellow); color: var(--ink); }
+    .dim-works-list { display: grid; gap: 7px; margin-top: 16px; }
+    .dim-work-item { display: flex; align-items: center; justify-content: space-between; gap: 12px; border-radius: 6px; padding: 10px 11px; background: var(--cream-dark); color: var(--ink-light); font-size: 12px; line-height: 1.4; }
+    .dim-work-item:hover { color: var(--blue-deep); background: rgba(43,127,216,.1); }
+    .research-strip { display: grid; grid-template-columns: .7fr 1.3fr; gap: clamp(28px, 8vw, 100px); margin-top: 25px; border-radius: 8px; padding: clamp(34px, 6vw, 68px); background: var(--yellow); }
+    .research-strip h3 { margin: 10px 0; font: 900 clamp(1.7rem, 3.8vw, 2.8rem)/1.05 Georgia, "Songti SC", serif; }
+    .research-data { display: grid; grid-template-columns: repeat(2, 1fr); border-top: 3px solid var(--ink); }
+    .research-data div { min-height: 120px; border-right: 1px solid rgba(26,26,46,.18); border-bottom: 1px solid rgba(26,26,46,.18); padding: 20px; }
+    .research-data strong { display: block; font: 900 2rem Georgia, serif; }
+    .research-data span { color: var(--ink-light); font-size: 10px; }
+    .works-footer { padding: 34px 18px 80px; color: var(--ink-faint); font-size: 10px; text-align: center; }
+
+    .canvas-page {
+      position: relative;
+      height: 100vh;
+      background: var(--cream);
+    }
+    .canvas-page iframe {
+      width: 100%;
+      height: 100%;
+      border: 0;
+      display: block;
+    }
+    .canvas-hint {
+      position: fixed;
+      top: 24px;
+      left: 50%;
+      z-index: 10;
+      border-radius: 6px;
+      padding: 8px 14px;
+      background: rgba(255,255,255,0.88);
+      color: var(--ink-light);
+      box-shadow: 0 8px 24px rgba(26,26,46,0.12);
+      transform: translateX(-50%);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    @media (max-width: 860px) {
+      .pill-nav { bottom: 14px; max-width: calc(100vw - 20px); overflow-x: auto; }
+      .pill-nav button { padding: 8px 13px; font-size: 12px; }
+      .desktop-surface { height: calc(100vh - 30px); min-height: 700px; }
+      .desktop-sticker { left: 9%; bottom: 35%; width: 220px; }
+      .dicon { width: 70px; }
+      .dicon-art { width: 42px; height: 42px; }
+      .dicon-label { font-size: 10px; }
+      .services-grid, .workflow-columns { grid-template-columns: 1fr; }
+      .profile-card { grid-template-columns: 1fr; text-align: center; }
+      .profile-card img { margin: 0 auto; }
+      .win-folder { grid-template-columns: repeat(2, 1fr); }
+      .works-hero { min-height: 920px; padding: 56px 18px 50px; justify-content: flex-start; }
+      .works-hero-avatar { right: 18px; top: 90px; width: 180px; opacity: .22; }
+      .works-hero-copy { width: 100%; }
+      .workflow-columns { margin-top: 38px; }
+      .workflow-item { grid-template-columns: 78px 1fr; }
+      .portfolio-row, .research-strip { grid-template-columns: 1fr; }
+      .portfolio-row:nth-child(even) .portfolio-media { order: 0; }
+      .portfolio-media.book { min-height: 480px; }
+      .travel-collage { min-height: 480px; }
+      .blue-chat-window { width: 96vw; height: 74vh; }
+      .blue-sidebar { width: 46px; }
+      .blue-topbar { gap: 12px; padding: 0 10px; }
+      .blue-tab { font-size: 11px; }
+      .chat-log { padding: 12px 10px; }
+    }
+  </style>
+  <link rel="stylesheet" href="assets/lanland.css">
+  <link rel="stylesheet" href="assets/ai-lover.css">
+<link rel="icon" href="assets/lala-land-logo-gradient.png" type="image/png">
+</head>
+<body>
+  <nav class="pill-nav" id="pillNav" aria-label="主导航">
+    <button data-tab="home" class="active"><span class="pill-num">01</span>蓝蓝在场</button>
+    <button data-tab="works"><span class="pill-num">02</span>火花工坊</button>
+    <button data-tab="system"><span class="pill-num">03</span>思想原野</button>
+    <button data-tab="literature"><span class="pill-num">04</span>文学在我</button>
+  </nav>
+  <div class="transition-overlay" id="transitionOverlay"></div>
+
+  <main class="tab-page active" id="page-home">
+    <section class="land" id="desktop" aria-label="lala land 互动岛屿">
+      <header class="land-topbar">
+        <a class="land-brand" href="#home" aria-label="蓝蓝的 lala land 首页"><img src="assets/lala-land-logo-gradient.png" alt="蓝" width="1488" height="1088"><span>lala land</span></a>
+      </header>
+      <div class="land-stage" id="desktopSurface">
+        <div class="land-copy"><h1 class="sr-only">欢迎来到「啦啦LAND」</h1><img class="welcome-title" src="assets/lala-welcome-title.png" alt="" width="2172" height="724" fetchpriority="high"></div>
+        <div class="ocean-world" aria-hidden="true"><img src="assets/lala-sea-open.png" alt="" width="1672" height="941" fetchpriority="high"><svg class="island-flag" viewBox="0 0 100 120" aria-hidden="true"><defs><linearGradient id="sea-pole" x2="1" y2="0"><stop stop-color="#fafcff"/><stop offset=".45" stop-color="#c4e1f3"/><stop offset="1" stop-color="#7387b8"/></linearGradient><linearGradient id="sea-cloth"><stop stop-color="#b5c9fc"/><stop offset=".42" stop-color="#fafcff"/><stop offset=".72" stop-color="#c7d9ff"/><stop offset="1" stop-color="#a6b7eb"/></linearGradient></defs><ellipse cx="52" cy="111" rx="34" ry="5" fill="#4b6f9b" opacity=".18" transform="rotate(10 52 111)"/><path d="M17 108V12" stroke="url(#sea-pole)" stroke-width="3" stroke-linecap="round"/><circle cx="17" cy="10" r="3" fill="#f4f6ff"/><g class="flag-cloth"><path d="M19 15C42 2 58 28 91 12L85 54C55 69 42 44 19 57Z" fill="url(#sea-cloth)" stroke="#f0f7ff" stroke-width=".7"/><path d="M50 25L54 36L64 40L53 43L49 54L46 43L36 39L47 36Z" fill="#6a94d0" opacity=".85"/><path d="M25 18C45 12 59 34 84 21" fill="none" stroke="#fff" opacity=".55"/></g></svg></div>
+        <div class="courtyard-world" aria-hidden="true"><img src="assets/lala-island-interior.png" alt="" width="1672" height="941"><svg class="island-flag" viewBox="0 0 100 120" aria-hidden="true"><defs><linearGradient id="court-pole" x2="1" y2="0"><stop stop-color="#fafcff"/><stop offset=".45" stop-color="#c4e1f3"/><stop offset="1" stop-color="#7387b8"/></linearGradient><linearGradient id="court-cloth"><stop stop-color="#b5c9fc"/><stop offset=".42" stop-color="#fafcff"/><stop offset=".72" stop-color="#c7d9ff"/><stop offset="1" stop-color="#a6b7eb"/></linearGradient></defs><ellipse cx="52" cy="111" rx="34" ry="5" fill="#4b6f9b" opacity=".18" transform="rotate(10 52 111)"/><path d="M17 108V12" stroke="url(#court-pole)" stroke-width="3" stroke-linecap="round"/><circle cx="17" cy="10" r="3" fill="#f4f6ff"/><g class="flag-cloth"><path d="M19 15C42 2 58 28 91 12L85 54C55 69 42 44 19 57Z" fill="url(#court-cloth)" stroke="#f0f7ff" stroke-width=".7"/><path d="M50 25L54 36L64 40L53 43L49 54L46 43L36 39L47 36Z" fill="#6a94d0" opacity=".85"/><path d="M25 18C45 12 59 34 84 21" fill="none" stroke="#fff" opacity=".55"/></g></svg></div>
+        <div class="sea-glints" aria-hidden="true"></div>
+
+        
+        <div class="island-avatar" id="lanlanSticker"><div class="avatar-disc"><img src="assets/lanlan-avatar.png" alt="蓝蓝的蓝色手绘头像"><img class="avatar-listening" src="assets/lanlan-headphones.png" alt="戴着白色耳机听歌的蓝蓝"></div><span class="avatar-caption" id="avatarCaption">岛主蓝蓝 · 等你登岛</span><span class="music-note" aria-hidden="true">♪</span><span class="music-note two" aria-hidden="true">♫</span></div>
+        <div class="case-anchor"><span class="case-beacon" aria-hidden="true"></span><button type="button" class="airpods-case" id="airpodsCase" aria-label="点击耳机仓，拉近镜头登岛" aria-expanded="false" aria-controls="islandFolders"><span class="case-interior"></span><span class="airpod left"></span><span class="airpod right"></span><span class="case-bottom"></span><span class="case-lid"></span></button><div class="case-hint" id="caseHint"><b>点击耳机仓 · 登岛</b></div></div>
+        <div class="land-folders" id="islandFolders" inert>
+          <button class="land-folder" type="button" data-win="win-profile" style="--tilt:-9deg"><span class="folder-shape"><span class="folder-glyph">☺</span></span><span class="folder-label">关于蓝蓝</span></button>
+          <button class="land-folder" type="button" data-href="works/ai-lover.html" style="--tilt:8deg"><span class="folder-shape"><span class="folder-glyph">♡</span></span><span class="folder-label">AI-Lover 陪伴智能体</span></button>
+          <button class="land-folder" type="button" data-href="works/tea-road.html" style="--tilt:-7deg"><span class="folder-shape"><span class="folder-glyph">文</span></span><span class="folder-label">《遇见东方》</span></button>
+          <button class="land-folder" type="button" data-win="win-xhs" style="--tilt:11deg"><span class="folder-shape"><span class="folder-glyph">✳</span></span><span class="folder-label">小红书日常</span></button>
+          <button class="land-folder" type="button" data-href="works/travel-agent.html" style="--tilt:-5deg"><span class="folder-shape"><span class="folder-glyph">↗</span></span><span class="folder-label">Travel Skill</span></button>
+          <button class="land-folder" type="button" data-href="works/kyoto-map.html" style="--tilt:9deg"><span class="folder-shape"><span class="folder-glyph">⌁</span></span><span class="folder-label">旅行故事地图</span></button>
+          <button class="land-folder" type="button" data-win="win-writing" style="--tilt:-10deg"><span class="folder-shape"><span class="folder-glyph">✎</span></span><span class="folder-label">写作课研究</span></button>
+          <button class="land-folder" type="button" data-win="win-campus" style="--tilt:6deg"><span class="folder-shape"><span class="folder-glyph">↝</span></span><span class="folder-label">WHU → NJU</span></button>
+          <button class="land-folder" type="button" data-win="win-bluechat" style="--tilt:-8deg"><span class="folder-shape"><span class="folder-glyph">✦</span></span><span class="folder-label">蓝蓝 Agent</span></button>
+          <button class="land-folder" type="button" data-win="win-work" style="--tilt:5deg"><span class="folder-shape"><span class="folder-glyph">↗</span></span><span class="folder-label">Work with me</span></button>
+        </div>
+        <div class="land-controls" id="landControls" inert><button type="button" id="randomFolder">✧ 随机逛逛</button><button type="button" id="tidyFolders" aria-pressed="false">⠿ 一键整理</button><button type="button" id="scatterFolders" aria-pressed="true">↝ 自由散落</button></div>
+        <button type="button" class="land-return" id="returnToSea" disabled>↖ 返回海面</button>
+        <p class="land-status" id="landStatus" role="status" aria-live="polite">打开耳机仓，让好奇心登岛。</p>
+
+        <template id="win-profile">
+          <div class="os-window" data-title="关于蓝蓝" style="width:620px;">
+            <div class="os-body">
+              <div class="profile-card">
+                <img src="assets/lanlan-avatar.png" alt="蓝蓝头像">
+                <div>
+                  <h2>蓝蓝</h2>
+                  <p>WHU-NJU。养成系博主，在广阔天地寻找自己。</p>
+                  <p>我把日常、vlog、旅行、校园和 AI 协作都收进自己的小岛里。这里是主页，也是一个慢慢生长的个人世界。</p>
+                  <div class="profile-meta">
+                    <span>ENFP</span><span>22 岁</span><span>湖北武汉</span><span>vlog 博主</span><span>武汉大学</span><span>南京大学</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </template>
+
+        <template id="win-xhs">
+          <div class="os-window" data-title="小红书主页" data-url="xiaohongshu.com/user/profile/62fb319c000000001200fe1d" style="width:520px;">
+            <div class="os-body">
+              <div class="sayhi-heading">啦啦蓝</div>
+              <div class="sayhi-sub">xiaohongshu / vlog / daily notes</div>
+              <div class="services-grid">
+                <div class="service-card">
+                  <div class="service-title">主页数据</div>
+                  <div class="service-desc">389 关注<br>2333 粉丝<br>2.9 万获赞与收藏</div>
+                </div>
+                <div class="service-card">
+                  <div class="service-title">账号简介</div>
+                  <div class="service-desc">WHU-NJU<br>养成系博主<br>分享日常 / 订阅 vlog</div>
+                </div>
+              </div>
+              <div class="dim-works-list">
+                <a class="dim-work-item" href="https://www.xiaohongshu.com/user/profile/62fb319c000000001200fe1d/640fcf080000000007038dcb" target="_blank"><span>置顶：最后还是发了朋友圈的一张照片</span><span>3339</span></a>
+                <a class="dim-work-item" href="https://www.xiaohongshu.com/user/profile/62fb319c000000001200fe1d/6a40b9900000000008003871" target="_blank"><span>武大四年，是未竟的迦南，是撒马尔罕。</span><span>153</span></a>
+                <a class="dim-work-item" href="https://www.xiaohongshu.com/user/profile/62fb319c000000001200fe1d/69ff00ee00000000230059f4" target="_blank"><span>曼谷一天 Citywalk</span><span>71</span></a>
+              </div>
+              <div class="sayhi-links" style="margin-top:16px;">
+                <span><a href="https://www.xiaohongshu.com/user/profile/62fb319c000000001200fe1d" target="_blank">打开小红书主页</a></span>
+              </div>
+            </div>
+          </div>
+        </template>
+
+        <template id="win-work">
+          <div class="os-window" data-title="Work With Me" data-url="1839754990@qq.com">
+            <div class="os-body">
+              <div class="sayhi-heading">Work With Me</div>
+              <div class="sayhi-sub">1 蓝蓝 + AI = 1 Team</div>
+              <div class="services-grid">
+                <div class="service-card">
+                  <div class="service-title">内容合作</div>
+                  <div class="service-desc">校园生活 / 旅行记录 / 女大学生日常 / 品牌种草<br>小红书 @啦啦蓝</div>
+                </div>
+                <div class="service-card">
+                  <div class="service-title">AI 产品 · Spark / 火花</div>
+                  <div class="service-desc">AI-Lover 陪伴智能体 / Travel Skill / 研究型小工具 / 从想法到可操作网页</div>
+                </div>
+              </div>
+              <div class="sayhi-links">
+                <span>邮箱：<a href="mailto:1839754990@qq.com">1839754990@qq.com</a></span>
+                <span>小红书：<a href="https://www.xiaohongshu.com/user/profile/62fb319c000000001200fe1d" target="_blank">啦啦蓝</a></span>
+              </div>
+            </div>
+          </div>
+        </template>
+
+        <template id="win-writing">
+          <div class="os-window" data-title="线上写作课研究" style="width:560px;">
+            <div class="os-body">
+              <div class="sayhi-heading">Writing Course Research</div>
+              <div class="sayhi-sub">knowledge service / online writing courses</div>
+              <p class="dim-desc">从知识服务视角研究线上中文写作课的供给端模式，观察传统媒体、互联网平台和个人 IP 如何把经验、陪跑和工具变成课程服务。</p>
+              <div class="services-grid" style="margin-top:18px;">
+                <div class="service-card"><div class="service-title">研究方向</div><div class="service-desc">AI 写作兴起后的课程供给、服务交付和创作者 IP 标准化。</div></div>
+                <div class="service-card"><div class="service-title">方法</div><div class="service-desc">问卷、访谈、榜单分析、用户评价整理和模式比较。</div></div>
+              </div>
+            </div>
+          </div>
+        </template>
+
+        <template id="win-campus">
+          <div class="os-window" data-title="WHU 到 NJU" style="width:520px;">
+            <div class="os-body">
+              <div class="sayhi-heading">WHU - NJU</div>
+              <div class="sayhi-sub">literature / campus / growing log</div>
+              <p class="dim-desc">2022-2026 武汉大学文学院，2026-2029 南京大学文学院。关键词：中文、现当代文学、内容运营、用户研究、AI 产品、写作和旅行。</p>
+              <div class="dim-works-list">
+                <a class="dim-work-item" href="#works"><span>本科国家奖学金 / 武汉大学优秀学生</span><span>荣誉</span></a>
+                <a class="dim-work-item" href="#works"><span>校园新媒体 / 辩论队 / 内容阅读量 100w+</span><span>内容</span></a>
+                <a class="dim-work-item" href="#works"><span>品牌策划竞赛 / 计算机设计大赛</span><span>项目</span></a>
+              </div>
+            </div>
+          </div>
+        </template>
+
+        <template id="win-tearoad">
+          <div class="os-window" data-title="《遇见东方》写作档案" style="width:640px;">
+            <div class="os-body">
+              <div class="profile-card">
+                <img src="assets/tea-road-book.png" alt="《遇见东方》书封" style="border-radius:6px;object-fit:contain;background:#2b7fd8;">
+                <div>
+                  <div class="sayhi-sub">published writing / field research</div>
+                  <h2>茶路贯古今，“新火”试“新茶”</h2>
+                  <p>收录于《遇见东方：中外青年万里茶道考察纪行（中英图文版）》。蓝蓝参与采访、编辑与写作，从宜昌茶路现场观察传统如何在当代继续更新。</p>
+                  <div class="dim-works-list"><a class="dim-work-item" href="works/tea-road.html"><span>打开完整写作档案</span><span>open</span></a></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </template>
+
+        <template id="win-bluechat">
+          <div class="os-window blue-chat-window" data-title="蓝蓝 Agent">
+            <div class="os-body" style="padding:0; max-height:none; height:100%; overflow:hidden;">
+              <div class="blue-chat">
+                <div class="blue-sidebar">
+                  <img src="assets/lanlan-avatar.png" alt="蓝蓝">
+                  <div style="width:34px;height:34px;border-radius:50%;background:#f0efec;border:1px solid #e2e0dc;"></div>
+                </div>
+                <div class="blue-main">
+                  <div class="blue-topbar">
+                    <button class="blue-tab active" type="button" data-agent-tab="chat">对话</button>
+                    <button class="blue-tab" type="button" data-agent-tab="delivery">交付</button>
+                    <button class="blue-tab" type="button" data-agent-tab="spark">灵感</button>
+                    <button class="blue-tab" type="button" data-agent-tab="schedule">日程</button>
+                    <button class="blue-tab" type="button" data-agent-tab="favorites">收藏</button>
+                  </div>
+                  <div class="blue-search"><input type="search" placeholder="搜索当前聊天记录..." data-agent-search></div>
+
+                  <section class="agent-pane active" data-agent-pane="chat">
+                    <div class="chat-log" data-chat-log>
+                    <div class="msg-bot">
+                      <div class="bot-avatar"><img src="assets/lanlan-avatar.png" alt=""></div>
+                      <div class="bot-content">
+                          <div class="bot-mutter">蓝蓝的论文答辩搭子已上线。</div>
+                          <div>可以直接打字问我蓝蓝的网站、作品和论文。先从这篇毕业论文开始也很好：<strong>《摹仿，神话与未竟的欲望——新文学小说中的女性想象及他者化困境（1919-1933）》</strong>。</div>
+                      </div>
+                    </div>
+                      <div class="quick-questions">
+                        <button class="quick-question" type="button" data-thesis-question="summary">这篇论文讲的是什么？</button>
+                        <button class="quick-question" type="button" data-thesis-question="point">最想表达什么？</button>
+                        <button class="quick-question" type="button" data-thesis-question="method">用了什么方法？</button>
+                        <button class="quick-question" type="button" data-thesis-question="theory">用了哪些理论？</button>
+                        <button class="quick-question" type="button" data-thesis-question="why">为什么选这个题？</button>
+                        <button class="quick-question" type="button" data-thesis-question="next">还想继续研究什么？</button>
+                      </div>
+                    </div>
+                    <form class="blue-input-bar" data-chat-form>
+                      <div class="blue-input">
+                        <textarea rows="1" placeholder="输入问题，按 Enter 发送…" data-chat-input></textarea>
+                        <div class="blue-input-footer"><span>Lanlan Thesis Agent · Local</span></div>
+                        <button class="agent-send" type="submit">发送</button>
+                      </div>
+                    </form>
+                  </section>
+
+                  <section class="agent-pane" data-agent-pane="delivery">
+                    <div class="agent-panel-scroll"><div class="agent-panel-head"><h3>交付 / Deliveries</h3><span>可以直接打开</span></div><div class="agent-grid">
+                      <article class="agent-item"><small>WRITING</small><h4>《遇见东方》写作档案</h4><p>万里茶道采访、编辑与文章页面。</p><a href="works/tea-road.html">打开 →</a></article>
+                      <article class="agent-item"><small>AI PRODUCT</small><h4>AI-Lover 陪伴智能体</h4><p>情感陪伴、语音与动作交互，连接数字人与实体设备。</p><a href="works/ai-lover.html">打开 →</a></article>
+                      <article class="agent-item"><small>RESEARCH</small><h4>毕业论文知识簇</h4><p>欲望、摹仿、女性想象与现代性。</p><a href="A-infinite-canvas-v2.html">进入 03 →</a></article>
+                      <article class="agent-item"><small>LITERATURE</small><h4>22 岁阅读档案</h4><p>阅读数据、知识树、书目与写作。</p><a href="literature.html">打开 04 →</a></article>
+                    </div>
+                  </section>
+
+                  <section class="agent-pane" data-agent-pane="spark">
+                    <div class="agent-panel-scroll"><div class="agent-panel-head"><h3>灵感 / Sparks</h3><button class="spark-button" type="button" data-random-spark>换一个火花</button></div><div class="spark-output" data-spark-output>把毕业论文里的“三角欲望”做成一个可以拖动人物关系的互动实验。</div><div class="agent-grid"><article class="agent-item"><small>CONTENT</small><h4>一分钟讲清论文</h4><p>不用学术黑话，只讲“我们为什么会借别人的眼睛欲望”。</p></article><article class="agent-item"><small>PRODUCT</small><h4>文学路线地图</h4><p>把书、城市与理论做成可以行走的南京文学地图。</p></article></div></div>
+                  </section>
+
+                  <section class="agent-pane" data-agent-pane="schedule">
+                    <div class="agent-panel-scroll"><div class="agent-panel-head"><h3>日程 / Next</h3><span>保存在当前设备</span></div><div class="agent-task-list" data-agent-task-list>
+                      <label class="agent-task"><input type="checkbox" data-schedule-id="thesis-map"><span>继续补充论文概念卡片与连线</span><time>近期</time></label>
+                      <label class="agent-task"><input type="checkbox" data-schedule-id="book-photo"><span>整理《遇见东方》现场照片</span><time>待定</time></label>
+                      <label class="agent-task"><input type="checkbox" data-schedule-id="travel-test"><span>用新目的地测试 Travel Skill</span><time>下一次旅行</time></label>
+                    </div><form class="agent-add-row" data-schedule-form><input name="task" required placeholder="新增一件事"><input name="date" type="date"><button class="agent-add-button" type="submit">添加</button></form></div>
+                  </section>
+
+                  <section class="agent-pane" data-agent-pane="favorites">
+                    <div class="agent-panel-scroll"><div class="agent-panel-head"><h3>收藏 / Favorites</h3><span>点击星号切换</span></div><div class="agent-grid">
+                      <article class="agent-item"><button class="favorite-toggle saved" type="button" title="取消收藏" data-favorite-id="thesis">★</button><small>THESIS</small><h4>摹仿，神话与未竟的欲望</h4><p>蓝蓝 2026 年毕业论文。</p></article>
+                      <article class="agent-item"><button class="favorite-toggle saved" type="button" title="取消收藏" data-favorite-id="tea-quote">★</button><small>QUOTE</small><h4>恒常之中寻找变化</h4><p>来自万里茶道文章的核心句。</p></article>
+                      <article class="agent-item"><button class="favorite-toggle" type="button" title="收藏" data-favorite-id="girard">☆</button><small>BOOK</small><h4>《浪漫的谎言与小说的真实》</h4><p>三角欲望的理论入口。</p></article>
+                      <article class="agent-item"><button class="favorite-toggle" type="button" title="收藏" data-favorite-id="beijing">☆</button><small>PROJECT</small><h4>北京四日准备工作台</h4><p>把路线、预算、预约与打包接在一起。</p></article>
+                    </div></div>
+                  </section>
+                </div>
+              </div>
+            </div>
+          </div>
+        </template>
+      </div>
+    </section>
+
+  </main>
+
+  <main class="tab-page" id="page-works">
+    <div class="works-page">
+      <section class="works-hero">
+        <img class="works-hero-avatar" src="assets/lanlan-avatar.png" alt="蓝蓝头像">
+        <div class="works-hero-copy">
+          <div class="works-kicker">02 / spark studio</div>
+          <h1 class="workflow-headline">1 蓝蓝 <em>+</em> AI<br>= 1 Team</h1>
+          <p class="workflow-subtitle">文学训练给我问题意识，内容创作让我靠近真实的人，AI 则把许多“好想做”变成今天就能打开的原型。</p>
+        </div>
+        <div class="workflow-columns">
+          <div class="workflow-col">
+            <div class="workflow-col-title">RESEARCH &amp; THINK</div>
+            <div class="workflow-item"><span class="workflow-item-label">用户研究</span><span class="workflow-item-desc">问卷、访谈、样本和反馈，把模糊问题变成判断。</span></div>
+            <div class="workflow-item"><span class="workflow-item-label">文学研究</span><span class="workflow-item-desc">文本细读、理论连接与历史语境。</span></div>
+          </div>
+          <div class="workflow-col">
+            <div class="workflow-col-title">CREATE &amp; BUILD</div>
+            <div class="workflow-item"><span class="workflow-item-label">AI 产品</span><span class="workflow-item-desc">AI-Lover 陪伴智能体、交互设计与 Travel Skill。</span></div>
+            <div class="workflow-item"><span class="workflow-item-label">Vibe Coding</span><span class="workflow-item-desc">从火花到可操作、可分享的网页原型。</span></div>
+          </div>
+          <div class="workflow-col">
+            <div class="workflow-col-title">WRITE &amp; SHARE</div>
+            <div class="workflow-item"><span class="workflow-item-label">内容创作</span><span class="workflow-item-desc">小红书、vlog 与校园内容，累计阅读量 100w+。</span></div>
+            <div class="workflow-item"><span class="workflow-item-label">写作出版</span><span class="workflow-item-desc">田野采访、书稿编辑与文学论文。</span></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="portfolio">
+        <div class="section-label">MORE / SPARKS</div>
+        <h2 class="section-heading">已经长出来的火花</h2>
+        <article class="portfolio-row ai-entry" id="ai-lover">
+          <a class="portfolio-media ai-entry-media" href="works/ai-lover.html" aria-label="查看 AI-Lover 完整产品案例"><img src="assets/ai-lover/image3.png" alt="AI-Lover 主控界面：数字人、实时语音、摄像头与设备交互" loading="lazy"><div class="ai-entry-thumbs"><img src="assets/ai-lover/image6.png" alt="比心粒子互动" loading="lazy"><img src="assets/ai-lover/image9.png" alt="烟花特效互动" loading="lazy"></div><span>语音 × 动作 × 情感陪伴</span></a>
+          <div class="portfolio-copy"><div class="dim-num">SPARK_01 / FEATURED AI PRODUCT</div><h3>AI-Lover：<br>让陪伴，有真实的回应</h3><p class="dim-desc">我参与开发的情感陪伴智能体，将语音、Live2D、仿生头与灵巧手连接起来，让比心、双人写字与烟花成为可参与的互动体验。</p><div class="project-facts"><div class="project-fact"><b>我的贡献</b><span>用户研究 / 互动功能与 Live2D 设计 / 大小屏、摄像头需求 / 联合测试</span></div><div class="project-fact"><b>展出经历</b><span>2026 数字经济大会首发首秀<br>ISC.AI 2026 等多次展会</span></div></div><a class="project-link" href="works/ai-lover.html">阅读完整产品案例 →</a><a class="ai-entry-live" href="https://ai.vituralmodel.com/" target="_blank" rel="noopener">体验产品 ↗</a></div>
+        </article>
+        <article class="portfolio-row">
+          <div class="portfolio-media book"><img src="assets/tea-road-book.png" alt="《遇见东方》书封"></div>
+          <div class="portfolio-copy"><div class="dim-num">SPARK_02 / PUBLISHED WRITING</div><h3>《遇见东方》：一条茶路怎样进入今天</h3><p class="dim-desc">参与《遇见东方：中外青年万里茶道考察纪行（中英图文版）》采访、编辑与写作。署名文章《茶路贯古今，“新火”试“新茶”》从宜昌茶路现场观察传统如何更新。</p><div class="project-facts"><div class="project-fact"><b>我的角色</b><span>采访 / 编辑 / 撰稿</span></div><div class="project-fact"><b>文章命题</b><span>在恒常之中寻找变化，在变化之中确认自身</span></div></div><a class="project-link" href="works/tea-road.html">打开写作档案 →</a></div>
+        </article>
+        <article class="portfolio-row">
+          <div class="portfolio-media travel-collage"><iframe src="works/beijing-travel/index.html#top" title="北京四日旅行 Skill 总览"></iframe><iframe src="works/beijing-travel/index.html#dashboard" title="北京四日旅行准备工作台"></iframe></div>
+          <div class="portfolio-copy"><div class="dim-num">SPARK_03 / TRAVEL TOOL</div><h3>Travel Skill：把攻略做成旅程</h3><p class="dim-desc">新版北京四日工作台把真实目的地研究、天气、闭馆日、环球影城、手机出片、预算、预约、打包和 Todo 放进同一套可执行 H5。</p><div class="project-facts"><div class="project-fact"><b>能力</b><span>调研 / 行程编排 / 地图 / 摄影产出 / HTML</span></div><div class="project-fact"><b>协作</b><span>蓝蓝负责用户与表达，AI 负责研究扩展和原型加速</span></div></div><a class="project-link yellow" href="works/travel-agent.html">查看真实成果 →</a></div>
+        </article>
+
+        <section class="research-strip"><div><div class="dim-num">SPARK_04 / USER RESEARCH</div><h3>线上写作课研究</h3><p class="dim-desc">从供给端、个人 IP、陪跑服务和平台工具切入，把散乱市场信息整理成可比较的产品结构。</p></div><div class="research-data"><div><strong>391</strong><span>份有效问卷</span></div><div><strong>6</strong><span>个平台样本</span></div><div><strong>12</strong><span>门代表课程</span></div><div><strong>30</strong><span>份课程评价</span></div></div></section>
+        <article class="portfolio-row">
+          <div class="portfolio-media"><img src="assets/lanlan-avatar.png" alt="啦啦蓝头像" style="object-fit:contain;background:#2b7fd8;"></div>
+          <div class="portfolio-copy"><div class="dim-num">SPARK_05 / CONTENT</div><h3>@啦啦蓝：把成长当作长期内容</h3><p class="dim-desc">WHU-NJU，养成系内容创作者。分享校园、旅行、日常与 vlog；累计内容阅读量 100w+，抖音获赞 10w+。</p><div class="project-facts"><div class="project-fact"><b>小红书</b><span>2333 粉丝 / 2.9 万获赞与收藏 / 1461 篇笔记</span></div><div class="project-fact"><b>方法</b><span>真实记录、长期更新、让内容与生活一起成长</span></div></div><a class="project-link" href="https://www.xiaohongshu.com/user/profile/62fb319c000000001200fe1d" target="_blank" rel="noopener">打开小红书主页 →</a></div>
+        </article>
+      </section>
+      <div class="works-footer">视觉规范参考 ESTHER Design System（CC BY-NC-SA 4.0）· 内容与作品均为蓝蓝版本</div>
+    </div>
+  </main>
+
+  <main class="tab-page" id="page-system">
+    <div class="canvas-page">
+      <iframe data-src="A-infinite-canvas-v2.html" id="canvasFrame" title="蓝蓝的 OS Canvas"></iframe>
+    </div>
+  </main>
+
+  <main class="tab-page" id="page-literature">
+    <div class="canvas-page">
+      <iframe data-src="literature.html" id="literatureFrame" title="文学在我"></iframe>
+    </div>
+  </main>
+
+  <script>
+    (function() {
+      "use strict";
+      if ("scrollRestoration" in history) history.scrollRestoration = "manual";
+      window.scrollTo(0, 0);
+
+      var TABS = ["home", "works", "system", "literature"];
+      var pillNav = document.getElementById("pillNav");
+      var canvasFrame = document.getElementById("canvasFrame");
+      var literatureFrame = document.getElementById("literatureFrame");
+      var canvasLoaded = false;
+      var literatureLoaded = false;
+      var typingDone = false;
+      var launched = true;
+      var looping = false;
+
+      function currentTab() {
+        var hash = (location.hash || "#home").replace("#", "");
+        return TABS.indexOf(hash) >= 0 ? hash : "home";
+      }
+      function applyScrollLock() {
+        document.documentElement.classList.toggle("scroll-unlocked", launched || currentTab() !== "home");
+      }
+      function switchTab(tab) {
+        document.querySelectorAll(".tab-page").forEach(function(page) {
+          page.classList.toggle("active", page.id === "page-" + tab);
+        });
+        pillNav.querySelectorAll("button").forEach(function(btn) {
+          btn.classList.toggle("active", btn.dataset.tab === tab);
+        });
+        if (tab === "system" && !canvasLoaded) {
+          canvasFrame.src = canvasFrame.dataset.src;
+          canvasLoaded = true;
+        }
+        if (tab === "literature" && !literatureLoaded) {
+          literatureFrame.src = literatureFrame.dataset.src;
+          literatureLoaded = true;
+        }
+        applyScrollLock();
+        window.scrollTo(0, 0);
+      }
+      pillNav.addEventListener("click", function(e) {
+        var btn = e.target.closest("button[data-tab]");
+        if (!btn) return;
+        location.hash = btn.dataset.tab;
+      });
+      window.addEventListener("hashchange", function() { switchTab(currentTab()); });
+
+      var surface = document.getElementById("desktopSurface");
+      var winZ = 100;
+      var openCount = 0;
+      function addChrome(win) {
+        var dragbar = document.createElement("div");
+        dragbar.className = "os-dragbar";
+        win.insertBefore(dragbar, win.firstChild);
+        var traffic = document.createElement("div");
+        traffic.className = "os-traffic";
+        traffic.innerHTML = '<button class="tl-close" type="button" aria-label="关闭内容">×</button>';
+        dragbar.textContent = win.dataset.title || '岛上的收藏';
+        win.setAttribute('role', 'dialog'); win.setAttribute('aria-label', win.dataset.title || '岛上的收藏');
+        win.insertBefore(traffic, win.firstChild);
+        var closeBtn = traffic.querySelector(".tl-close");
+        var previousFocus = document.activeElement;
+        closeBtn.addEventListener("click", function(e) { e.stopPropagation(); win.remove(); if(previousFocus && previousFocus.isConnected) previousFocus.focus(); });
+        win.addEventListener('keydown', function(e) { if(e.key === 'Escape') { e.stopPropagation(); closeBtn.click(); } });
+        requestAnimationFrame(function(){ closeBtn.focus(); });
+        win.addEventListener("pointerdown", function() { win.style.zIndex = ++winZ; });
+        dragbar.addEventListener("pointerdown", function(e) {
+          if (e.target === closeBtn) return;
+          e.preventDefault();
+          var startX = e.clientX, startY = e.clientY, origX = win.offsetLeft, origY = win.offsetTop;
+          function onMove(ev) { win.style.left = origX + ev.clientX - startX + "px"; win.style.top = origY + ev.clientY - startY + "px"; }
+          function onUp() { document.removeEventListener("pointermove", onMove); document.removeEventListener("pointerup", onUp); }
+          document.addEventListener("pointermove", onMove);
+          document.addEventListener("pointerup", onUp);
+        });
+        var handle = document.createElement("div");
+        handle.className = "os-resize";
+        win.appendChild(handle);
+        handle.addEventListener("pointerdown", function(e) {
+          e.preventDefault();
+          e.stopPropagation();
+          var startX = e.clientX, startY = e.clientY, startW = win.offsetWidth, startH = win.offsetHeight;
+          function onMove(ev) { win.style.width = Math.max(280, startW + ev.clientX - startX) + "px"; win.style.height = Math.max(220, startH + ev.clientY - startY) + "px"; }
+          function onUp() { document.removeEventListener("pointermove", onMove); document.removeEventListener("pointerup", onUp); }
+          document.addEventListener("pointermove", onMove);
+          document.addEventListener("pointerup", onUp);
+        });
+      }
+      function openWindow(tplId) {
+        var existing = surface.querySelector('.os-window[data-from="' + tplId + '"]');
+        if (existing) { existing.style.zIndex = ++winZ; return existing; }
+        var tpl = document.getElementById(tplId);
+        if (!tpl) return;
+        var win = tpl.content.firstElementChild.cloneNode(true);
+        win.dataset.from = tplId;
+        var isSmall = window.innerWidth <= 768;
+        var centered = win.classList.contains("blue-chat-window");
+        if (centered) {
+          var surfW = surface.offsetWidth || window.innerWidth;
+          var surfH = surface.offsetHeight || window.innerHeight;
+          var winW = Math.min(720, surfW * 0.92);
+          var winH = Math.min(560, window.innerHeight * 0.78);
+          win.style.left = Math.max(8, (surfW - winW) / 2) + "px";
+          win.style.top = Math.max(60, (window.innerHeight - winH) / 2 - 20) + "px";
+        } else {
+          var offset = openCount % 5 * (isSmall ? 16 : 36);
+          win.style.left = (isSmall ? 12 : 150) + offset + "px";
+          win.style.top = (isSmall ? 60 : 60) + offset + "px";
+        }
+        win.style.zIndex = ++winZ;
+        openCount += 1;
+        addChrome(win);
+        surface.appendChild(win);
+        if (tplId === "win-bluechat") initAgentWindow(win);
+        return win;
+      }
+      function openIframeWindow(url, title) {
+        var existing = surface.querySelector('.os-window[data-href-src="' + url + '"]');
+        if (existing) { existing.style.zIndex = ++winZ; return; }
+        var win = document.createElement("div");
+        win.className = "os-window";
+        win.dataset.hrefSrc = url;
+        win.dataset.title = title || "岛上的收藏";
+        var body = document.createElement("div");
+        body.className = "os-body os-body-iframe";
+        var iframe = document.createElement("iframe");
+        iframe.src = url;
+        iframe.title = title || url;
+        iframe.style.cssText = "width:100%;height:100%;border:none;border-radius:0 0 10px 10px;background:white;";
+        body.appendChild(iframe);
+        win.appendChild(body);
+        var surfW = surface.offsetWidth || window.innerWidth;
+        var surfH = surface.offsetHeight || window.innerHeight;
+        var winW = Math.min(1100, window.innerWidth * 0.90);
+        var winH = Math.min(820, window.innerHeight * 0.80);
+        var offset = 0;
+        win.style.width = winW + "px";
+        win.style.height = winH + "px";
+        win.style.left = Math.max(8, (surfW - winW) / 2 + offset) + "px";
+        win.style.top = Math.max(60, (window.innerHeight - winH) / 2 - 20) + "px";
+        win.style.zIndex = ++winZ;
+        openCount += 1;
+        addChrome(win);
+        var extBtn = document.createElement("a");
+        extBtn.className = "os-external";
+        extBtn.href = url;
+        extBtn.target = "_blank";
+        extBtn.textContent = "↗";
+        win.appendChild(extBtn);
+        surface.appendChild(win);
+      }
+      function renderCanvasSync() {}
+      window.lanlandOpen = function(item) {
+        if (item.dataset.href) openIframeWindow(item.dataset.href, item.querySelector('.folder-label').textContent);
+        else if (item.dataset.win) openWindow(item.dataset.win);
+      };
+      var thesisAnswers = {
+        summary: "这篇论文研究 1919—1933 年新文学小说怎样想象‘新女性’，以及这些看似解放女性的叙事，为什么仍可能把女性变成爱情、民族、革命或现代性的象征。它关心的不只是‘写了哪些女性’，更是‘谁在替谁欲望、谁拥有解释权’。",
+        point: "蓝蓝最想表达的是：新女性进入文学，并不自动意味着她成为了真正的主体。很多作品一面呼唤女性解放，一面又借女性形象完成男性知识分子的自我想象。论文想保留这种矛盾，而不是把文本简单分成进步或落后。",
+        method: "方法上以文本细读为核心，再把人物关系、叙述位置和爱情情节放回 1919—1933 年的历史语境；同时借助‘摹仿欲望’分析欲望怎样经由第三者发生，并把不同小说中的女性想象做比较。",
+        theory: "主要理论入口包括 René Girard 的摹仿欲望与三角结构，也借助 Hegel / Kojève 的欲望与承认问题、Austin 的言语行为、Paul de Man 的修辞阅读，以及 Jameson 的历史与民族寓言视角。Auerbach 的 Mimesis 是蓝蓝正在继续延伸的现实再现参照。",
+        why: "因为蓝蓝读新文学小说时反复遇到一个不安：很多‘新女性’看起来走出了旧家庭，却仍被他人的目光定义。这个题目把她长期关心的女性写作、爱情神话、现代主体和‘他者之眼’收拢到了一起。",
+        next: "还想继续追问两条路：第一，女性自己的写作如何改写被观看、被象征的位置；第二，把摹仿从爱情关系扩展到革命、城市消费和今天的社交媒体，看看欲望怎样在新的媒介中继续借他人的眼睛发生。"
+      };
+      var sparkIdeas = [
+        "把毕业论文里的‘三角欲望’做成一个可以拖动人物关系的互动实验。",
+        "从微信读书 3887 条笔记里，每周选一个问题长成 60 秒口述与一张概念卡。",
+        "做一条南京文学散步路线：地点不是景点，而是作家、文本和现代性的接口。",
+        "把《遇见东方》的茶路现场做成可滚动的声音地图，连接工艺、品牌与人的讲述。",
+        "给 Travel Skill 增加‘文学旅行’模式：每一天由一本书、一条街和一个写作任务组成。",
+        "把小红书养成系内容变成一棵真正会生长的时间树，每篇笔记都是一个可回访节点。"
+      ];
+      var AGENT_TASKS = "lanlan-agent-schedule-v1";
+      var AGENT_FAVORITES = "lanlan-agent-favorites-v1";
+
+      function initAgentWindow(win) {
+        var saved = {};
+        try { saved = JSON.parse(localStorage.getItem(AGENT_TASKS) || "{}"); } catch (error) {}
+        win.querySelectorAll("[data-schedule-id]").forEach(function(input) { input.checked = !!saved[input.dataset.scheduleId]; });
+        (saved.custom || []).forEach(function(item) { appendAgentTask(win, item); });
+        var favorites = { thesis: true, "tea-quote": true };
+        try { favorites = Object.assign(favorites, JSON.parse(localStorage.getItem(AGENT_FAVORITES) || "{}")); } catch (error) {}
+        win.querySelectorAll("[data-favorite-id]").forEach(function(button) { var active = !!favorites[button.dataset.favoriteId]; button.classList.toggle("saved", active); button.textContent = active ? "★" : "☆"; button.title = active ? "取消收藏" : "收藏"; });
+      }
+      function appendAgentTask(win, item) {
+        var list = win.querySelector("[data-agent-task-list]");
+        if (!list || list.querySelector('[data-schedule-id="' + item.id + '"]')) return;
+        var label = document.createElement("label"); label.className = "agent-task";
+        label.innerHTML = '<input type="checkbox" data-schedule-id="' + item.id + '"><span></span><time></time>';
+        label.querySelector("span").textContent = item.text; label.querySelector("time").textContent = item.date || "待定";
+        list.appendChild(label);
+      }
+      function agentAnswer(input) {
+        var text = input.toLowerCase();
+        if (/讲什么|是什么|主题|摘要/.test(text)) return thesisAnswers.summary;
+        if (/表达|观点|结论|核心/.test(text)) return thesisAnswers.point;
+        if (/方法|怎么研究|文本细读/.test(text)) return thesisAnswers.method;
+        if (/理论|基拉尔|girard|黑格尔|科耶夫|奥尔巴赫|mimesis/.test(text)) return thesisAnswers.theory;
+        if (/为什么|选题|动机/.test(text)) return thesisAnswers.why;
+        if (/继续|未来|接下来|不足/.test(text)) return thesisAnswers.next;
+        if (/作品|做过|项目|交付/.test(text)) return "蓝蓝目前整理出的代表作品有《遇见东方》万里茶道写作、AI-Lover 陪伴智能体与 Travel Skill、线上写作课用户研究，以及持续更新的小红书内容。点上方“交付”可以直接打开对应页面。";
+        if (/合作|邮箱|联系/.test(text)) return "可以联系 1839754990@qq.com。适合聊内容共创、AI 产品原型、旅行页面、用户研究与写作相关合作。";
+        if (/阅读|书|文学/.test(text)) return "蓝蓝的阅读目前围绕欲望与摹仿、女性写作、现代性、现实再现和诗剧形式展开。04“文学在我”里有真实阅读数据、书架、知识树和 13 本书的路径。";
+        if (/你好|嗨|在吗/.test(text)) return "在。你可以把我当作蓝蓝网站里的本地 Agent：问论文、作品、阅读或合作都行。";
+        return "我先把你的问题记下了。这个本地版本目前最擅长回答蓝蓝的论文、阅读、作品与合作信息；你可以换一种问法，或点击上面的论文问题继续追问。";
+      }
+      function appendChatMessage(win, role, content, mutter) {
+        var log = win.querySelector("[data-chat-log]");
+        var message = document.createElement("div");
+        if (role === "user") { message.className = "msg-user"; message.innerHTML = '<div class="bubble"></div>'; message.querySelector(".bubble").textContent = content; }
+        else { message.className = "msg-bot"; message.innerHTML = '<div class="bot-avatar"><img src="assets/lanlan-avatar.png" alt=""></div><div class="bot-content"><div class="bot-mutter"></div><div class="bot-answer"></div></div>'; message.querySelector(".bot-mutter").textContent = mutter || "从蓝蓝的本地资料里找到了。"; message.querySelector(".bot-answer").textContent = content; }
+        log.appendChild(message); log.scrollTop = log.scrollHeight; return message;
+      }
+      function askAgent(win, question, answerKey) {
+        if (!question.trim()) return;
+        appendChatMessage(win, "user", question.trim());
+        var waiting = appendChatMessage(win, "bot", "", "正在翻论文笔记…");
+        waiting.querySelector(".bot-answer").innerHTML = '<span class="typing-dots"><i></i><i></i><i></i></span>';
+        setTimeout(function() { waiting.querySelector(".bot-mutter").textContent = "根据蓝蓝现有论文与文稿回答。"; waiting.querySelector(".bot-answer").textContent = answerKey ? thesisAnswers[answerKey] : agentAnswer(question); win.querySelector("[data-chat-log]").scrollTop = win.querySelector("[data-chat-log]").scrollHeight; }, 380);
+      }
+      function switchAgentTab(win, tab) {
+        win.querySelectorAll("[data-agent-tab]").forEach(function(item) { item.classList.toggle("active", item.dataset.agentTab === tab); });
+        win.querySelectorAll("[data-agent-pane]").forEach(function(item) { item.classList.toggle("active", item.dataset.agentPane === tab); });
+        var search = win.querySelector(".blue-search"); search.style.display = tab === "chat" ? "flex" : "none";
+      }
+      surface.addEventListener("click", function(event) {
+        var win = event.target.closest(".blue-chat-window"); if (!win) return;
+        var tab = event.target.closest("[data-agent-tab]"); if (tab) { switchAgentTab(win, tab.dataset.agentTab); return; }
+        var quick = event.target.closest("[data-thesis-question]"); if (quick) { askAgent(win, quick.textContent, quick.dataset.thesisQuestion); return; }
+        var spark = event.target.closest("[data-random-spark]"); if (spark) { win.querySelector("[data-spark-output]").textContent = sparkIdeas[Math.floor(Math.random() * sparkIdeas.length)]; return; }
+        var favorite = event.target.closest(".favorite-toggle"); if (favorite) { favorite.classList.toggle("saved"); favorite.textContent = favorite.classList.contains("saved") ? "★" : "☆"; favorite.title = favorite.classList.contains("saved") ? "取消收藏" : "收藏"; var favorites = {}; try { favorites = JSON.parse(localStorage.getItem(AGENT_FAVORITES) || "{}"); } catch (error) {} favorites[favorite.dataset.favoriteId] = favorite.classList.contains("saved"); localStorage.setItem(AGENT_FAVORITES, JSON.stringify(favorites)); }
+      });
+      surface.addEventListener("submit", function(event) {
+        var win = event.target.closest(".blue-chat-window"); if (!win) return;
+        if (event.target.matches("[data-chat-form]")) { event.preventDefault(); var input = event.target.querySelector("[data-chat-input]"); askAgent(win, input.value); input.value = ""; input.focus(); }
+        if (event.target.matches("[data-schedule-form]")) { event.preventDefault(); var text = event.target.elements.task.value.trim(); if (!text) return; var item = { id: "custom-" + Date.now(), text: text, date: event.target.elements.date.value || "待定" }; appendAgentTask(win, item); var saved = {}; try { saved = JSON.parse(localStorage.getItem(AGENT_TASKS) || "{}"); } catch (error) {} saved.custom = (saved.custom || []).concat(item); localStorage.setItem(AGENT_TASKS, JSON.stringify(saved)); event.target.reset(); }
+      });
+      surface.addEventListener("keydown", function(event) {
+        if (event.target.matches("[data-chat-input]") && event.key === "Enter" && !event.shiftKey) { event.preventDefault(); event.target.closest("form").requestSubmit(); }
+      });
+      surface.addEventListener("change", function(event) {
+        if (!event.target.matches("[data-schedule-id]")) return;
+        var saved = {}; try { saved = JSON.parse(localStorage.getItem(AGENT_TASKS) || "{}"); } catch (error) {} saved[event.target.dataset.scheduleId] = event.target.checked; localStorage.setItem(AGENT_TASKS, JSON.stringify(saved));
+      });
+      surface.addEventListener("input", function(event) {
+        if (!event.target.matches("[data-agent-search]")) return;
+        var query = event.target.value.trim().toLowerCase(); var win = event.target.closest(".blue-chat-window");
+        win.querySelectorAll("[data-chat-log] > .msg-user, [data-chat-log] > .msg-bot").forEach(function(message) { message.style.display = !query || message.textContent.toLowerCase().indexOf(query) >= 0 ? "" : "none"; });
+      });
+      window.addEventListener("message", function(event) {
+        if (!event.data) return;
+        if (event.data.type === "lanlan-canvas-sync") { renderCanvasSync(event.data.payload); return; }
+        if (event.data.type !== "open-thesis-chat") return;
+        location.hash = "home";
+        setTimeout(function() {
+          var win = openWindow("win-bluechat");
+          if (!win) return;
+          switchAgentTab(win, "chat");
+          askAgent(win, event.data.question || "这篇论文讲的是什么？", "summary");
+        }, 80);
+      });
+
+      switchTab(currentTab());
+    })();
+  </script>
+  <script src="assets/lanland.js"></script>
+  <script src="assets/ai-lover.js"></script>
+</body>
+</html>

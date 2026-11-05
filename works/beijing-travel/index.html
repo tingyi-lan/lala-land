@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>北京四日旅行准备工作台</title>
+    <link rel="icon" href="data:,">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+    <link rel="stylesheet" href="./css/style.css">
+  </head>
+  <body data-page="home">
+    <header class="hero" id="top">
+      <div class="hero-overlay"></div>
+      <div class="hero-inner">
+        <p class="hero-kicker">北京｜4 日城市与环球影城计划</p>
+        <h1>出发总是美丽的</h1>
+        <p class="hero-line">尤其是在把古都红墙、盛夏树影和一整天快乐都安排妥当的时候。</p>
+        <div class="chips">
+          <span>北京四日</span>
+          <span>含环球影城</span>
+          <span>手机出片路线</span>
+          <span>本地保存工作台</span>
+        </div>
+        <div class="reveal-card" id="reveal-card">
+          <div class="paper-cover" id="paper-cover">
+            <span>右滑开启属于你的专属地图</span>
+            <input id="reveal-slider" type="range" min="0" max="100" value="0" aria-label="滑动开启路线地图">
+          </div>
+          <div class="preview-map" id="preview-map">
+            <strong>北京四日动线</strong>
+            <p>中轴线与红墙、环球影城、故宫、颐和园，按天气和闭馆日重新排序。</p>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <section class="section intro" id="poster">
+        <div class="section-heading">
+          <p>推荐方案</p>
+          <h2>先避雨，再玩环球，故宫放到周二早进</h2>
+        </div>
+        <div class="grid summary-grid" id="trip-summary"></div>
+        <div class="note-box">
+          <strong>测试假设：</strong>未提供具体日期，本版按 2026-07-12 至 2026-07-15 生成。北京 7 月 14-15 日高温风险较高，故宫和颐和园都安排早进早撤；所有门票、预约和营业时间仍需出发前核验。
+        </div>
+      </section>
+
+      <section class="section map-section">
+        <div class="section-heading">
+          <p>真实路线图</p>
+          <h2>北京四日路线地图</h2>
+        </div>
+        <div id="real-map" class="real-map" aria-label="北京四日路线地图"></div>
+        <div id="map-fallback" class="map-fallback"></div>
+        <p class="caption">地图点位为行程规划坐标，连线表示计划顺序，不等于精确导航路线。</p>
+      </section>
+
+      <section class="section">
+        <div class="section-heading">
+          <p>每日入口</p>
+          <h2>四天安排</h2>
+        </div>
+        <div class="grid day-grid" id="day-cards"></div>
+      </section>
+
+      <section class="section photo-overview">
+        <div class="section-heading">
+          <p>出片策略</p>
+          <h2>手机优先的打卡路线</h2>
+        </div>
+        <div class="grid photo-grid" id="photo-overview"></div>
+      </section>
+
+      <section class="section dashboard" id="dashboard">
+        <div class="section-heading">
+          <p>旅行准备工作台</p>
+          <h2>预算、预订、打包与 Todo</h2>
+        </div>
+        <p class="section-lead">这里的修改只保存在当前浏览器。把链接发给朋友后，对方会看到同一份基础行程，但不会看到你的本地勾选和预算修改。</p>
+        <div class="storage-warning" id="storage-warning" hidden></div>
+        <div class="toolbar">
+          <button type="button" id="export-progress">导出本地进度 JSON</button>
+          <label class="file-button">导入本地进度 JSON<input type="file" id="import-progress" accept="application/json"></label>
+          <button type="button" id="reset-progress">重置本地进度</button>
+          <button type="button" id="export-poster">导出长图 PNG</button>
+        </div>
+        <div class="tabs" role="tablist" aria-label="旅行准备模块">
+          <button class="tab is-active" type="button" data-tab="budget">预算</button>
+          <button class="tab" type="button" data-tab="reservations">预订</button>
+          <button class="tab" type="button" data-tab="packing">打包</button>
+          <button class="tab" type="button" data-tab="todos">Todo</button>
+        </div>
+        <div class="panel is-active" id="panel-budget"></div>
+        <div class="panel" id="panel-reservations"></div>
+        <div class="panel" id="panel-packing"></div>
+        <div class="panel" id="panel-todos"></div>
+      </section>
+
+      <section class="section">
+        <div class="section-heading">
+          <p>Plan B</p>
+          <h2>天气、体力和人流调整</h2>
+        </div>
+        <div class="grid plan-grid" id="plan-b"></div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <a href="#top">回到顶部</a>
+      <span>静态本地优先测试版｜不含账号和云同步</span>
+    </footer>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+    <script src="./js/data.js"></script>
+    <script src="./js/main.js"></script>
+  </body>
+</html>
