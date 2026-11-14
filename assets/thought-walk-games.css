@@ -1,0 +1,70 @@
+.game-trigger{position:absolute;z-index:8;width:210px;border:0;padding:0;background:transparent;filter:drop-shadow(0 14px 10px rgba(0,0,0,.38));transform-origin:center bottom}
+.game-trigger:hover,.game-trigger:focus-visible{scale:1.06}
+.game-trigger em{position:absolute;left:50%;bottom:0;transform:translate(-50%,42%);white-space:nowrap;border-radius:20px;padding:8px 14px;background:rgba(251,250,240,.92);color:#244c34;font:800 22px/1.2 Georgia,"Songti SC",serif;box-shadow:0 4px 12px rgba(15,34,14,.2)}
+.game-trigger em small{display:block;font-size:14px;letter-spacing:.12em}
+.game-trigger.cleared em{box-shadow:0 0 0 2px #e2c56a,0 4px 12px rgba(15,34,14,.2)}
+.trigger-art{display:block;width:150px;height:120px;margin:0 auto 8px}
+.geese-art,.rope-art{position:relative}
+.geese-art i,.rope-art i{position:absolute;display:block}
+.geese-art i{width:72px;height:72px;filter:drop-shadow(0 8px 4px rgba(30,50,24,.18))}
+.geese-art svg{width:72px;height:72px}
+.geese-art i:nth-child(1){left:0;top:34px}
+.geese-art i:nth-child(2){left:38px;top:8px;z-index:1}
+.geese-art i:nth-child(3){left:74px;top:40px}
+.rope-art{width:120px;height:120px;margin-inline:auto}
+.rope-art::before,.rope-art::after{content:"";position:absolute;border:7px solid #e7c56a;border-radius:50%}
+.rope-art::before{inset:18px 22px 28px}
+.rope-art::after{inset:40px 44px 46px;border-width:5px}
+html.game-lock,html.game-lock body{overflow:hidden}
+html.game-lock .journey-hint{opacity:0}
+.game-layer{position:fixed;z-index:80;inset:0;display:grid;place-items:center;padding:16px;background:rgba(12,28,18,.46);backdrop-filter:blur(10px)}
+.game-layer[hidden]{display:none}
+.game-card{position:relative;width:min(680px,100%);max-height:calc(100vh - 28px);overflow:auto;padding:22px 22px 18px;border-radius:28px;background:rgba(255,251,244,.9);color:#243628;box-shadow:0 24px 60px rgba(0,0,0,.28);font-family:Georgia,"Songti SC",serif}
+.game-card.pen-card{width:min(920px,100%)}
+.game-x{position:absolute;top:12px;right:12px;width:36px;height:36px;border:0;border-radius:50%;background:rgba(255,255,255,.8);color:#243628;font-size:22px}
+.game-kicker{margin:0;font-family:ui-sans-serif,"PingFang SC",sans-serif;font-size:11px;letter-spacing:.16em;color:#6d7c62}
+.game-card h2{margin:4px 0 6px;font:700 40px/1 Georgia,"Songti SC",serif}
+.game-lead,.game-count,.game-status{margin:0}
+.game-lead{max-width:40em;font-size:15px;line-height:1.6}
+.game-count{margin-top:8px;font-family:ui-sans-serif,"PingFang SC",sans-serif;font-size:12px;letter-spacing:.08em}
+.pile{position:relative;height:min(340px,42vh);margin:14px 0 12px;border-radius:180px;background:radial-gradient(circle at 50% 58%,rgba(186,214,126,.55),rgba(54,92,48,.18) 62%,transparent 70%)}
+.goose{position:absolute;width:78px;height:78px;border:0;padding:0;background:transparent;filter:drop-shadow(0 8px 4px rgba(30,48,22,.28));transition:scale .18s ease}
+.goose svg{display:block;width:100%;height:100%}
+.goose:not(.locked):hover{scale:1.08}
+.goose.locked{filter:saturate(.75) brightness(.92) drop-shadow(0 4px 2px rgba(30,48,22,.2));cursor:default}
+.goose.caught{scale:.2;opacity:0}
+.goose.deny{animation:deny .28s ease}
+.slot-bar{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;min-height:74px;padding:8px;border-radius:18px;background:rgba(255,255,255,.72);box-shadow:inset 0 0 0 1px rgba(36,54,40,.08)}
+.slot{display:grid;place-items:center;border-radius:12px;background:rgba(36,54,40,.05)}
+.slot svg{width:min(52px,100%);height:auto}
+.slot.clearing{animation:popout .28s ease forwards}
+.game-status{min-height:1.5em;margin-top:10px;font-size:15px}
+.game-actions{display:flex;justify-content:flex-end;gap:14px;margin-top:8px}
+.game-actions button,.game-x{font-family:Georgia,"Songti SC",serif}
+.game-actions button{border:0;border-bottom:1.5px solid #243628;padding:8px 2px;background:transparent;color:#243628;font-weight:700}
+.game-card.lost .pile{opacity:.55}
+.game-card.won .game-status{color:#2f6a32}
+.pen-field{position:relative;height:min(520px,62vh);margin-top:12px;overflow:hidden;border-radius:22px;background:radial-gradient(circle at 50% 55%,rgba(255,248,220,.28),transparent 26%),url("thought-walk/reference/bg_s2.webp") center 42%/cover;touch-action:none;cursor:crosshair}
+.pen-field canvas{position:absolute;inset:0;width:100%;height:100%}
+.trap-ring{position:absolute;left:50%;top:50%;z-index:2;width:210px;height:210px;border:2px dashed rgba(226,197,106,.95);border-radius:50%;transform:translate(-50%,-54%);pointer-events:none;box-shadow:0 0 0 8px rgba(226,197,106,.12)}
+.pen-lanlan{position:absolute;left:50%;top:50%;z-index:3;width:132px;height:auto;transform:translate(-50%,-62%);pointer-events:none;filter:drop-shadow(0 12px 8px rgba(0,0,0,.28))}
+.pen-field.freed .trap-ring{opacity:0;transition:opacity .4s ease}
+.pen-field.freed .pen-lanlan{animation:hop .7s ease}
+.wisp{position:absolute;z-index:4;width:46px;height:46px;margin:-23px 0 0 -23px;pointer-events:none;filter:drop-shadow(0 4px 3px rgba(0,0,0,.3))}
+.wisp svg{width:100%;height:100%}
+.wisp.gone{scale:0;opacity:0;transition:scale .25s ease,opacity .25s ease}
+.pen-field.broke{box-shadow:inset 0 0 0 3px rgba(196,72,72,.7)}
+@keyframes deny{25%{rotate:-8deg}75%{rotate:8deg}}
+@keyframes popout{to{scale:.2;opacity:0}}
+@keyframes hop{40%{transform:translate(-50%,-78%)}100%{transform:translate(-50%,-62%)}}
+@media(max-width:700px){
+  .game-card h2{font-size:32px}
+  .goose{width:64px;height:64px}
+  .pile{height:240px}
+  .game-card{padding:16px 14px 14px}
+  .pen-lanlan{width:104px}
+  .trap-ring{width:160px;height:160px}
+}
+@media(prefers-reduced-motion:reduce){
+  .goose,.pen-lanlan,.wisp,.slot.clearing{animation:none;transition:none}
+}

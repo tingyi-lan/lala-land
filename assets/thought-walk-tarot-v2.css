@@ -1,0 +1,32 @@
+/* A painted garden gives the mascot and the floating cards one shared space. */
+.tarot-scene{background:#c7a4c9 url("thought-walk/tarot-garden-v2.png") center center/cover no-repeat}
+.tarot-scene::before{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;background:linear-gradient(180deg,rgba(70,39,85,.18),transparent 30%,transparent 71%,rgba(52,26,69,.3))}
+.tarot-intro,.oracle-line{display:none}
+.oracle{z-index:2;width:min(1260px,100%);height:min(760px,calc(100vh - 72px))}
+.magic-ring{display:none}
+.trails{opacity:.25}
+.oracle::after{content:"";position:absolute;z-index:4;left:50%;bottom:calc(9% - 8px);width:clamp(220px,26vw,340px);height:54px;border-radius:50%;background:radial-gradient(ellipse at 50% 40%,rgba(24,16,10,.82) 0%,rgba(36,22,14,.5) 32%,rgba(36,22,14,.18) 58%,rgba(36,22,14,0) 76%);transform:translateX(-50%);filter:blur(1.5px);pointer-events:none;transform-origin:center center;animation:mascot-shadow 3.1s ease-in-out infinite}
+.oracle-plush{z-index:5;bottom:9%;width:clamp(200px,22vw,292px);filter:none}
+.oracle:not(.has-face) .oracle-plush{animation:mascot-hover 3.1s ease-in-out infinite}
+.oracle.has-face .oracle-plush{opacity:.46;transform:translateX(-50%) translateY(12%)}
+.oracle.has-face::after{opacity:.2;animation:none;scale:.8}
+@keyframes mascot-hover{50%{transform:translateX(-50%) translateY(-16px)}}
+@keyframes mascot-shadow{50%{opacity:.38;scale:.58 .66}}
+.arc-card{z-index:7;width:clamp(54px,5.5vw,78px);filter:drop-shadow(0 10px 10px rgba(62,34,73,.34));transition:filter .16s ease,opacity .2s ease}
+.arc-card:hover,.arc-card:focus-visible{z-index:12!important;filter:drop-shadow(0 0 18px rgba(255,235,147,.95)) drop-shadow(0 14px 14px rgba(62,34,73,.38))}
+.oracle.has-face .arc-card:not(.chosen){opacity:.43}
+.back,.dealt-back{border:0;border-radius:7px;background:#181711 url("thought-walk/tarot-back-v2.svg") center/100% 100% no-repeat;box-shadow:0 10px 15px rgba(38,24,47,.3)}
+.back::before,.back::after,.dealt-back::after{display:none}
+.dealt-back{border-radius:12px;box-shadow:0 20px 28px rgba(38,24,47,.35)}
+.reading{background:rgba(255,251,243,.97);border-color:rgba(237,206,137,.9);box-shadow:0 20px 45px rgba(53,29,68,.3)}
+.oracle-shuffle,.oracle-restart{color:#fffdf2;text-shadow:0 2px 8px rgba(58,37,75,.9)}
+@media(max-width:700px){
+  .tarot-scene{background-position:50% center}
+  .tarot-scene::before{background:linear-gradient(180deg,rgba(70,39,85,.35),transparent 28%,transparent 65%,rgba(52,26,69,.36))}
+  .oracle{height:calc(100vh - 72px)}
+  .oracle-plush{bottom:7%;width:clamp(168px,48vw,220px)}
+  .oracle::after{bottom:calc(7% - 4px);width:168px;height:36px}
+  .arc-card{width:clamp(40px,10.5vw,54px)}
+  .reading{bottom:64px;max-height:43%}
+}
+@media(prefers-reduced-motion:reduce){.arc-card{transition:none}.oracle::after,.oracle:not(.has-face) .oracle-plush{animation:none}}

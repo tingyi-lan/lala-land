@@ -1,0 +1,32 @@
+/* The island itself leads into 03; the former four-tab dock is gone. */
+#page-system .canvas-page{background:#277db8 url("thought-walk/oil-sea.png") center/cover no-repeat}
+#page-system.story-return .canvas-page{background:#17301e url("thought-walk/reference/contact_base.webp") center/cover no-repeat}
+#page-system.shelf-return .canvas-page{background:#fff}
+#canvasFrame{opacity:0;transition:opacity .45s ease}
+#canvasFrame.scene-ready{opacity:1}
+#page-home .land-stage.walk-camera{transform-origin:var(--walk-origin-x) var(--walk-origin-y);animation:walk-camera-in 1.8s cubic-bezier(.42,.02,.18,1) both;will-change:transform,filter,opacity}
+#page-home:has(.walk-camera) .land{background:#a3c4ea url("lala-island-interior.png") center/cover no-repeat}
+#transitionOverlay.walk-dissolve{background:#277db8 url("thought-walk/oil-sea.png") center/cover no-repeat;animation:walk-scene-dissolve 1.8s linear both;pointer-events:auto}
+@keyframes walk-camera-in{0%{transform:translate3d(0,0,0) scale(1);filter:blur(0);opacity:1}55%{transform:translate3d(var(--walk-pan-mid-x),var(--walk-pan-mid-y),0) scale(2.2);filter:blur(0);opacity:1}76%{transform:translate3d(var(--walk-pan-x),var(--walk-pan-y),0) scale(3.35);filter:blur(7px);opacity:.9}100%{transform:translate3d(var(--walk-pan-x),var(--walk-pan-y),0) scale(3.65);filter:blur(19px);opacity:.3}}
+@keyframes walk-scene-dissolve{0%,52%{opacity:0}74%{opacity:1}100%{opacity:0}}
+.walk-flag{position:absolute;z-index:11;left:18%;top:29%;width:clamp(70px,8vw,130px);aspect-ratio:100/120;border:0;padding:0;background:transparent;opacity:0;visibility:hidden;pointer-events:none;transform:translate(-17%,-92%);transition:opacity .24s ease,visibility .24s ease,scale .16s ease;cursor:pointer;filter:drop-shadow(0 0 12px rgba(255,247,187,.65))}
+.is-ready .walk-flag{opacity:1;visibility:visible;pointer-events:auto}
+.walk-flag::before{content:"";position:absolute;inset:-18%;border-radius:50%;background:radial-gradient(circle,rgba(255,249,198,.8),rgba(255,244,170,.28) 45%,transparent 72%);opacity:.55;transform:scale(.88);animation:walk-flag-glow 2.8s ease-in-out infinite;pointer-events:none}
+.walk-flag-art{position:relative;display:block;width:100%;height:100%;overflow:visible;filter:drop-shadow(0 0 11px rgba(255,246,167,.95))}
+.walk-flag:hover,.walk-flag:focus-visible{scale:1.08;filter:drop-shadow(0 0 20px rgba(255,244,154,1))}
+.walk-flag:active{scale:.94}
+.walk-flag-label{position:absolute;left:50%;bottom:100%;min-width:max-content;padding:6px 10px;border:1px solid rgba(255,255,255,.9);border-radius:999px;background:rgba(255,252,239,.95);box-shadow:0 5px 18px rgba(67,91,151,.2);color:#43659a;font:800 11px/1.2 Georgia,"Songti SC",serif;transform:translate(-50%,8px);opacity:0;transition:opacity .16s ease,transform .16s ease}
+.walk-flag:hover .walk-flag-label,.walk-flag:focus-visible .walk-flag-label{opacity:1;transform:translate(-50%,-4px)}
+#page-home:has(.walk-camera) .walk-flag-label{opacity:0}
+.walk-trail{position:absolute;z-index:5;left:17%;top:22%;width:270px;height:260px;opacity:0;pointer-events:none;transform:translateY(10px);transition:opacity .5s ease,transform .5s cubic-bezier(.23,1,.32,1)}
+.is-ready .walk-trail{opacity:1;transform:none}
+.walk-trail svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.trail-line{fill:none;stroke:rgba(248,244,222,.94);stroke-width:2.2;stroke-linecap:round;stroke-dasharray:1 12;filter:drop-shadow(0 1px 2px rgba(73,98,143,.3))}
+.trail-foot{fill:rgba(255,250,231,.98);stroke:rgba(62,103,155,.5);stroke-width:1.5;filter:drop-shadow(0 2px 2px rgba(73,98,143,.3))}
+.walk-trail span{position:absolute;left:35%;top:25%;width:340px;color:#315e9b;font:850 clamp(13px,1.4vw,18px)/1.5 Georgia,"Songti SC",serif;letter-spacing:.05em;text-shadow:0 1px 1px #fff,0 0 12px #fff}
+.works-return{position:fixed;z-index:70;left:clamp(18px,4vw,64px);top:clamp(15px,3vw,35px);display:inline-flex;align-items:center;gap:7px;border:1px solid rgba(43,127,216,.25);border-radius:999px;padding:10px 16px;background:rgba(255,254,249,.94);box-shadow:0 6px 18px rgba(43,81,121,.1);color:#246ab2;font:800 12px/1.2 Georgia,"Songti SC",serif;text-decoration:none;transition:transform .16s ease,box-shadow .16s ease}
+.works-return:hover,.works-return:focus-visible{transform:translateY(-2px);box-shadow:0 9px 22px rgba(43,81,121,.17)}
+.works-return:active{transform:translateY(0)}
+@keyframes walk-flag-glow{50%{opacity:1;transform:scale(1.16)}}
+@media(max-width:600px){.walk-flag{left:17%;top:190px;width:63px}.walk-flag-label{display:none}.walk-trail{left:8%;top:158px;width:205px;height:180px}.walk-trail span{left:56%;top:16%;width:170px;font-size:12px}.works-return{top:12px;left:12px;padding:9px 12px;font-size:11px}}
+@media(prefers-reduced-motion:reduce){.walk-flag::before{animation:none;opacity:.75}.walk-flag,.walk-trail,.works-return,#canvasFrame{transition:none}#page-home .land-stage.walk-camera,#transitionOverlay.walk-dissolve{animation:none}}

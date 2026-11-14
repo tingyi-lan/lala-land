@@ -915,6 +915,9 @@
     .travel-collage iframe { position: absolute; width: 58%; height: 70%; border: 6px solid white; border-radius: 7px; background: white; box-shadow: 0 18px 38px rgba(33,42,62,.18); pointer-events: none; }
     .travel-collage iframe:first-child { left: 5%; top: 7%; transform: rotate(-3deg); }
     .travel-collage iframe:nth-child(2) { right: 4%; bottom: 6%; transform: rotate(3deg); }
+    .literary-showcase { display: block; border-radius: 8px; background: transparent; }
+    .literary-showcase > img { display: block; width: 100%; height: auto; max-height: none; border-radius: 8px; object-fit: contain; filter: drop-shadow(0 18px 28px rgba(33,42,62,.12)); transition: transform .35s ease, filter .35s ease; }
+    .literary-showcase:hover > img { transform: translateY(-4px); filter: drop-shadow(0 22px 34px rgba(33,42,62,.16)); }
     .portfolio-copy .dim-num { color: var(--red); font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 10px; font-weight: 850; }
     .portfolio-copy h3 { margin: 11px 0 15px; font: 900 clamp(1.7rem, 3vw, 2.55rem)/1.08 Georgia, "Songti SC", serif; }
     .dim-desc { color: var(--ink-light); font-size: 14px; line-height: 1.85; }
@@ -988,17 +991,13 @@
       .chat-log { padding: 12px 10px; }
     }
   </style>
-  <link rel="stylesheet" href="assets/lanland.css">
+  <link rel="stylesheet" href="assets/lanland.css?v=20261114-bgm6">
+  <link rel="stylesheet" href="assets/experience-flow.css?v=2">
   <link rel="stylesheet" href="assets/ai-lover.css">
 <link rel="icon" href="assets/lala-land-logo-gradient.png" type="image/png">
 </head>
 <body>
-  <nav class="pill-nav" id="pillNav" aria-label="主导航">
-    <button data-tab="home" class="active"><span class="pill-num">01</span>蓝蓝在场</button>
-    <button data-tab="works"><span class="pill-num">02</span>火花工坊</button>
-    <button data-tab="system"><span class="pill-num">03</span>思想原野</button>
-    <button data-tab="literature"><span class="pill-num">04</span>文学在我</button>
-  </nav>
+  <a class="island-return" id="islandReturn" href="#home">← 返回岛屿</a>
   <div class="transition-overlay" id="transitionOverlay"></div>
 
   <main class="tab-page active" id="page-home">
@@ -1009,7 +1008,7 @@
       <div class="land-stage" id="desktopSurface">
         <div class="land-copy"><h1 class="sr-only">欢迎来到「啦啦LAND」</h1><img class="welcome-title" src="assets/lala-welcome-title.png" alt="" width="2172" height="724" fetchpriority="high"></div>
         <div class="ocean-world" aria-hidden="true"><img src="assets/lala-sea-open.png" alt="" width="1672" height="941" fetchpriority="high"><svg class="island-flag" viewBox="0 0 100 120" aria-hidden="true"><defs><linearGradient id="sea-pole" x2="1" y2="0"><stop stop-color="#fafcff"/><stop offset=".45" stop-color="#c4e1f3"/><stop offset="1" stop-color="#7387b8"/></linearGradient><linearGradient id="sea-cloth"><stop stop-color="#b5c9fc"/><stop offset=".42" stop-color="#fafcff"/><stop offset=".72" stop-color="#c7d9ff"/><stop offset="1" stop-color="#a6b7eb"/></linearGradient></defs><ellipse cx="52" cy="111" rx="34" ry="5" fill="#4b6f9b" opacity=".18" transform="rotate(10 52 111)"/><path d="M17 108V12" stroke="url(#sea-pole)" stroke-width="3" stroke-linecap="round"/><circle cx="17" cy="10" r="3" fill="#f4f6ff"/><g class="flag-cloth"><path d="M19 15C42 2 58 28 91 12L85 54C55 69 42 44 19 57Z" fill="url(#sea-cloth)" stroke="#f0f7ff" stroke-width=".7"/><path d="M50 25L54 36L64 40L53 43L49 54L46 43L36 39L47 36Z" fill="#6a94d0" opacity=".85"/><path d="M25 18C45 12 59 34 84 21" fill="none" stroke="#fff" opacity=".55"/></g></svg></div>
-        <div class="courtyard-world" aria-hidden="true"><img src="assets/lala-island-interior.png" alt="" width="1672" height="941"><svg class="island-flag" viewBox="0 0 100 120" aria-hidden="true"><defs><linearGradient id="court-pole" x2="1" y2="0"><stop stop-color="#fafcff"/><stop offset=".45" stop-color="#c4e1f3"/><stop offset="1" stop-color="#7387b8"/></linearGradient><linearGradient id="court-cloth"><stop stop-color="#b5c9fc"/><stop offset=".42" stop-color="#fafcff"/><stop offset=".72" stop-color="#c7d9ff"/><stop offset="1" stop-color="#a6b7eb"/></linearGradient></defs><ellipse cx="52" cy="111" rx="34" ry="5" fill="#4b6f9b" opacity=".18" transform="rotate(10 52 111)"/><path d="M17 108V12" stroke="url(#court-pole)" stroke-width="3" stroke-linecap="round"/><circle cx="17" cy="10" r="3" fill="#f4f6ff"/><g class="flag-cloth"><path d="M19 15C42 2 58 28 91 12L85 54C55 69 42 44 19 57Z" fill="url(#court-cloth)" stroke="#f0f7ff" stroke-width=".7"/><path d="M50 25L54 36L64 40L53 43L49 54L46 43L36 39L47 36Z" fill="#6a94d0" opacity=".85"/><path d="M25 18C45 12 59 34 84 21" fill="none" stroke="#fff" opacity=".55"/></g></svg></div>
+        <div class="courtyard-world" aria-hidden="true"><img src="assets/lala-island-interior.png" alt="" width="1672" height="941"></div><div class="walk-trail" aria-hidden="true"><svg viewBox="0 0 210 240"><path class="trail-line" d="M42 54 C 70 96, 12 117, 45 151 S 66 194, 35 226"/><g class="trail-foot" transform="translate(52 91) rotate(22)"><ellipse cx="-6" cy="0" rx="4" ry="8"/><ellipse cx="9" cy="15" rx="4" ry="8"/></g><g class="trail-foot" transform="translate(33 146) rotate(-24)"><ellipse cx="-6" cy="0" rx="4" ry="8"/><ellipse cx="9" cy="15" rx="4" ry="8"/></g><g class="trail-foot" transform="translate(55 194) rotate(19)"><ellipse cx="-6" cy="0" rx="4" ry="8"/><ellipse cx="9" cy="15" rx="4" ry="8"/></g></svg><span>走进lalaland岛上的风景吧</span></div><button class="walk-flag" id="islandWalkFlag" type="button" aria-label="点亮旗子，进入和蓝蓝走一走"><svg class="walk-flag-art" viewBox="0 0 100 120" aria-hidden="true"><defs><linearGradient id="court-pole" x2="1" y2="0"><stop stop-color="#fafcff"/><stop offset=".45" stop-color="#c4e1f3"/><stop offset="1" stop-color="#7387b8"/></linearGradient><linearGradient id="court-cloth"><stop stop-color="#b5c9fc"/><stop offset=".42" stop-color="#fafcff"/><stop offset=".72" stop-color="#c7d9ff"/><stop offset="1" stop-color="#a6b7eb"/></linearGradient></defs><ellipse cx="52" cy="111" rx="34" ry="5" fill="#4b6f9b" opacity=".18" transform="rotate(10 52 111)"/><path d="M17 108V12" stroke="url(#court-pole)" stroke-width="3" stroke-linecap="round"/><circle cx="17" cy="10" r="3" fill="#f4f6ff"/><g class="flag-cloth"><path d="M19 15C42 2 58 28 91 12L85 54C55 69 42 44 19 57Z" fill="url(#court-cloth)" stroke="#f0f7ff" stroke-width=".7"/><path d="M50 25L54 36L64 40L53 43L49 54L46 43L36 39L47 36Z" fill="#6a94d0" opacity=".85"/><path d="M25 18C45 12 59 34 84 21" fill="none" stroke="#fff" opacity=".55"/></g></svg><span class="walk-flag-label">点旗子 · 和蓝蓝走一走 ↗</span></button>
         <div class="sea-glints" aria-hidden="true"></div>
 
         
@@ -1020,14 +1019,14 @@
           <button class="land-folder" type="button" data-href="works/ai-lover.html" style="--tilt:8deg"><span class="folder-shape"><span class="folder-glyph">♡</span></span><span class="folder-label">AI-Lover 陪伴智能体</span></button>
           <button class="land-folder" type="button" data-href="works/tea-road.html" style="--tilt:-7deg"><span class="folder-shape"><span class="folder-glyph">文</span></span><span class="folder-label">《遇见东方》</span></button>
           <button class="land-folder" type="button" data-win="win-xhs" style="--tilt:11deg"><span class="folder-shape"><span class="folder-glyph">✳</span></span><span class="folder-label">小红书日常</span></button>
-          <button class="land-folder" type="button" data-href="works/travel-agent.html" style="--tilt:-5deg"><span class="folder-shape"><span class="folder-glyph">↗</span></span><span class="folder-label">Travel Skill</span></button>
+          <button class="land-folder literary-record" type="button" data-href="works/literary-workbench/index.html" style="--tilt:-5deg"><span class="folder-shape"><img class="folder-glyph-img" src="assets/literary-record-icon.png" alt=""></span><span class="folder-label">文学笺读工作台</span></button>
           <button class="land-folder" type="button" data-href="works/kyoto-map.html" style="--tilt:9deg"><span class="folder-shape"><span class="folder-glyph">⌁</span></span><span class="folder-label">旅行故事地图</span></button>
           <button class="land-folder" type="button" data-win="win-writing" style="--tilt:-10deg"><span class="folder-shape"><span class="folder-glyph">✎</span></span><span class="folder-label">写作课研究</span></button>
           <button class="land-folder" type="button" data-win="win-campus" style="--tilt:6deg"><span class="folder-shape"><span class="folder-glyph">↝</span></span><span class="folder-label">WHU → NJU</span></button>
           <button class="land-folder" type="button" data-win="win-bluechat" style="--tilt:-8deg"><span class="folder-shape"><span class="folder-glyph">✦</span></span><span class="folder-label">蓝蓝 Agent</span></button>
           <button class="land-folder" type="button" data-win="win-work" style="--tilt:5deg"><span class="folder-shape"><span class="folder-glyph">↗</span></span><span class="folder-label">Work with me</span></button>
         </div>
-        <div class="land-controls" id="landControls" inert><button type="button" id="randomFolder">✧ 随机逛逛</button><button type="button" id="tidyFolders" aria-pressed="false">⠿ 一键整理</button><button type="button" id="scatterFolders" aria-pressed="true">↝ 自由散落</button></div>
+        <div class="land-controls" id="landControls" inert><button type="button" id="randomFolder">✧ 随机逛逛</button><div class="land-sound"><button type="button" id="soundToggle" aria-pressed="true" aria-label="关闭声音"><svg class="sound-on" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M4 9.5v5h3.2L12 18.6V5.4L7.2 9.5H4z"/><path fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" d="M15.2 9.2a3.6 3.6 0 0 1 0 5.6M17.6 7a6.2 6.2 0 0 1 0 10"/></svg><svg class="sound-off" viewBox="0 0 24 24" aria-hidden="true" hidden><path fill="currentColor" d="M4 9.5v5h3.2L12 18.6V5.4L7.2 9.5H4z"/><path fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" d="M16 10l4 4M20 10l-4 4"/></svg></button><input id="soundVolume" type="range" min="0" max="100" value="70" aria-label="音量"></div><button type="button" id="tidyFolders" aria-pressed="false">⠿ 一键整理</button><button type="button" id="scatterFolders" aria-pressed="true">↝ 自由散落</button></div>
         <button type="button" class="land-return" id="returnToSea" disabled>↖ 返回海面</button>
         <p class="land-status" id="landStatus" role="status" aria-live="polite">打开耳机仓，让好奇心登岛。</p>
 
@@ -1193,7 +1192,7 @@
                     <div class="agent-panel-scroll"><div class="agent-panel-head"><h3>交付 / Deliveries</h3><span>可以直接打开</span></div><div class="agent-grid">
                       <article class="agent-item"><small>WRITING</small><h4>《遇见东方》写作档案</h4><p>万里茶道采访、编辑与文章页面。</p><a href="works/tea-road.html">打开 →</a></article>
                       <article class="agent-item"><small>AI PRODUCT</small><h4>AI-Lover 陪伴智能体</h4><p>情感陪伴、语音与动作交互，连接数字人与实体设备。</p><a href="works/ai-lover.html">打开 →</a></article>
-                      <article class="agent-item"><small>RESEARCH</small><h4>毕业论文知识簇</h4><p>欲望、摹仿、女性想象与现代性。</p><a href="A-infinite-canvas-v2.html">进入 03 →</a></article>
+                      <article class="agent-item"><small>INTERACTIVE WALK</small><h4>思想原野</h4><p>从蓝色海面出发，遇见沿途作品，抽一张牌。</p><a href="thought-walk.html">进入 03 →</a></article>
                       <article class="agent-item"><small>LITERATURE</small><h4>22 岁阅读档案</h4><p>阅读数据、知识树、书目与写作。</p><a href="literature.html">打开 04 →</a></article>
                     </div>
                   </section>
@@ -1230,6 +1229,7 @@
 
   <main class="tab-page" id="page-works">
     <div class="works-page">
+      <a class="works-return" id="worksReturn" href="#home">← 返回岛上的唱片</a>
       <section class="works-hero">
         <img class="works-hero-avatar" src="assets/lanlan-avatar.png" alt="蓝蓝头像">
         <div class="works-hero-copy">
@@ -1245,7 +1245,7 @@
           </div>
           <div class="workflow-col">
             <div class="workflow-col-title">CREATE &amp; BUILD</div>
-            <div class="workflow-item"><span class="workflow-item-label">AI 产品</span><span class="workflow-item-desc">AI-Lover 陪伴智能体、交互设计与 Travel Skill。</span></div>
+            <div class="workflow-item"><span class="workflow-item-label">AI 产品</span><span class="workflow-item-desc">AI-Lover 陪伴智能体、交互设计与文学笺读工作台。</span></div>
             <div class="workflow-item"><span class="workflow-item-label">Vibe Coding</span><span class="workflow-item-desc">从火花到可操作、可分享的网页原型。</span></div>
           </div>
           <div class="workflow-col">
@@ -1267,9 +1267,9 @@
           <div class="portfolio-media book"><img src="assets/tea-road-book.png" alt="《遇见东方》书封"></div>
           <div class="portfolio-copy"><div class="dim-num">SPARK_02 / PUBLISHED WRITING</div><h3>《遇见东方》：一条茶路怎样进入今天</h3><p class="dim-desc">参与《遇见东方：中外青年万里茶道考察纪行（中英图文版）》采访、编辑与写作。署名文章《茶路贯古今，“新火”试“新茶”》从宜昌茶路现场观察传统如何更新。</p><div class="project-facts"><div class="project-fact"><b>我的角色</b><span>采访 / 编辑 / 撰稿</span></div><div class="project-fact"><b>文章命题</b><span>在恒常之中寻找变化，在变化之中确认自身</span></div></div><a class="project-link" href="works/tea-road.html">打开写作档案 →</a></div>
         </article>
-        <article class="portfolio-row">
-          <div class="portfolio-media travel-collage"><iframe src="works/beijing-travel/index.html#top" title="北京四日旅行 Skill 总览"></iframe><iframe src="works/beijing-travel/index.html#dashboard" title="北京四日旅行准备工作台"></iframe></div>
-          <div class="portfolio-copy"><div class="dim-num">SPARK_03 / TRAVEL TOOL</div><h3>Travel Skill：把攻略做成旅程</h3><p class="dim-desc">新版北京四日工作台把真实目的地研究、天气、闭馆日、环球影城、手机出片、预算、预约、打包和 Todo 放进同一套可执行 H5。</p><div class="project-facts"><div class="project-fact"><b>能力</b><span>调研 / 行程编排 / 地图 / 摄影产出 / HTML</span></div><div class="project-fact"><b>协作</b><span>蓝蓝负责用户与表达，AI 负责研究扩展和原型加速</span></div></div><a class="project-link yellow" href="works/travel-agent.html">查看真实成果 →</a></div>
+        <article class="portfolio-row" id="literary-workbench">
+          <a class="portfolio-media literary-showcase" href="works/literary-workbench/index.html" aria-label="打开文学笺读工作台"><img src="assets/literary-workbench-folio.png" alt="摊开的古典文学笺读工作台，原文、译文与注疏并置" loading="lazy"></a>
+          <div class="portfolio-copy"><div class="dim-num">SPARK_03 / LITERARY RESEARCH TOOL</div><h3>笺读：用古典文本<br>搭一座小剧场</h3><p class="dim-desc">面向古典文学、戏剧与诗歌研究的原文—译文—注疏工作台。</p><div class="project-facts"><div class="project-fact"><b>能力</b><span>原文 / 译文 / 注疏 / 行号定位</span></div><div class="project-fact"><b>文本</b><span>古希腊文本 / 戏剧 / 诗歌</span></div></div><a class="project-link yellow" href="works/literary-workbench/index.html">查看工作台 →</a></div>
         </article>
 
         <section class="research-strip"><div><div class="dim-num">SPARK_04 / USER RESEARCH</div><h3>线上写作课研究</h3><p class="dim-desc">从供给端、个人 IP、陪跑服务和平台工具切入，把散乱市场信息整理成可比较的产品结构。</p></div><div class="research-data"><div><strong>391</strong><span>份有效问卷</span></div><div><strong>6</strong><span>个平台样本</span></div><div><strong>12</strong><span>门代表课程</span></div><div><strong>30</strong><span>份课程评价</span></div></div></section>
@@ -1284,13 +1284,13 @@
 
   <main class="tab-page" id="page-system">
     <div class="canvas-page">
-      <iframe data-src="A-infinite-canvas-v2.html" id="canvasFrame" title="蓝蓝的 OS Canvas"></iframe>
+      <iframe data-src="thought-walk.html" id="canvasFrame" title="思想原野：和蓝蓝走一走"></iframe>
     </div>
   </main>
 
   <main class="tab-page" id="page-literature">
     <div class="canvas-page">
-      <iframe data-src="literature.html" id="literatureFrame" title="文学在我"></iframe>
+      <iframe data-src="literature.html?v=20261114-return" id="literatureFrame" title="文学在我"></iframe>
     </div>
   </main>
 
@@ -1301,7 +1301,6 @@
       window.scrollTo(0, 0);
 
       var TABS = ["home", "works", "system", "literature"];
-      var pillNav = document.getElementById("pillNav");
       var canvasFrame = document.getElementById("canvasFrame");
       var literatureFrame = document.getElementById("literatureFrame");
       var canvasLoaded = false;
@@ -1318,14 +1317,18 @@
         document.documentElement.classList.toggle("scroll-unlocked", launched || currentTab() !== "home");
       }
       function switchTab(tab) {
+        if (tab !== "home") {
+          document.querySelectorAll("#desktopSurface .os-window[data-href-src]").forEach(function(win) { win.remove(); });
+        }
+        var thoughtReturn = sessionStorage.getItem('lanlan-thought-return');
+        var systemPage = document.getElementById('page-system');
+        systemPage.classList.toggle('story-return', !!thoughtReturn);
+        systemPage.classList.toggle('shelf-return', !!thoughtReturn && thoughtReturn.indexOf('"shelf"') >= 0);
         document.querySelectorAll(".tab-page").forEach(function(page) {
           page.classList.toggle("active", page.id === "page-" + tab);
         });
-        pillNav.querySelectorAll("button").forEach(function(btn) {
-          btn.classList.toggle("active", btn.dataset.tab === tab);
-        });
         if (tab === "system" && !canvasLoaded) {
-          canvasFrame.src = canvasFrame.dataset.src;
+          if (!canvasFrame.getAttribute('src')) canvasFrame.src = canvasFrame.dataset.src;
           canvasLoaded = true;
         }
         if (tab === "literature" && !literatureLoaded) {
@@ -1335,11 +1338,6 @@
         applyScrollLock();
         window.scrollTo(0, 0);
       }
-      pillNav.addEventListener("click", function(e) {
-        var btn = e.target.closest("button[data-tab]");
-        if (!btn) return;
-        location.hash = btn.dataset.tab;
-      });
       window.addEventListener("hashchange", function() { switchTab(currentTab()); });
 
       var surface = document.getElementById("desktopSurface");
@@ -1448,7 +1446,10 @@
       }
       function renderCanvasSync() {}
       window.lanlandOpen = function(item) {
-        if (item.dataset.href) openIframeWindow(item.dataset.href, item.querySelector('.folder-label').textContent);
+        if (item.dataset.href) {
+          sessionStorage.setItem('lanlan-case-origin', 'island');
+          openIframeWindow(item.dataset.href, item.querySelector('.folder-label').textContent);
+        }
         else if (item.dataset.win) openWindow(item.dataset.win);
       };
       var thesisAnswers = {
@@ -1560,7 +1561,9 @@
       switchTab(currentTab());
     })();
   </script>
-  <script src="assets/lanland.js"></script>
+  <script src="assets/lanlan-bgm.js?v=20261114-cont3"></script>
+  <script src="assets/lanland.js?v=20261114-bgm6"></script>
+  <script src="assets/experience-flow.js?v=2"></script>
   <script src="assets/ai-lover.js"></script>
 </body>
 </html>

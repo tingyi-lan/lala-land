@@ -2,11 +2,30 @@
   'use strict';
   const land=document.getElementById('desktop'),stage=document.getElementById('desktopSurface'),caseButton=document.getElementById('airpodsCase'),folders=[...document.querySelectorAll('.land-folder')],folderLayer=document.getElementById('islandFolders'),controls=document.getElementById('landControls'),status=document.getElementById('landStatus');
   const mobile=()=>matchMedia('(max-width:600px)').matches;
-  const scattered=[[63,36],[77,32],[89,40],[63,51],[77,49],[90,57],[59,69],[73,65],[86,70],[70,76]];
+  const scattered=[[63,36],[77,32],[89,40],[63,51],[77,49],[90,57],[59,69],[74,61],[86,70],[71,78]];
   const tidy=[[60,37],[74,37],[88,37],[60,51],[74,51],[88,51],[60,65],[74,65],[88,65],[74,77]];
   const returnButton=document.getElementById('returnToSea'),hint=document.getElementById('caseHint');
+  const islandKey='lanlan-island-open';
   let phase='sea',layout='scatter',focusSource,timers=[];
   const reduced=matchMedia('(prefers-reduced-motion:reduce)');
+  const soundDock=document.querySelector('.land-sound');
+  function musicOn(){return !!(window.LanlanBgm&&window.LanlanBgm.started());}
+  function homeReady(){return document.getElementById('page-home').classList.contains('active')&&land.classList.contains('is-ready')&&!document.getElementById('lanlanStage');}
+  function placeSound(){
+    if(!soundDock)return;
+    const anchor=document.getElementById('randomFolder');
+    if(homeReady()){
+      if(soundDock.previousElementSibling!==anchor)anchor.after(soundDock);
+      soundDock.classList.remove('is-floating');
+      return;
+    }
+    if(!musicOn()||phase==='entering')return;
+    document.body.append(soundDock);
+    soundDock.classList.add('is-floating');
+  }
+  window.lanlanPlaceSound=placeSound;
+  function syncBgm(){if(window.LanlanBgm)window.LanlanBgm.sync();}
+  function beginBgm(){if(window.LanlanBgm)window.LanlanBgm.begin();}
   const ARRIVAL=3400;
   let cameraFrom=0,cameraRaf=0,cameraToken=0;
   function later(fn,ms){timers.push(setTimeout(fn,reduced.matches?0:ms));}
@@ -69,8 +88,10 @@
     later(()=>{land.classList.add('is-open');hint.innerHTML='<b>好奇心，已连接。</b>';},2300);
     later(()=>{land.classList.add('is-host-visible','is-listening');document.getElementById('avatarCaption').textContent='岛主蓝蓝 · 正在听歌';},2500);
     later(()=>{land.classList.add('has-records');folderLayer.inert=false;requestAnimationFrame(()=>requestAnimationFrame(()=>place(layout==='tidy'?tidy:scattered,false)));},2750);
+    beginBgm();
     later(()=>{
-      phase='island';land.classList.add('is-ready');controls.inert=false;returnButton.disabled=false;caseButton.disabled=false;
+      phase='island';land.classList.add('is-ready');controls.inert=false;returnButton.disabled=false;caseButton.disabled=false;placeSound();
+      sessionStorage.setItem(islandKey,'1');
       caseButton.removeAttribute('aria-busy');caseButton.setAttribute('aria-label','合上耳机仓，返回海面远景');
       hint.innerHTML='<b>点一下耳机仓，返回海面</b>';
       status.textContent=mobile()?'向下逛逛，选一张黄色唱片。':'选一张黄色唱片，也可以随机逛逛或一键整理。';
@@ -78,8 +99,9 @@
   }
   function closeCase(){
     if(phase!=='island')return;
+    sessionStorage.removeItem(islandKey);
     clearSequence();phase='leaving';caseButton.disabled=true;returnButton.disabled=true;controls.inert=true;folderLayer.inert=true;
-    land.classList.remove('is-ready','has-records','is-host-visible','is-listening');place(scattered,true);
+    land.classList.remove('is-ready','has-records','is-host-visible','is-listening');place(scattered,true);syncBgm();
     hint.innerHTML='<b>回到海面，再慢慢出发。</b>';status.textContent='正在返回海面远景。';
     if(mobile())window.scrollTo({top:0,behavior:reduced.matches?'instant':'smooth'});
     later(()=>land.classList.remove('is-open'),250);
@@ -89,8 +111,30 @@
       document.getElementById('avatarCaption').textContent='岛主蓝蓝 · 等你登岛';status.textContent='打开耳机仓，让好奇心登岛。';caseButton.focus({preventScroll:true});
     });
   }
+  function restoreIsland(){
+    if(phase==='island')return;
+    clearSequence();phase='island';cameraFrom=ARRIVAL;paintCamera(ARRIVAL);
+    land.classList.add('is-landing','is-open','is-host-visible','is-listening','has-records','is-ready');
+    document.querySelector('.land-copy').setAttribute('aria-hidden','true');
+    document.getElementById('avatarCaption').textContent='岛主蓝蓝 · 正在听歌';
+    folderLayer.inert=false;controls.inert=false;returnButton.disabled=false;caseButton.disabled=false;
+    caseButton.setAttribute('aria-expanded','true');
+    caseButton.setAttribute('aria-label','合上耳机仓，返回海面远景');
+    hint.innerHTML='<b>点一下耳机仓，返回海面</b>';
+    status.textContent='选一张黄色唱片，也可以沿着脚印去点亮旗子。';
+    place(layout==='tidy'?tidy:scattered,false);
+    beginBgm();
+  }
   caseButton.addEventListener('click',()=>phase==='sea'?openCase():closeCase());
   returnButton.addEventListener('click',closeCase);
+  if(sessionStorage.getItem(islandKey)==='1'){
+    restoreIsland();
+    if(location.hash==='#home'&&mobile())requestAnimationFrame(()=>scrollTo(0,300));
+  }
+  addEventListener('hashchange',()=>{
+    if(location.hash==='#home'&&phase==='island'&&mobile())requestAnimationFrame(()=>scrollTo(0,300));
+    syncBgm();
+  });
   folders.forEach(folder=>{
     let drag=null,dragged=false;
     folder.addEventListener('pointerdown',e=>{if(e.button!==0||mobile())return;dragged=false;drag={id:e.pointerId,x:e.clientX,y:e.clientY,left:parseFloat(folder.style.left),top:parseFloat(folder.style.top)};folder.setPointerCapture(e.pointerId);});
@@ -105,4 +149,5 @@
   document.getElementById('randomFolder').addEventListener('click',()=>{let n;do{n=Math.floor(Math.random()*folders.length);}while(n===lastRandom);lastRandom=n;status.textContent='这次去看看：'+folders[n].querySelector('.folder-label').textContent;folders[n].click();});
   document.addEventListener('keydown',e=>{if(e.key==='Escape'){const windows=[...stage.querySelectorAll('.os-window')];if(!windows.length)return;windows.sort((a,b)=>Number(b.style.zIndex)-Number(a.style.zIndex));windows[0].querySelector('.tl-close').click();if(focusSource?.isConnected)focusSource.focus();}});
   window.addEventListener('resize',()=>{if(phase==='island'&&layout!=='custom')place(layout==='tidy'?tidy:scattered,false);});
+  placeSound();
 })();

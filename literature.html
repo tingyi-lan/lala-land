@@ -4,6 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>文学在我 - 蓝蓝</title>
+  <script>if(window.parent!==window)document.documentElement.classList.add('lanlan-framed');</script>
   <meta name="description" content="蓝蓝的阅读星图、文学评论与研一阅读档案。">
   <style>
     *, *::before, *::after { box-sizing: border-box; }
@@ -26,6 +27,7 @@
     button { cursor: pointer; }
     .topbar { position: sticky; top: 0; z-index: 50; display: flex; align-items: center; justify-content: space-between; min-height: 54px; border-bottom: 1px solid var(--line); padding: 0 clamp(16px,4vw,58px); background: rgba(253,250,241,.95); backdrop-filter: blur(14px); }
     .back { color: var(--blue-deep); font-size: 12px; font-weight: 850; }
+    html.lanlan-framed .back { visibility: hidden; }
     .top-title { font: 850 15px Georgia, "Songti SC", serif; }
     .top-index { color: var(--muted); font: 750 10px ui-monospace, SFMono-Regular, Menlo, monospace; }
     .hero { position: relative; display: grid; grid-template-columns: minmax(0,1.08fr) minmax(280px,.72fr); min-height: min(710px,calc(100svh - 54px)); align-items: center; gap: clamp(34px,7vw,92px); overflow: hidden; border-bottom: 1px solid var(--line); padding: clamp(60px,8vw,104px) clamp(18px,7vw,100px); background-color: var(--cream); background-image: radial-gradient(circle,rgba(43,127,216,.16) 1px,transparent 1px); background-size: 25px 25px; }
@@ -200,7 +202,7 @@
   <link rel="stylesheet" href="assets/reading-stars.css">
 </head>
 <body>
-  <header class="topbar"><a class="back" href="index.html#literature" target="_top">← 蓝蓝 OS</a><span class="top-title">文学在我 / LITERATURE MAKES ME</span><span class="top-index">04 / 04</span></header>
+  <header class="topbar"><a class="back" href="index.html#home" target="_top">← 返回岛屿</a><span class="top-title">文学在我 / LITERATURE MAKES ME</span><span class="top-index">04 / 04</span></header>
   <main>
     <section class="hero">
       <div class="hero-copy"><div class="eyebrow">lanlan's reading atlas</div><h1>文学在我</h1><p class="hero-lede">我不是按照书目单成为中文系学生的。小说先把我带进人的命运，诗让我听见语言内部的震动，理论又迫使我回头追问：我们如何欲望、如何想象他人，又如何被时代写进自己的故事。</p><p class="reading-origin">WHU 中文系 <span aria-hidden="true">→</span> NJU 现当代文学</p><a class="reading-jump" href="#stars">打开阅读星匣 <span aria-hidden="true">↗</span></a></div>
@@ -315,5 +317,6 @@
   </script>
   <script src="assets/reading-stars-data.js"></script>
   <script src="assets/reading-stars.js"></script>
+  <script src="assets/lanlan-bgm.js?v=20261114-cont2"></script>
 </body>
 </html>

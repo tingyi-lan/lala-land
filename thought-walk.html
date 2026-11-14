@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#1f3a1c"><meta name="description" content="和蓝蓝走一走：蓝色海面、万里茶道、会回应的陪伴，和旅途尽头的一张塔罗。"><title>思想原野 · 和蓝蓝走一走</title><link rel="stylesheet" href="assets/thought-walk.css"><link rel="stylesheet" href="assets/thought-walk-games.css"><link rel="stylesheet" href="assets/thought-walk-scene.css?v=10"><link rel="stylesheet" href="assets/thought-walk-flow.css?v=2"><link rel="stylesheet" href="assets/thought-walk-tarot-v2.css?v=9"></head>
+<body>
+<div class="stage" id="stage">
+  <div class="last-landscape" aria-hidden="true"></div>
+  <div class="world-holder" id="world-holder"><main class="world" id="world" aria-label="蓝蓝的思想原野">
+    <img class="world-bg" style="top:0;height:1600px" src="assets/thought-walk/green-path.png" alt="画满花朵和小路的绿色草坡"><img class="world-bg" style="top:1370px;height:1894px" src="assets/thought-walk/reference/bg_s2.webp" alt="草坡之间流过一道溪水"><img class="world-bg" style="top:3264px;height:1272px" src="assets/thought-walk/reference/bg_s3.webp" alt="溪水汇入粉色油画瀑布"><img class="world-bg" style="top:4536px;height:672px" src="assets/thought-walk/reference/curtain_tail.webp" alt="">
+    <div class="chimes" aria-label="粉色门上的风铃">
+      <button class="chime scene-object tactile" type="button" data-detail="tea" style="--d:0s" aria-label="打开万里茶道"><img src="assets/thought-walk/charms/tea.png" alt=""><span>万里茶道</span></button>
+      <button class="chime scene-object tactile" type="button" data-detail="camera" style="--d:.6s" aria-label="打开自媒体"><img src="assets/thought-walk/charms/camera.png" alt=""><span>自媒体</span></button>
+      <button class="chime scene-object tactile" type="button" data-detail="ai" style="--d:1.1s" aria-label="打开 AI-Lover"><img src="assets/thought-walk/charms/robot.png" alt=""><span>AI-Lover</span></button>
+      <button class="chime scene-object tactile" type="button" data-detail="letter" style="--d:1.7s" aria-label="打开笺读"><img src="assets/thought-walk/charms/letter.png" alt=""><span>笺读</span></button>
+    </div>
+    <img class="scenery cloud cloud-a" src="assets/thought-walk/zilin/elements__cloud1.webp" alt="" aria-hidden="true"><img class="scenery cloud cloud-b" src="assets/thought-walk/zilin/elements__cloud2.webp" alt="" aria-hidden="true"><img class="scenery prop-rose" src="assets/thought-walk/zilin/flowers__rose.webp" alt="" aria-hidden="true"><img class="scenery prop-balloon" src="assets/thought-walk/zilin/elements__balloon.webp" alt="" aria-hidden="true"><img class="scenery prop-teapot" src="assets/thought-walk/zilin/elements__teapot.webp" alt="" aria-hidden="true"><img class="scenery prop-mail" src="assets/thought-walk/zilin/elements__mailbox.webp" alt="" aria-hidden="true"><img class="scenery prop-candle" src="assets/thought-walk/zilin/elements__candle.webp" alt="" aria-hidden="true"><img class="scenery prop-daisy" src="assets/thought-walk/zilin/flowers__daisy_bottom.webp" alt="" aria-hidden="true"><img class="scenery prop-yellow" src="assets/thought-walk/zilin/flowers__yellow.webp" alt="" aria-hidden="true"><img class="scenery prop-lantern" src="assets/thought-walk/zilin/elements__lantern.webp" alt="" aria-hidden="true"><img class="scenery prop-kite" src="assets/thought-walk/zilin/elements__kite2.webp" alt="" aria-hidden="true"><img class="scenery prop-box" src="assets/thought-walk/zilin/elements__music-box-2.webp" alt="" aria-hidden="true"><img class="scenery prop-peony" src="assets/thought-walk/zilin/flowers__peony_bottom.webp" alt="" aria-hidden="true"><img class="scenery prop-gramophone" src="assets/thought-walk/zilin/elements__gramophone.webp" alt="" aria-hidden="true">
+    <img class="world-character character-one" src="assets/thought-walk/lanlan-walk.png" alt="蓝蓝的背影沿着草坡小路往前走">
+    <img class="world-character character-two" src="assets/thought-walk/lanlan-walk.png" alt="蓝蓝沿着溪水继续往前走"><button type="button" class="game-trigger scene-object tactile goose-spot" data-open="goose" aria-label="打开抓大鹅"><img src="assets/thought-walk/charms/geese.png" alt=""><em>抓大鹅</em></button><button type="button" class="game-trigger scene-object tactile pen-spot" data-open="pen" aria-label="打开画地为牢，解救蓝蓝"><img src="assets/thought-walk/charms/lasso.png" alt=""><em>画地为牢<small>救蓝蓝</small></em></button>
+    <div class="world-copy end-copy" aria-label="想法走过山野，最后成为礼物"><h2 class="end-heading" aria-label="Bring the thought here">Bring the thought here</h2><p>沿着水流，再往前一点。最后有一张牌，等你亲手翻开。</p></div><button class="flower-button tactile" id="flower" type="button" aria-label="轻点路边的花"><img src="assets/thought-walk/flower.png" alt=""><i class="petal"></i><i class="petal"></i><i class="petal"></i><span>点一点我</span></button><img class="foreground-flower flower-left" src="assets/thought-walk/reference/daisy_top.webp" alt="" aria-hidden="true"><img class="foreground-flower flower-right" src="assets/thought-walk/reference/peony_top.webp" alt="" aria-hidden="true">
+  </main></div>
+  <section class="sea-scene" id="sea-scene" aria-label="蓝色海面，旅途的开始"><img class="sea-painting" src="assets/thought-walk/oil-sea.png" alt="蓝色厚涂油画海面，日光通向一座小岛"><div class="sea-wash"></div><div class="sea-title" aria-label="和蓝蓝走一走"><div class="raster-line" data-glyph="和蓝蓝"></div><div class="raster-line" data-glyph="走一走"></div><p>从一片蓝色的海出发。<br>沿着光，看看我的世界。</p></div><img class="sea-character" src="assets/thought-walk/lanlan-walk.png" alt="蓝蓝在海边背对画面，准备出发"><button class="sea-flower tactile" id="sea-flower" type="button" aria-label="轻点海边的小花"><img src="assets/thought-walk/flower.png" alt=""></button></section>
+  <section class="tarot-scene" id="tarot-scene" aria-label="旅途尽头的塔罗牌"><div class="tarot-intro"><div class="raster-line" data-glyph="抽一张牌"></div></div><div class="oracle" id="oracle"><div class="magic-ring" aria-hidden="true"></div><svg class="trails" viewBox="0 0 100 60" aria-hidden="true"><path d="M8 42C28 12 48 8 72 26"/><path d="M16 50C38 18 62 14 92 34"/></svg><div class="arc" id="arc" role="group" aria-label="二十二张大阿尔卡那，牌背朝上"></div><div class="dealt" id="dealt" hidden><button type="button" class="return-tab" id="return-tab">放回</button><button type="button" class="dealt-card tactile" id="dealt-card"><span class="dealt-tilt"><span class="dealt-inner"><span class="dealt-back"></span><span class="dealt-face"><img id="dealt-face" alt=""><i class="dealt-sheen" aria-hidden="true"></i></span></span></span></button></div><aside class="reading" id="reading" hidden><p class="reading-kicker" id="reading-num"></p><h2 id="reading-name"></h2><p class="reading-keys" id="reading-keys"></p><p class="reading-picture" id="reading-picture"></p><p class="reading-body" id="reading-body"></p><p class="reading-note">正位 · 大阿尔卡那 · Rider–Waite–Smith</p></aside><img class="oracle-plush" src="assets/thought-walk/plush-lanlan-cutout.png" alt="毛绒蓝蓝轻轻漂浮在牌阵前"><p class="oracle-line" id="oracle-line">二十二张大阿尔卡那。点开一张，看真正的牌面。</p><button type="button" class="hand-action oracle-shuffle" id="oracle-shuffle">洗牌</button><button type="button" class="hand-action tactile oracle-restart" id="oracle-restart">再走一次 ↺</button></div><button class="continue-to-shelf" id="continue-to-shelf" type="button" aria-label="继续向下，看看旅途最后的风景" hidden>旅途最后的风景，是什么？<span aria-hidden="true">↓</span></button></section>
+  <section class="bookshelf-scene" id="bookshelf-scene" aria-label="通往蓝蓝文学世界的书架" inert><div class="shelf-wash" aria-hidden="true"></div><p class="shelf-eyebrow">04 / LITERATURE MAKES ME</p><h2>嗨，等你好久了，这是蓝蓝的文学世界。</h2><div class="bookshelf-frame"><img src="assets/thought-walk/bookshelf.png" alt="暖色油画书架，中央有一本发光的蓝色书"><a id="literatureBook" class="literature-book" href="index.html#literature" aria-label="进入蓝蓝的文学世界"><span>进入蓝蓝的<br>文学世界 ↗</span></a></div><p class="shelf-hint">点亮中间的那本书，进入蓝蓝的文学世界。</p></section>
+  <a class="home-link tactile" href="index.html#home" aria-label="返回岛屿">← 返回岛屿</a><div class="journey-hint" id="journey-hint" aria-live="polite">滚动，和蓝蓝走一走 ↓</div><div class="progress-rail" aria-hidden="true"><span id="progress-fill"></span></div>
+</div><div class="scroll-space" id="scroll-space" aria-hidden="true"></div>
+<div class="detail-overlay" id="detail-overlay" hidden role="dialog" aria-modal="true" aria-labelledby="detail-title"><div class="detail-landscape"></div><button class="detail-close tactile" type="button" aria-label="关闭详情">×</button><div class="detail-content"><img id="detail-image" src="assets/tea-road-book.png" alt=""><div><span id="detail-eyebrow"></span><h2 id="detail-title"></h2><p id="detail-description"></p><a id="detail-link" class="hand-action tactile" href="#" target="_top">打开完整作品 ↗</a></div></div></div>
+<div class="game-layer" id="goose-game" hidden>
+  <div class="game-card" role="dialog" aria-modal="true" aria-labelledby="goose-title">
+    <button type="button" class="game-x" data-close aria-label="回到溪边">×</button>
+    <p class="game-kicker">溪边 · 拾起来就能玩</p>
+    <h2 id="goose-title">抓大鹅</h2>
+    <p class="game-lead">只捉最上面那只。三只一样的会一起走开。槽里最多七只。</p>
+    <p class="game-count" id="goose-count"></p>
+    <div class="pile" id="goose-pile"></div>
+    <div class="slot-bar" id="goose-slots" aria-label="捕捉槽"></div>
+    <p class="game-status" id="goose-status" aria-live="polite"></p>
+    <div class="game-actions"><button type="button" id="goose-retry">重新摆一摆</button><button type="button" data-close>回到溪边</button></div>
+  </div>
+</div>
+<div class="game-layer" id="pen-game" hidden>
+  <div class="game-card pen-card" role="dialog" aria-modal="true" aria-labelledby="pen-title">
+    <button type="button" class="game-x" data-close aria-label="回到溪边">×</button>
+    <p class="game-kicker">溪边 · 画一个圈</p>
+    <h2 id="pen-title">画地为牢</h2>
+    <p class="game-lead">按住画出一个圈，把乱走的鹅关进去。别把蓝蓝也圈住。线碰到鹅就会断。</p>
+    <div class="pen-field" id="pen-field">
+      <canvas id="pen-canvas"></canvas>
+      <div class="trap-ring" id="trap-ring"></div>
+      <img class="pen-lanlan" id="pen-lanlan" src="assets/thought-walk/plush-lanlan.png" alt="被围住的蓝蓝">
+      <div id="pen-wisps"></div>
+    </div>
+    <p class="game-status" id="pen-status" aria-live="polite">按住画面，把线收回起点。</p>
+    <div class="game-actions"><button type="button" id="pen-retry">再围一次</button><button type="button" data-close>回到溪边</button></div>
+  </div>
+</div>
+<script src="assets/lanlan-bgm.js?v=20261114-cont2"></script>
+<script src="assets/thought-walk.js?v=11"></script>
+<script src="assets/thought-walk-oracle.js?v=13"></script>
+<script src="assets/thought-walk-games.js"></script></body></html>
