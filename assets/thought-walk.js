@@ -80,10 +80,12 @@
       const tarotOpacity = smooth(5350, 6080, y) * (1 - shelfOpacity);
       tarotScene.style.opacity = tarotOpacity.toFixed(3);
       tarotScene.classList.toggle('ready', tarotOpacity > .9);
-      tarotScene.inert = tarotOpacity < .9;
+      const tarotBlocked = tarotOpacity < .9;
+      if (tarotScene.inert !== tarotBlocked) tarotScene.inert = tarotBlocked;
       bookshelfScene.style.opacity = shelfOpacity.toFixed(3);
       bookshelfScene.classList.toggle('ready', shelfOpacity > .9);
-      bookshelfScene.inert = shelfOpacity < .9;
+      const shelfBlocked = shelfOpacity < .9;
+      if (bookshelfScene.inert !== shelfBlocked) bookshelfScene.inert = shelfBlocked;
       activateSceneLines(y);
       progress.style.height = `${clamp(y / SHELF_END * 100, 0, 100)}%`;
       const nextHint = !gateOpen && y >= 4600 ? '点开这朵黄花，帷幕才会落下' : y < 1000 ? '滚动，和蓝蓝走一走 ↓' : y < 1700 ? '粉色门上的风铃，点开看看 ↓' : y < 2800 ? '沿着花间小路往前走 ↓' : y < 4700 ? '溪边可以抓大鹅，也可以画圈救蓝蓝' : y < 5600 ? '快到旅途的礼物了 ↓' : tarotComplete ? '往下走，书架在等你 ↓' : '点开一张牌，再点一次看解读';

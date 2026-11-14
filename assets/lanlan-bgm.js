@@ -1,10 +1,10 @@
 (function(){
   'use strict';
-  const shell=/\/index\.html$/.test(location.pathname)&&location.pathname.indexOf('/works/')===-1;
+  const shell=window.parent===window&&!!document.getElementById('page-home')&&!!document.getElementById('canvasFrame');
   if(window.parent!==window){
     document.documentElement.classList.add('lanlan-framed');
     document.addEventListener('click',function(event){
-      if(event.button!==0||event.metaKey||event.ctrlKey||event.shiftKey||event.altKey)return;
+      if((event.button&&event.button!==0)||event.metaKey||event.ctrlKey||event.shiftKey||event.altKey)return;
       const link=event.target.closest('a[href]');
       if(!link||link.target==='_blank')return;
       let url;
@@ -12,11 +12,21 @@
       if(url.origin!==location.origin||!url.pathname.endsWith('.html'))return;
       if(url.pathname===location.pathname&&url.search===location.search)return;
       event.preventDefault();
-      if(/\/index\.html$/.test(url.pathname)&&url.pathname.indexOf('/works/')===-1){
-        parent.postMessage({type:'lanlan-nav',hash:(url.hash||'#home').replace('#','')||'home'},location.origin);
-      }else{
-        parent.postMessage({type:'lanlan-open',href:url.pathname+url.search+url.hash},location.origin);
-      }
+      const toIndex=/\/index\.html$/.test(url.pathname)&&url.pathname.indexOf('/works/')===-1;
+      const hash=(url.hash||'#home').replace(/^#/,'')||'home';
+      const href=url.pathname+url.search+url.hash;
+      setTimeout(function(){
+        try{
+          if(toIndex){
+            if(parent.LanlanBgm)parent.LanlanBgm.close();
+            const next='#'+hash;
+            if(parent.location.hash!==next)parent.location.hash=next;
+            return;
+          }
+          if(parent.LanlanBgm){parent.LanlanBgm.open(href);return;}
+        }catch(error){}
+        parent.postMessage(toIndex?{type:'lanlan-nav',hash:hash}:{type:'lanlan-open',href:href},location.origin);
+      },0);
     },true);
     return;
   }
