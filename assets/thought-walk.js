@@ -27,12 +27,19 @@
   const continueToShelf = document.getElementById('continue-to-shelf');
   const hint = document.getElementById('journey-hint');
   const progress = document.getElementById('progress-fill');
+  progress.style.height = '100%';
+  progress.style.transformOrigin = 'top';
   const seaPainting = document.querySelector('.sea-painting');
   const seaTitle = document.querySelector('.sea-title');
   const seaCharacter = document.querySelector('.sea-character');
   const characterOne = document.querySelector('.character-one');
   const characterTwo = document.querySelector('.character-two');
   const foregroundFlowers = [...document.querySelectorAll('.foreground-flower')];
+  const shelfFrame = document.querySelector('.bookshelf-frame');
+  const shelfHeading = bookshelfScene.querySelector('h2');
+  const seaFlower = document.getElementById('sea-flower');
+  const narrativeLines = [ ['.tea-copy',660], ['.ai-copy',2450], ['.end-copy',4300], ['.tarot-intro',5650] ]
+    .map(([selector, at]) => ({ lines: [...document.querySelectorAll(`${selector} .raster-line`)], at }));
   const GATE_Y = 4880;
   const TAROT_CAP = 6266;
   const SHELF_END = 8500;
@@ -58,10 +65,7 @@
     schedule();
   }
   function activateSceneLines(y) {
-    document.querySelectorAll('.tea-copy .raster-line').forEach(el => el.classList.toggle('active-line', y > 660));
-    document.querySelectorAll('.ai-copy .raster-line').forEach(el => el.classList.toggle('active-line', y > 2450));
-    document.querySelectorAll('.end-copy .raster-line').forEach(el => el.classList.toggle('active-line', y > 4300));
-    document.querySelectorAll('.tarot-intro .raster-line').forEach(el => el.classList.toggle('active-line', y > 5650));
+    narrativeLines.forEach(group => group.lines.forEach(el => el.classList.toggle('active-line', y > group.at)));
   }
   function render() {
     frame = 0;
@@ -73,6 +77,12 @@
       const worldY = clamp(y - 1300, 0, 4966);
       holder.style.transform = `translate3d(-50%,${-worldY * scale}px,0)`;
       const seaOpacity = 1 - smooth(310, 1280, y);
+      const seaDepth = reduced.matches ? 0 : smooth(0, 1450, y);
+      const mobileDepth = innerWidth < 600 ? .5 : 1;
+      seaPainting.style.transform = `scale(${1 + seaDepth * .2 * mobileDepth})`;
+      seaTitle.style.transform = `translate3d(0,${-seaDepth * 95 * mobileDepth}px,0)`;
+      seaCharacter.style.transform = `translateX(-50%) translateY(${seaDepth * 100 * mobileDepth}px) scale(${1 + seaDepth * .14 * mobileDepth})`;
+      seaFlower.style.transform = `translateY(${seaDepth * 150 * mobileDepth}px)`;
       seaScene.style.opacity = seaOpacity.toFixed(3);
       seaScene.style.visibility = seaOpacity < .002 ? 'hidden' : 'visible';
       holder.style.pointerEvents = seaOpacity > .5 ? 'none' : 'auto';
@@ -83,11 +93,14 @@
       const tarotBlocked = tarotOpacity < .9;
       if (tarotScene.inert !== tarotBlocked) tarotScene.inert = tarotBlocked;
       bookshelfScene.style.opacity = shelfOpacity.toFixed(3);
+      const shelfDepth = reduced.matches ? 1 : smooth(6350, 8300, y);
+      shelfFrame.style.transform = `translate3d(0,${(1-shelfDepth)*60}px,0) scale(${.92+shelfDepth*.08})`;
+      shelfHeading.style.transform = `translate3d(0,${(1-shelfDepth)*24}px,0)`;
       bookshelfScene.classList.toggle('ready', shelfOpacity > .9);
       const shelfBlocked = shelfOpacity < .9;
       if (bookshelfScene.inert !== shelfBlocked) bookshelfScene.inert = shelfBlocked;
       activateSceneLines(y);
-      progress.style.height = `${clamp(y / SHELF_END * 100, 0, 100)}%`;
+      progress.style.transform = `scaleY(${clamp(y / SHELF_END, 0, 1)})`;
       const nextHint = !gateOpen && y >= 4600 ? '点开这朵黄花，帷幕才会落下' : y < 1000 ? '滚动，和蓝蓝走一走 ↓' : y < 1700 ? '粉色门上的风铃，点开看看 ↓' : y < 2800 ? '沿着花间小路往前走 ↓' : y < 4700 ? '溪边可以抓大鹅，也可以画圈救蓝蓝' : y < 5600 ? '快到旅途的礼物了 ↓' : tarotComplete ? '往下走，书架在等你 ↓' : '点开一张牌，再点一次看解读';
       if (hint.textContent !== nextHint) hint.textContent = nextHint;
       hint.style.opacity = tarotOpacity > .8 || shelfOpacity > .2 ? '0' : '1';
@@ -145,6 +158,10 @@
     pointer.x = event.clientX; pointer.y = event.clientY; schedule();
   }, { passive: true });
   document.addEventListener('visibilitychange', () => { if (!document.hidden) schedule(); });
+  reduced.addEventListener('change', () => {
+    [seaPainting, seaTitle, seaCharacter, characterOne, characterTwo, ...foregroundFlowers].forEach(el => { el.style.translate = ''; });
+    schedule();
+  });
   sizeWorld();
 
   function burst(x, y) {
@@ -210,6 +227,7 @@
   };
   const detail = document.getElementById('detail-overlay');
   let previousFocus = null;
+  let detailAnimation = null;
   function openDetail(button) {
     previousFocus = button;
     const data = details[button.dataset.detail];
@@ -221,6 +239,16 @@
     document.getElementById('detail-link').href = data.link;
     document.getElementById('detail-link').target = data.external ? '_blank' : '_self';
     detail.hidden = false; document.body.style.overflow = 'hidden'; paused = true;
+    detailAnimation?.cancel();
+    if (!reduced.matches && !window.SceneMotion?.keyboard) {
+      const trigger = button.getBoundingClientRect();
+      const content = detail.querySelector('.detail-content');
+      const bounds = content.getBoundingClientRect();
+      detailAnimation = content.animate([
+        { opacity: 0, transform: `translate(${(trigger.left+trigger.width/2-bounds.left-bounds.width/2)*.18}px,${(trigger.top+trigger.height/2-bounds.top-bounds.height/2)*.18}px) scale(.94)` },
+        { opacity: 1, transform: 'none' }
+      ], { duration: 280, easing: 'cubic-bezier(.23,1,.32,1)' });
+    }
     detail.querySelector('.detail-close').focus();
   }
   document.querySelectorAll('[data-detail]').forEach(button => button.addEventListener('click', () => openDetail(button)));
@@ -232,6 +260,7 @@
     }));
   });
   function closeDetail() {
+    detailAnimation?.cancel();
     document.body.style.overflow = '';
     paused = false;
     render();

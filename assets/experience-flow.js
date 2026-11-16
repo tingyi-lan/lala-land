@@ -26,6 +26,13 @@
   if (frame?.getAttribute('src') && frame.contentDocument?.readyState === 'complete') revealScene();
 
   flag?.addEventListener('click', () => {
+    if (window.SceneMotion) {
+      sessionStorage.removeItem('lanlan-thought-return');
+      sessionStorage.removeItem('lanlan-case-origin');
+      systemPage.classList.remove('story-return', 'shelf-return');
+      window.SceneMotion.goTab('system', flag, { back: false });
+      return;
+    }
     if (entering) return;
     entering = true;
     flag.disabled = true;
